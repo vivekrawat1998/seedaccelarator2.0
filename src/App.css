@@ -1,0 +1,43 @@
+@config "../tailwind.config.js";
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Parkinsans:wght@300..800&display=swap');
+
+@import "tailwindcss";
+
+/* ✅ BentonModDisp font */
+@font-face {
+  font-family: "BentonModDisp";
+  src: url("/fonts/BentonModDisp-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; 
+}
+
+@font-face {
+  font-family: "Arsenal";
+  src: url("/fonts/Arsenal-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Karla";
+  src: url("/fonts/Karla-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-Nunito: "BentonModDisp", serif;
+  --font-opensans: "Open Sans", sans-serif;
+  --font-parkinsans: "BentonModDisp", serif;
+  --font-Arsenal: "Arsenal", serif;
+  --font-Karla: "Karla", serif;
+
+  --color-prime: #006401;
+  --color-button: #FC9D00;
+  --color-sec: #09090B21;
+  --color-gray: #484338;
+  --color-brown: #a58251;
+}
