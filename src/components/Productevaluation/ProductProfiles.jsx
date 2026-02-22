@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Typography from "../../ui/Heading";
 
 const varietyProfiles = [
     { name: "Bina - Dhan 17", pdf: "/Binadhan 17.pdf" },
@@ -23,53 +24,113 @@ const varietyProfiles = [
 ];
 
 export default function ProductProfiles() {
-    const [showAll, setShowAll] = useState(false);
+
+    const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
 
     useEffect(() => {
-        AOS.init({ duration: 800, once: true });
+        AOS.init({ duration: 700, once: true });
     }, []);
 
-    const displayProfiles = showAll ? varietyProfiles : varietyProfiles.slice(0, 4);
+    /* ================= SEARCH FILTER ================= */
+
+    const filteredProfiles = useMemo(() => {
+        return varietyProfiles.filter(p =>
+            p.name.toLowerCase().includes(search.toLowerCase())
+        );
+    }, [search]);
+
+    /* ================= PAGINATION ================= */
+
+    const totalPages = Math.ceil(filteredProfiles.length / itemsPerPage);
+
+    const paginatedProfiles = useMemo(() => {
+        const start = (currentPage - 1) * itemsPerPage;
+        return filteredProfiles.slice(start, start + itemsPerPage);
+    }, [filteredProfiles, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search]);
 
     return (
-        <section className="bg-white rounded-xl p-6 container mx-auto my-10">
-            <h2 className="md:text-3xl font-parkinsans text-lg font-bold mb-5 text-green-800 flex items-center">
-                Product profiles—Variety wise
-            </h2>
-            <p className="text-gray-700 font-Nunito mb-6">
-                Download detailed PDF profiles for each rice variety directly below.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {displayProfiles.map((profile, idx) => (
+        <section className="">
+
+            <Typography variant="h1" className="mt-10">
+                Product Profiles
+            </Typography>
+
+            {/* SEARCH */}
+            <input
+                type="text"
+                placeholder="Search variety..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="border px-4 py-2 rounded mt-5 mb-6 w-full sm:w-64 focus:ring-2 focus:ring-green-700 outline-none"
+            />
+
+            {/* GRID */}
+            <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
+
+                {paginatedProfiles.map((profile, idx) => (
                     <div
                         key={profile.name}
-                        className="bg-green-50 rounded-lg shadow px-4 py-5 flex flex-col justify-between items-start"
+                        className="bg-[#dceac2] rounded-md overflow-hidden shadow-sm"
                         data-aos="fade-up"
-                        data-aos-delay={idx * 130}
+                        data-aos-delay={idx * 80}
                     >
-                        <span className="font-semibold text-green-900 mb-2 font-parkinsans text-lg">{profile.name}</span>
-                        <a
-                            href={profile.pdf}
-                            download
-                            className="mt-2 inline-block px-4 py-2 bg-green-800 text-white rounded hover:bg-green-700 shadow transition"
-                        >
-                            Download PDF
-                        </a>
+
+                        {/* ⭐ PDF PREVIEW */}
+                        <div className="h-56 bg-white overflow-hidden border-b">
+                            <embed
+                                src={`${profile.pdf}#toolbar=0&navpanes=0&scrollbar=0`}
+                                type="application/pdf"
+                                className="w-full h-full"
+                            />
+                        </div>
+
+                        {/* CONTENT */}
+                        <div className="p-4 flex flex-col gap-3">
+
+                            <h3 className="font-semibold text-gray-800 text-sm">
+                                {profile.name}
+                            </h3>
+
+                            <a
+                                href={profile.pdf}
+                                download
+                                className="bg-green-700 text-white text-sm px-4 py-2 rounded-md w-fit hover:bg-green-800 transition"
+                            >
+                                Download
+                            </a>
+
+                        </div>
+
                     </div>
                 ))}
+
             </div>
-            {!showAll && (
-                <div className="flex justify-center mt-6">
-                    <button
-                        className="px-6 py-2 bg-green-800 text-white font-Nunito cursor-pointer rounded hover:bg-green-700 shadow font-bold transition"
-                        onClick={() => setShowAll(true)}
-                        data-aos="fade-up"
-                        data-aos-delay={displayProfiles.length * 130}
-                    >
-                        View More
-                    </button>
+
+            {/* PAGINATION */}
+            {totalPages > 1 && (
+                <div className="flex justify-center mt-10 gap-2 flex-wrap">
+                    {Array.from({ length: totalPages }, (_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`px-3 py-1 rounded border text-sm
+                ${currentPage === i + 1
+                                    ? "bg-green-700 text-white border-green-700"
+                                    : "bg-white text-gray-700"}
+              `}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
                 </div>
             )}
+
         </section>
     );
 }

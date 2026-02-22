@@ -1,4 +1,5 @@
 import React from "react";
+import Typography from "../../ui/Heading";
 
 const multiYearSummary = [
   {
@@ -61,12 +62,12 @@ const stateDistricts = [
 
 export default function StatisticalAnalysisSection() {
   return (
-    <section className="bg-white rounded-2xl font-parkinsans px-6 py-10 container mx-auto my-12 ">
+    <section className="bg-white rounded-2xl mt-10 ">
       {/* Section Heading */}
-      <h2 className="text-3xl font-bold mb-4 font-parkinsans text-green-800 text-center">
+      <Typography variant="h1" >
         Statistical Analysis
-      </h2>
-      <p className="mb-8 text-gray-700 font-Nunito text-center max-w-3xl mx-auto leading-relaxed">
+      </Typography>
+      <Typography variant="p" className="">
         Quantitative traits were analyzed using a Mixed Linear Model (BLUP). Trial reliability was evaluated
         through broad-sense heritability (
         <span className="italic">
@@ -78,16 +79,15 @@ export default function StatisticalAnalysisSection() {
         </span>
         ). Predicted values for each variable were tested for significance at
         the 95% confidence level.
-      </p>
+      </Typography>
 
       {/* Image Section */}
-      <h3 className="text-lg font-semibold mb-3 text-green-700 text-center">
+      <Typography variant="h1" className="mt-10">
         The KVK and NGO Network (2022–25)
-      </h3>
+      </Typography>
 
-      <div className="flex justify-center mb-10">
+      <div className="flex justify-center">
         <div className="w-full md:w-4/5 relative rounded-xl overflow-hidden shadow-xl group">
-       
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
           <div className="absolute bottom-3 left-3 bg-white/80 backdrop-blur-md px-4 py-2 rounded-lg shadow-md">
             <p className="text-green-900 font-semibold text-sm">
@@ -98,9 +98,9 @@ export default function StatisticalAnalysisSection() {
       </div>
 
       {/* Multi-Year Table */}
-      <h4 className="text-md font-semibold mb-3 text-green-700">
+      <Typography variant="h2" >
         Multi-Year OFT Summary
-      </h4>
+      </Typography>
 
       <div className="overflow-x-auto mb-8">
         <table className="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow-md">
@@ -134,10 +134,9 @@ export default function StatisticalAnalysisSection() {
         </table>
       </div>
 
-      {/* State/Districts Summary */}
-      <h4 className="text-md font-semibold my-3 text-green-700">
+      <Typography variant="h2">
         State / Districts
-      </h4>
+      </Typography>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow-md text-left">
           <thead>

@@ -1,112 +1,225 @@
-import React, { useState } from 'react';
-import Stateandmarketes from '../../utils/Stateandmarkte'; // Adjust import path to your JSON data
+import React, { useState, useMemo, useEffect } from "react";
+import { useAuth } from "../../context/AuthProvider";
+import Stateandmarketes from "../../utils/Stateandmarkte";
+import ProductEvaluationData from "../../utils/Productevaluationdata";
+import Typography from "../../ui/Heading";
+import { Link } from "react-router-dom";
+import api from "../../api/axios";
 
-export default function FilterPage() {
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedSegment, setSelectedSegment] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+export default function Filterbystateandmarket() {
 
-  const graphsPerPage = 4;
+  const { isAuthenticated, user } = useAuth();
 
-  // Normalize states to title case for dropdown display
-  const allStates = Stateandmarketes[0].graphData.map(item => item.state.toLowerCase());
-  const uniqueStates = Array.from(new Set(allStates))
-    .map(state => state.charAt(0).toUpperCase() + state.slice(1));
+  const [remoteUser, setRemoteUser] = useState(null);
+  const [breederRequests, setBreederRequests] = useState([]);
+  const [acceleratorRequests, setAcceleratorRequests] = useState([]);
 
-  // Unique market segments (commented in your code, can be enabled if needed)
-  const uniqueMarketSegments = Array.from(new Set(Stateandmarketes[0].graphData.map(item => item.marketSegment)));
+  /* ================= FETCH CURRENT USER ================= */
+  useEffect(() => {
+    let mounted = true;
 
-  // Filter graph data based on selected state and segment
-  const filteredGraphs = Stateandmarketes[0].graphData.filter(item => {
-    const itemState = item.state.toLowerCase();
-    const selectedStateLower = selectedState.toLowerCase();
-    return (
-      (selectedState === '' || itemState === selectedStateLower) &&
-      (selectedSegment === '' || item.marketSegment === selectedSegment)
-    );
+    const fetchMe = async () => {
+      if (!isAuthenticated) return;
+
+      try {
+        const res = await api.get("/users/me?populate=*");
+
+        let normalized = res?.data?.data
+          ? { id: res.data.data.id, ...(res.data.data.attributes || {}) }
+          : res.data;
+
+        if (mounted) setRemoteUser(normalized);
+      } catch (err) {
+        console.warn("Could not fetch current user:", err);
+      }
+    };
+
+    fetchMe();
+    return () => (mounted = false);
+  }, [isAuthenticated]);
+
+  const effectiveUser = remoteUser || user || {};
+
+  /* ================= FETCH MEMBERSHIP REQUESTS (DASHBOARD STYLE) ================= */
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchRequests = async () => {
+      const userId = effectiveUser?.id;
+      const email = effectiveUser?.email;
+
+      if (!userId && !email) return;
+
+      try {
+        let breeders = [];
+        let accelerators = [];
+
+        /* ===== BREEDER ===== */
+
+        // ⭐ FIRST: EMAIL FILTER
+        if (email) {
+          const byEmail = await api
+            .get(`/breeder-requests?filters[email][$eq]=${encodeURIComponent(email)}&populate=*`)
+            .catch(() => ({ data: { data: [] } }));
+
+          breeders = byEmail.data.data || [];
+        }
+
+        // ⭐ FALLBACK: RELATION FILTERd
+        if (!breeders.length && userId) {
+          const byUser = await api
+            .get(`/breeder-requests?filters[users_permissions_user][id][$eq]=${userId}&populate=*`)
+            .catch(() => ({ data: { data: [] } }));
+
+          breeders = byUser.data.data || [];
+        }
+
+        /* ===== ACCELERATOR ===== */
+
+        if (email) {
+          const accByEmail = await api
+            .get(`/accelartor-requests?filters[email][$eq]=${encodeURIComponent(email)}&populate=*`)
+            .catch(() => ({ data: { data: [] } }));
+
+          accelerators = accByEmail.data.data || [];
+        }
+
+        if (!accelerators.length && userId) {
+          const accByUser = await api
+            .get(`/accelartor-requests?filters[users_permissions_user][id][$eq]=${userId}&populate=*`)
+            .catch(() => ({ data: { data: [] } }));
+
+          accelerators = accByUser.data.data || [];
+        }
+
+        if (!mounted) return;
+
+        setBreederRequests(breeders);
+        setAcceleratorRequests(accelerators);
+
+        console.log("✅ Requests loaded:", {
+          breeders,
+          accelerators,
+        });
+
+      } catch (err) {
+        console.warn("Could not fetch membership:", err);
+      }
+    };
+
+    fetchRequests();
+    return () => (mounted = false);
+  }, [effectiveUser?.id, effectiveUser?.email]);
+
+  /* ================= ACCESS CONTROL ================= */
+
+  const isBlocked =
+    effectiveUser?.blocked === true ||
+    effectiveUser?.blocked === "true";
+
+  const breederApproved = breederRequests.some(
+    (b) => b?.Approval === true || b?.attributes?.Approval === true
+  );
+
+  const acceleratorApproved = acceleratorRequests.some(
+    (a) => a?.Approval === true || a?.attributes?.Approval === true
+  );
+
+  const isApproved = breederApproved || acceleratorApproved;
+
+  console.log("🔍 Approval Debug:", {
+    breederApproved,
+    acceleratorApproved,
+    isApproved,
   });
 
-  // Pagination calculations
-  const indexOfLastGraph = currentPage * graphsPerPage;
-  const indexOfFirstGraph = indexOfLastGraph - graphsPerPage;
-  const currentGraphs = filteredGraphs.slice(indexOfFirstGraph, indexOfLastGraph);
-  const totalPages = Math.ceil(filteredGraphs.length / graphsPerPage);
+  /* ================= NOT LOGGED IN ================= */
+  if (!isAuthenticated) {
+    return (
+      <div className="py-32 flex justify-center">
+        <div className="w-full max-w-2xl bg-green-50 border border-green-200 rounded-xl p-10 text-center shadow-sm">
+          <Typography variant="h1">Product Evaluation Information</Typography>
+          <Typography variant="h2" className="mt-4">
+            Please log in or register for a free account.
+          </Typography>
 
-  // Handle page change
-  const handlePageChange = (pageNum) => {
-    setCurrentPage(pageNum);
+          <div className="flex gap-4 mt-8 justify-center">
+            <Link to="/network-members#register" className="px-6 py-3 bg-green-700 text-white rounded-md">
+              Register Now
+            </Link>
+
+            <Link to="/login" className="px-6 py-3 border border-green-700 text-green-700 rounded-md">
+              Login
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ================= BLOCKED ================= */
+  if (isBlocked) {
+    return (
+      <div className="py-32 flex justify-center">
+        <Typography variant="h1">⛔ Account Blocked</Typography>
+      </div>
+    );
+  }
+
+  /* ================= APPROVAL PENDING ================= */
+  if (!isApproved) {
+    return (
+      <div className="py-32 flex justify-center">
+        <div className="w-full max-w-2xl bg-yellow-50 border-2 border-yellow-200 rounded-xl p-12 text-center shadow-lg">
+          <Typography variant="h1">Approval Pending</Typography>
+          <Typography variant="h2">
+            Your account is created but waiting for admin approval.
+          </Typography>
+
+          <Link to="/dashboard" className="px-6 py-3 bg-yellow-600 text-white rounded-md mt-6 inline-block">
+            Go to Dashboard
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  /* ================= APPROVED CONTENT ================= */
+
+  const rawGraphData = Stateandmarketes?.[0]?.graphData || [];
+
+  const extractYear = (marketSegment) => {
+    const match = marketSegment.match(/(\d{4})/);
+    return match ? match[1] : "";
   };
 
+  const graphData = rawGraphData.map(item => ({
+    state: (item?.state || "").trim(),
+    marketSegment: (item?.marketSegment || "").trim(),
+    year: extractYear(item?.marketSegment || ""),
+    src: item?.src || ""
+  }));
+
   return (
-    <div className="md:p-6 container mx-auto ">
-      <h1 className="text-2xl font-parkinsans text-prime font-bold mb-6 text-center sm:text-left">Filter Graphs</h1>
+    <div className="min-h-screen container mx-auto mt-10 bg-gray-100 p-6">
+      <Typography variant="h1" className="text-2xl font-bold mb-6">
+        Product Evaluation Information
+      </Typography>
 
-      <div className="flex flex-col sm:flex-row gap-6 mb-8 max-w-md sm:max-w-full mx-auto sm:mx-0">
-        <div className="flex flex-col flex-1">
-          <label htmlFor="state" className="mb-2 font-medium">State</label>
-          <select
-            id="state"
-            className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-prime transition"
-            value={selectedState}
-            onChange={e => {
-              setSelectedState(e.target.value);
-              setCurrentPage(1); // Reset page on filter change
-            }}
-          >
-            <option value="">All States</option>
-            {uniqueStates.map(state => (
-              <option key={state} value={state}>{state}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Uncomment and enable if Market Segment filter is needed */}
-        <div className="flex flex-col flex-1">
-          <label htmlFor="segment" className="mb-2 font-medium">Market Segment</label>
-          <select
-            id="segment"
-            className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-prime transition"
-            value={selectedSegment}
-            onChange={e => {
-              setSelectedSegment(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="">All Segments</option>
-            {uniqueMarketSegments.map(segment => (
-              <option key={segment} value={segment}>{segment}</option>
-            ))}
-          </select>
-        </div>
+      <div className="text-sm text-green-600 font-semibold bg-green-100 px-3 py-1 rounded-full mb-6">
+        Approved ✅ {effectiveUser?.email}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {currentGraphs.length > 0 ? (
-          currentGraphs.map((graph, idx) => (
-            <img
-              key={idx}
-              src={graph.src}
-              alt={`${graph.state} - ${graph.marketSegment}`}
-              className="w-full h-auto rounded shadow"
-            />
-          ))
-        ) : (
-          <p className="text-gray-600 col-span-full text-center">No graph available for selected filters.</p>
-        )}
-      </div>
-
-      <div className="flex justify-center gap-3 mt-6 flex-wrap">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-          <button
-            key={pageNum}
-            className={`rounded px-4 py-2 m-1 ${
-              pageNum === currentPage ? 'bg-prime text-white' : 'bg-gray-200 hover:bg-gray-300'
-            } transition`}
-            onClick={() => handlePageChange(pageNum)}
-            aria-current={pageNum === currentPage ? 'page' : undefined}
-          >
-            {pageNum}
-          </button>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {graphData.map((g, i) => (
+          <div key={i} className="border rounded-lg overflow-hidden">
+            <img src={g.src} alt={g.state} className="w-full h-48 object-cover" />
+            <div className="p-4 bg-gray-50">
+              <h4 className="font-semibold text-sm">{g.state}</h4>
+              <p className="text-xs">{g.marketSegment}</p>
+              <p className="text-xs text-blue-600">{g.year}</p>
+            </div>
+          </div>
         ))}
       </div>
     </div>

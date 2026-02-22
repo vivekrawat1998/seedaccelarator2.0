@@ -4,7 +4,7 @@ import React from 'react';
 const ProfileSection = ({ bgImage, name, breadcrumbs }) => {
     return (
         <div
-            className=" h-[70vh] relative bg-no-repeat bg-cover"
+            className=" h-[60vh] relative bg-no-repeat bg-cover"
             style={{
                 backgroundImage: `url(${bgImage})`,
                 backgroundPosition: "center 30%", 

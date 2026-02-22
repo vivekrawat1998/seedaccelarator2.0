@@ -9,6 +9,7 @@ import Marquee from "react-fast-marquee";
 import { san1Participants, San2Participants } from "../utils/Networkmembers";
 import BreederRegistrationForm from "../components/networkpage/Breederloginsection";
 import RegistrationPage from "../components/networkpage/Registerationsection";
+import Typography from "../ui/Heading";
 
 const images = [
   { src: "/partners/partner1.png", alt: "Partner 1" },
@@ -66,16 +67,19 @@ const NetworkMembersFootprintsPage = () => {
     }
   }, [location]);
   return (
-    <div className="bg-white to-slate-100 min-h-screen py-12 px-2 font-sans">
+    <div className="bg-white to-slate-100 min-h-screen overflow-hidden    px-2 font-sans">
+      <div ref={registrationFormRef}>
+        <RegistrationPage />
+      </div>
       <NetworkMembersHero />
       <DashboardStatsSection />
       <CoolStatsTables />
       <div className=" md:gap-10 md:px-10  ">
         <section className="  md:mt-10 mx-auto mb-20 bg-white rounded-3xl ">
-          <h2 className="md:text-2xl text-lg mb-10 font-bold text-green-800 mb-6 text-center font-parkinsans tracking-wide">Seed Acclerator Network 1.0 Participation</h2>
+          <Typography variant="h1" className="md:text-2xl text-lg mb-10 font-bold text-green-800 mb-6 text-center  tracking-wide">Seed Acclerator Network 1.0 Participation</Typography>
           <div className="overflow-auto max-h-[500px]  rounded-md">
             <table className="w-full table-auto border-collapse border border-gray-300">
-              <thead className="bg-prime text-white font-parkinsans  sticky top-0">
+              <thead className="bg-prime text-white font-Karla  sticky top-0">
                 <tr>
                   <th className="border border-gray-300 px-4 py-2 text-left">S.No.</th>
                   <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
@@ -84,7 +88,7 @@ const NetworkMembersFootprintsPage = () => {
               </thead>
               <tbody>
                 {san1Participants.map(({ id, name, organization }) => (
-                  <tr key={id} className={`odd:bg-green-50 font-Nunito even:bg-white`}>
+                  <tr key={id} className={`odd:bg-green-50 font-Karla even:bg-white`}>
                     <td className="border border-gray-300 px-4 py-2">{id}.</td>
                     <td className="border border-gray-300 px-4 py-2">{name}</td>
                     <td className="border border-gray-300 px-4 py-2">{organization}</td>
@@ -104,12 +108,12 @@ const NetworkMembersFootprintsPage = () => {
           </Marquee>
         </section>
         <section className=" mb-20 bg-white md:mt-10 rounded-3xl  ">
-          <h2 className="md:text-2xl text-lg font-parkinsans mb-10 font-bold text-green-800 mb-6 text-center tracking-wide">
+          <Typography variant="h1" className="md:text-2xl text-lg mb-10 font-bold text-green-800 mb-6 text-center tracking-wide">
             Seed Acclerator Network 2.0 Participation
-          </h2>
+          </Typography>
           <div className="overflow-auto max-h-[500px] border border-green-300 rounded-md">
             <table className="w-full table-auto border-collapse border border-gray-300">
-              <thead className="bg-prime  text-white font-parkinsans sticky top-0">
+              <thead className="bg-prime  text-white font-Karla sticky top-0">
                 <tr>
                   <th className="border border-gray-300 px-4 py-2 text-left">S.No.</th>
                   <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
@@ -118,7 +122,7 @@ const NetworkMembersFootprintsPage = () => {
               </thead>
               <tbody>
                 {San2Participants.map(({ id, name, organization }) => (
-                  <tr key={id} className={`odd:bg-green-50 font-Nunito even:bg-white`}>
+                  <tr key={id} className={`odd:bg-green-50 font-Karla even:bg-white`}>
                     <td className="border border-gray-300 px-4 py-2">{id}.</td>
                     <td className="border border-gray-300 px-4 py-2">{name}</td>
                     <td className="border border-gray-300 px-4 py-2">{organization}</td>
@@ -140,11 +144,9 @@ const NetworkMembersFootprintsPage = () => {
         </section>
       </div>
       <div className="w-full mb-10 grid place-items-center mt-4">
-        <Link to="/network-members#register" className="bg-prime rounded-md animate-bounce px-6 py-2 font-parkinsans cursor-pointer hover:bg-yellow-700 text-white font-semibold" >Become a Member </Link>
+        <Link to="/network-members#register" className="bg-prime rounded-md animate-bounce px-6 py-2 font-Karla cursor-pointer hover:bg-yellow-700 text-white font-semibold" >Become a Member </Link>
       </div>
-      <div ref={registrationFormRef}>
-        <RegistrationPage />
-      </div>
+
     </div>
   )
 }

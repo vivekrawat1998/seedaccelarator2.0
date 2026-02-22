@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Typography from "../../ui/Heading";
 
 const SeedScalingTerms = () => {
   useEffect(() => {
@@ -11,18 +12,18 @@ const SeedScalingTerms = () => {
     <section
       className="max-w-7xl mx-auto my-12 bg-white rounded-2xl px-3 md:px-6 py-8"
     >
-      <h2
-        className="md:text-3xl text-md font-parkinsans font-extrabold text-green-800 mb-6 text-center"
+      <Typography variant="h1"
+        className="md:text-3xl text-md  font-extrabold text-green-800 mb-6 text-center"
         data-aos="fade-up"
       >
         Seed Scaling Program: Terms & Conditions
-      </h2>
+      </Typography>
       <ul className="list-disc pl-6 space-y-4 mb-8 text-gray-900">
         <li data-aos="fade-up" data-aos-delay="50">
           <span className="font-parkinsans font-semibold">
             Open and Voluntary Membership:
           </span>
-          <ul className="list-disc font-Nunito pl-6 mt-1 space-y-2 text-gray-700">
+          <ul className="list-disc font-Karla pl-6 mt-1 space-y-2 text-gray-700">
             <li data-aos="fade-up" data-aos-delay="100">
               Membership open to individuals and organizations in seed systems (startups, FPO/FPC, private/public sector, NGOs, research institutions, etc.).
             </li>
@@ -36,7 +37,7 @@ const SeedScalingTerms = () => {
           <span className="font-semibold font-parkinsans">
             Data Sharing for Seed Facilitation:
           </span>
-          <ul className="list-disc font-Nunito pl-6 mt-1 space-y-2 text-gray-700">
+          <ul className="list-disc font-Karla pl-6 mt-1 space-y-2 text-gray-700">
             <li data-aos="fade-up" data-aos-delay="250">
               Institutions/groups sharing seed access must provide:
               <ul className="list-disc pl-6 mt-1">
@@ -58,7 +59,7 @@ const SeedScalingTerms = () => {
           <span className="font-parkinsans font-semibold">
             No Royalty Liability on Listed Products:
           </span>
-          <ul className="list-disc pl-6 mt-1 font-Nunito space-y-2 text-gray-700">
+          <ul className="list-disc pl-6 mt-1 font-Karla space-y-2 text-gray-700">
             <li data-aos="fade-up" data-aos-delay="500">
               No royalty charged by IRRI; terms by supplying institution if applicable.
             </li>
@@ -75,7 +76,7 @@ const SeedScalingTerms = () => {
           <span className="font-semibold font-parkinsans">
             IRRI Disclaimer & Liability:
           </span>
-          <ul className="list-disc pl-6 mt-1 font-Nunito text-gray-700">
+          <ul className="list-disc pl-6 mt-1 font-Karla text-gray-700">
             <li data-aos="fade-up" data-aos-delay="700">
               IRRI isn’t liable for seed quality of supplied/outsourced product.
             </li>
@@ -92,7 +93,7 @@ const SeedScalingTerms = () => {
           <span className="font-semibold font-parkinsans">
             Trade Name & Attribution Protocol:
           </span>
-          <ul className="list-disc font-Nunito pl-6 mt-1 text-gray-700">
+          <ul className="list-disc font-Karla pl-6 mt-1 text-gray-700">
             <li data-aos="fade-up" data-aos-delay="900">
               Members must credit the original source for commercialized seeds (e.g., IRRI, ICAR, SAUs).
             </li>
@@ -109,7 +110,7 @@ const SeedScalingTerms = () => {
           <span className="font-semibold font-parkinsans">
             Compliance with Seed Laws & Ethics:
           </span>
-          <ul className="list-disc pl-6 mt-1 font-Nunito text-gray-700">
+          <ul className="list-disc pl-6 mt-1 font-Karla text-gray-700">
             <li data-aos="fade-up" data-aos-delay="1100">
               Members must adhere to all national laws (Seed Act, PV&FR Act, etc.).
             </li>
@@ -126,7 +127,7 @@ const SeedScalingTerms = () => {
           <span className="font-semibold font-parkinsans">
             Collaboration over Competition:
           </span>
-          <ul className="list-disc font-Nunito pl-6 mt-1 text-gray-700">
+          <ul className="list-disc font-Karla pl-6 mt-1 text-gray-700">
             <li data-aos="fade-up" data-aos-delay="1300">
               Promote sharing of seed access rather than competition.
             </li>
@@ -137,7 +138,7 @@ const SeedScalingTerms = () => {
         </li>
       </ul>
       <div
-        className="bg-red-50 border-l-4 border-red-400 px-4 font-Nunito py-3 mb-4 text-sm text-red-800"
+        className="bg-red-50 border-l-4 border-red-400 px-4 font-Karla py-3 mb-4 text-sm text-red-800"
         data-aos="fade-up"
         data-aos-delay="1400"
       >

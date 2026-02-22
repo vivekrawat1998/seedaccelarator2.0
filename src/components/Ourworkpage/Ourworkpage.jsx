@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import Typography from '../../ui/Heading';
 
 // --- Data ---
 const workStreams = [
@@ -60,15 +61,15 @@ const StepCard = ({ stream, index }) => {
       data-aos-delay={150 * index}
     >
       {/* Text Section */}
-      <div className="bg-white mt-10 rounded-2xl md:w-1/2  transition-transform hover:scale-[1.02]">
+      <div className="bg-white mt-10 rounded-2xl md:w-1/2  transition-transform ">
         <div className="flex items-start space-x-4">
-          <h3 className="text-green-900 font-parkinsans md:text-5xl text-3xl font-extrabold ">
+          <Typography variant="h1" className=" mb-2">
             {stream.title}
-          </h3>
+          </Typography>
         </div>
-        <p className="text-gray-700 text-[18px] font-Karla mt-4 leading-relaxed">
+        <Typography variant="h3" className=" mb-2">
           {stream.description}
-        </p>
+        </Typography>
       </div>
 
       {/* Image Section */}
@@ -93,10 +94,11 @@ const OurWorkDownstairsFlow = () => {
     <div className="bg-gradient-to-b from-gray-50 to-white py-16 px-4 min-h-screen">
       {/* Intro Section */}
       <div className="container mx-auto text-center mb-16">
-        <h1 className="text-4xl md:text-6xl font-parkinsans font-extrabold text-green-900 mb-6">
+        <Typography variant='h1'>
           Our Strategic Work Streams 🌱
-        </h1>
-        <p className="text-lg md:text-xl font-Karla text-gray-700 max-w-3xl mx-auto">
+        </Typography>
+
+        <p className="text-lg md:text-xl mt-2 font-Karla text-gray-700 max-w-3xl mx-auto">
           At <strong>AccelerateSeeds</strong>, our mission is to strengthen the seed ecosystem
           through science, innovation, and collaboration.
           We work closely with researchers, farmers, and markets to create sustainable agricultural growth.
@@ -114,9 +116,12 @@ const OurWorkDownstairsFlow = () => {
 
         {/* New Content Before Map */}
         <div className="max-w-4xl mx-auto ">
-          <h2 className="text-3xl md:text-4xl font-parkinsans font-bold text-green-800 mb-6">
-            Transforming Agriculture Through Collaboration 🌾
-          </h2>
+          <Typography
+            variant="h1" className='mb-5'
+          >
+            Transforming Agriculture Through Collaboration
+          </Typography>
+
           <p className="text-gray-700 text-lg font-Karla mx-auto mb-4">
             From research to market, every step of our process is designed to empower farmers,
             improve productivity, and ensure food security through innovation and inclusivity.

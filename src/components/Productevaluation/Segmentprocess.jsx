@@ -1,6 +1,7 @@
 // SegmentationProcessSection.jsx
 
 import React from 'react';
+import Typography from '../../ui/Heading';
 
 const segmentationData = [
     {
@@ -56,22 +57,26 @@ const segmentationData = [
 ];
 
 const SegmentationProcessSection = () => (
-    <section className="w-full container mx-auto my-10 rounded-3xl  px-6 py-10">
-        <h2 className="text-4xl text-center font-extrabold mb-6 text-prime font-parkinsans tracking-tight">
+    <section className="w-full  mt-10    rounded-3xl  py-10">
+        <Typography variant="h1" className="mb-5">
             Segmentation Process
-        </h2>
+        </Typography>
+
         <div className="grid md:grid-cols-2 gap-y-8 gap-x-8">
             {segmentationData.map((segment, idx) => (
                 <div
                     key={segment.title}
                     className="bg-green-50 border-l-8 border-green-700 rounded-xl p-5 shadow flex flex-col"
                 >
-                    <div className="font-bold font-parkinsans text-green-900 text-xl mb-2">
+                    <Typography variant="h2">
                         {segment.title}
-                    </div>
+                    </Typography>
                     <ul className="list-disc ml-5">
                         {segment.items.map((item, j) => (
-                            <li key={j} className="text-gray-800 font-Nunito mb-1">{item}</li>
+                            <li key={j} className="">
+                                <Typography variant="h3" className="">
+                                    {item} </Typography>
+                            </li>
                         ))}
                     </ul>
                 </div>

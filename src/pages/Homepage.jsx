@@ -15,7 +15,7 @@ import Ourpartners from '../ui/Ourpartners'
 
 const Homepage = () => {
     return (
-        <div>
+        <div className='overflow-hidden'>
             <HeroSection />
             <AboutUsSection />
             {/* <OurWork /> */}

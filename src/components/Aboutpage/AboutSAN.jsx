@@ -4,9 +4,8 @@ import 'aos/dist/aos.css';
 import FieldImg from '/field 2.png';
 import TeamImg from '/IMG-20210201-WA0055.jpg';
 import TeamImg1 from '/DSC_0048.JPG';
-import TeamImg2 from '/DSR 2.jpg';
-import TeamImg3 from '/DSR 3.png';
 import { Link } from 'react-router-dom';
+import Typography from "../../ui/Heading"
 
 const objectives = [
   "Create a network of all seed scaling and accelerator agencies—public, private, and farmer collectives.",
@@ -24,127 +23,124 @@ const AboutSAN = () => {
   }, []);
 
   return (
-    <div className="bg-gray-50 min-h-screen text-gray-800">
-      <section
-        className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-8 px-4 py-12"
-        data-aos="fade-up"
-      >
-        <div
-          className="md:w-1/2 mb-6 md:mb-0"
-          data-aos="fade-right"
-          data-aos-delay="100"
-        >
-          <img
-            src={FieldImg}
-            alt="Rice Field"
-            className="rounded-xl shadow-lg w-full max-h-72 object-cover"
-          />
-        </div>
-        <div
-          className="md:w-1/2"
-          data-aos="fade-left"
-          data-aos-delay="200"
-        >
-          <h2 className="text-2xl md:text-3xl font-semibold font-parkinsans mb-4 text-green-700">
-            Our Journey
-          </h2>
-          <p className="font-Nunito mb-4">
-            India’s rice sector is transforming rapidly, but slow adoption of new, climate-resilient varieties limits progress for millions of farmers. Outdated seeds persist due to low awareness and poor accessibility, especially among smallholders. Bridging this gap is essential for food security, climate resilience, and rural prosperity.
-          </p>
-          <p>
-            The <span className="font-bold text-green-900">Seed Accelerator Network</span> (SAN), initiated by the Seed Systems and Product Management unit at IRRI, unites public and private seed institutions, farmer collectives, and research bodies. SAN accelerates the movement of improved rice varieties from research to farmer fields, fostering collaborations and sharing knowledge to drive sustainable sector growth.
-          </p>
+    <div className="bg-gray-50 min-h-screen overflow-hidden text-gray-800">
+
+      {/* Journey Section - Text Right, Image Left */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="order-2 lg:order-1" data-aos="fade-right" data-aos-delay="100">
+            <img
+              src={FieldImg}
+              alt="Rice Field Innovation"
+              className="w-full h-80 lg:h-96 rounded shadow-2xl object-cover"
+            />
+          </div>
+          <div className="order-1 space-y-6  lg:order-2" data-aos="fade-left" data-aos-delay="200">
+            <Typography variant="h1">
+              Our Journey
+            </Typography>
+            <Typography variant="h3">
+              India's rice sector is transforming rapidly, but slow adoption of new, climate-resilient varieties limits progress for millions of farmers.
+            </Typography>
+            <Typography variant="h3" className='mt-5'>
+              The <span className="font-bold text-green-900">Seed Accelerator Network</span> (SAN), initiated by IRRI, unites public and private seed institutions, farmer collectives, and research bodies.
+            </Typography>
+          </div>
         </div>
       </section>
 
-      <section
-        className="py-12 bg-gradient-to-b from-green-50 to-green-100"
-        data-aos="fade-up"
-        data-aos-delay="100"
-      >
-        <div className="max-w-2xl mx-auto px-4">
-          <blockquote className="border-l-4 font-Nunito border-green-700 pl-6 italic text-lg text-green-900 font-medium">
-            “By creating a collaborative seed ecosystem, we empower South Asia’s farming communities to thrive—building resilience, enhancing yields, and securing food futures.”
+      {/* Quote Section */}
+      <section className="py-20 bg-gradient-to-r from-green-50 via-emerald-50 to-green-100">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <blockquote
+            className="font-Nunito text-xl text-green-900 font-medium italic leading-relaxed border-l-8 border-green-700 pl-8 md:pl-12 py-8"
+            data-aos="zoom-in"
+          >
+            "By creating a collaborative seed ecosystem, we empower South Asia's farming communities to thrive—building resilience, enhancing yields, and securing food futures."
           </blockquote>
         </div>
       </section>
-      <section
-        className="bg-white py-12 shadow-inner"
-        data-aos="fade-up"
-        data-aos-delay="100"
-      >
-        <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row gap-8 items-center">
-          <div
-            className="md:w-1/2 order-2 md:order-1"
-            data-aos="fade-right"
-            data-aos-delay="200"
-          >
-            <h2 className="text-2xl md:text-3xl font-semibold font-parkinsans mb-4 text-green-700">
-              Core Purpose
-            </h2>
-            <p className="mb-6">
-              Despite many improved rice varieties being released annually, complex bottlenecks mean few reach farmers at scale. SAN exists to unite diverse stakeholders, foster smart partnerships, and use data-driven approaches to strengthen seed delivery, adoption, and positive impacts for farming communities.
-            </p>
-            <h3 className="text-xl md:text-2xl font-semibold mb-3 font-parkinsans text-green-800">
-              Our Objectives
-            </h3>
-            <ul className="list-disc pl-6 font-Nunito space-y-2 mb-2">
-              {objectives.map((item, idx) => (
-                <li
-                  key={idx}
-                  data-aos="fade-up"
-                  data-aos-delay={idx * 100}
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+
+      {/* Core Purpose - 2 Images Top, Text Bottom */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+
+          {/* 2 Team Images - Side by Side */}
+          <div className="grid md:grid-cols-2 place-items-center gap-6 mb-16" data-aos="fade-up">
+            <div className=" mb-16" >
+              <Typography variant="h1">
+                Core Purpose
+              </Typography>
+
+              <Typography variant="h3" className='mt-5'>
+                Despite many improved rice varieties released annually, complex bottlenecks mean few reach farmers at scale. SAN bridges this gap through smart partnerships and data-driven seed delivery.
+              </Typography>
+            </div>
+            <div className="group relative overflow-hidden rounded shadow-xl hover:shadow-2xl transition-all duration-500">
+              <img
+                src={TeamImg}
+                alt="SAN leadership team"
+                className="w-full h-80 md:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+
+            {/* <div className="group relative overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500">
+              <img
+                src={TeamImg1}
+                alt="Field research team"
+                className="w-full h-80 md:h-96 object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div> */}
           </div>
-          <div
-            className="md:w-1/2 order-1 md:order-2  grid grid-cols-2 gap-4 mb-8 md:mb-0"
-            data-aos="fade-left"
-            data-aos-delay="300"
-          >
-            <img
-              src={TeamImg}
-              alt="Team working"
-              className="rounded-xl shadow-lg w-full max-h-72 object-cover"
-            />
-            <img
-              src={TeamImg1}
-              alt="Team working"
-              className="rounded-xl shadow-lg w-full max-h-72 object-cover"
-            />
-            <img
-              src={TeamImg2}
-              alt="Team working"
-              className="rounded-xl shadow-lg w-full max-h-72 object-cover"
-            />
-            <img
-              src={TeamImg3}
-              alt="Team working"
-              className="rounded-xl shadow-lg w-full max-h-72 object-cover"
-            />
+
+          {/* Core Purpose + Objectives */}
+
+
+          <div data-aos="fade-up" data-aos-delay="300">
+            <Typography variant="h1">
+              Our Objectives
+            </Typography>
+
+            <div className="grid mt-10 md:grid-cols-2 gap-6  mx-auto">
+              {objectives.map((objective, idx) => (
+                <div
+                  key={idx}
+                  className="p-8 bg-gradient-to-br from-green-50 via-white to-emerald-50 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-400 border border-green-100 group"
+                  data-aos="fade-up"
+                  data-aos-delay={idx * 75}
+                >
+                  <div className="flex items-start  gap-4 mb-4">
+                    <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-xl font-bold text-white">{idx + 1}</span>
+                    </div>
+                  </div>
+                  <Typography variant="h3" className="font-bold text-green-900 mb-2">
+                    {objective}
+                  </Typography>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
-      <section
-        className="py-10"
-        data-aos="fade-up"
-        data-aos-delay="150"
-      >
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-xl md:text-2xl font-parkinsans font-semibold mb-3 text-green-700">
-            Join the Network
-          </h2>
-          <p className="mb-6 font-Nunito">
-            SAN welcomes voluntary participation from seed corporations, research organizations, farmer producer companies, NGOs, and private sector innovators. Together, let’s accelerate progress and turn advancements in plant breeding into real benefits for communities across South Asia.
-          </p>
-          <Link to="/contact"
-            className="inline-block bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-8 rounded-full shadow-lg transition"
-          >
-            Contact us
-          </Link>
+
+      {/* Join Network Section */}
+      <section className="py-16 bg-gradient-to-b from-emerald-50 to-green-50">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <div data-aos="fade-up">
+            <Typography variant="h1">
+              Join the Network
+            </Typography>
+            <Typography variant="h3" className='mt-5'>
+              SAN welcomes voluntary participation from seed corporations, research organizations, farmer producer companies, NGOs, and private sector innovators.
+            </Typography>
+            <Link
+              to="/contact"
+              className="inline-flex items-center mt-10 gap-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-4 px-12 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-400 transform hover:-translate-y-2 text-lg"
+            >
+              contact us
+            </Link>
+          </div>
         </div>
       </section>
 

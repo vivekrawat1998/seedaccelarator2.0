@@ -14,6 +14,8 @@ import ContactPage from './pages/Contactpage'
 import BlogDetails from './pages/Blogdetails'
 import AllBlogs from './pages/Blogpage'
 import ScrollToTop from './utils/Scrolltotop'
+import Dashboard from './pages/Dashboard'
+import ResetPassword from './pages/Resetpassword'
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
             <Route path='/contact' element={<ContactPage />} />
             <Route path="/blog/:id" element={<BlogDetails />} />
             <Route path="/blog" element={<AllBlogs />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
         </Routes>
       </div>

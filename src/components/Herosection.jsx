@@ -100,7 +100,7 @@ const HeroSection = () => {
         <button
           onClick={() => swiperRef.current?.slidePrev()}
           aria-label="Previous Slide"
-          className="pointer-events-auto absolute left-4 md:left-8 top-1/2 -translate-y-1/2
+          className="pointer-events-auto  bg-yellow-600 absolute left-4 md:left-8 top-1/2 -translate-y-1/2
       inline-flex items-center justify-center
       w-12 h-12 md:w-14 md:h-14
       rounded-full

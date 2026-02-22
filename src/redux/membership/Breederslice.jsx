@@ -1,16 +1,27 @@
+// redux/membership/Breederslice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { breederService } from './Breederservice';
 
-// Async Thunk for form submission
 export const submitBreederRequest = createAsyncThunk(
     'breeder/submit',
     async (formData, { rejectWithValue }) => {
         try {
-            const response = await breederService.createBreederRequest(formData);
+            const cleanData = {
+                ...formData, // ⭐ KEEP ALL FIELDS (email, Designation, etc)
+
+                Organization: formData.Organization || formData.organization || "",
+                phone: parseInt(formData.Mobilenumber || formData.phone),
+                Designation: formData.Designation || "",
+                email: formData.email || "",
+                Declaration: formData.Declaration ?? true,
+            };
+
+            console.log("🧹 Clean data for service:", cleanData);
+            const response = await breederService.createBreederRequest(cleanData);
             return response.data;
         } catch (error) {
-            // Capture Strapi error message or return default
-            return rejectWithValue(error.response?.data?.error?.message || 'Submission failed');
+            console.error("❌ Breeder error:", error.response?.data);
+            return rejectWithValue(error.response?.data);
         }
     }
 );
@@ -25,7 +36,6 @@ const breederSlice = createSlice({
         errorMessage: '',
     },
     reducers: {
-        // Reset state flags (useful when navigating away or starting a new form)
         resetBreederState: (state) => {
             state.isLoading = false;
             state.isSuccess = false;
@@ -47,7 +57,7 @@ const breederSlice = createSlice({
             .addCase(submitBreederRequest.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
-                state.errorMessage = action.payload;
+                state.errorMessage = action.payload?.message || 'Submission failed';
             });
     },
 });

@@ -53,7 +53,7 @@ const CoolStatsTables = () => {
               {regionData.map((row, idx) => (
                 <tr
                   key={row.region}
-                  className={`${idx % 2 === 0 ? "bg-green-50" : "bg-white"} hover:bg-emerald-50 text-start font-parkinsans transition`}
+                  className={`${idx % 2 === 0 ? "bg-green-50" : "bg-white"} hover:bg-emerald-50 text-start font-Karla transition`}
                 >
                   <td className="px-4 py-3 font-semibold text-green-900">{row.region}</td>
                   <td className="px-4 py-3 text-center text-yellow-700 font-bold">{row.p2024}</td>
@@ -90,7 +90,7 @@ const CoolStatsTables = () => {
               {orgData.map((row, idx) => (
                 <tr
                   key={row.type}
-                  className={`${idx % 2 === 0 ? "bg-yellow-50" : "bg-white"} hover:bg-yellow-100 font-parkinsans transition`}
+                  className={`${idx % 2 === 0 ? "bg-yellow-50" : "bg-white"} hover:bg-yellow-100 font-Karla transition`}
                 >
                   <td className="px-4 py-3 font-semibold text-yellow-800">{row.type}</td>
                   <td className="px-4 py-3 text-yellow-700 text-center font-bold">{row.p2024.toString().padStart(2, "0")}</td>

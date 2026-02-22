@@ -58,12 +58,12 @@ export default function ContactSection() {
                         <p className="text-[#6b726f] font-Karla text-sm mb-4">Reach out anytime — we’re here to help with your healthy food needs.</p>
                         <div className="space-y-6">
                             <div>
-                                <label className="block text-[#0d2317] font-medium text-sm mb-2">Your Name*</label>
+                                <label className="block text-[#0d2317] font-medium text-sm mb-2"> Name*</label>
                                 <input
                                     type="text"
                                     name="name"
                                     className="w-full rounded-md bg-[#e9eae4] p-3 focus:ring-[#149247] focus:ring-1 outline-none"
-                                    placeholder="Your Name*"
+                                    placeholder=" Name*"
                                     required
                                     value={form.name}
                                     onChange={handleChange}
@@ -71,12 +71,12 @@ export default function ContactSection() {
                             </div>
                             <div className="md:flex gap-4">
                                 <div className="flex-1">
-                                    <label className="block text-[#0d2317] font-medium text-sm mb-2">Your Email*</label>
+                                    <label className="block text-[#0d2317] font-medium text-sm mb-2"> Email*</label>
                                     <input
                                         type="email"
                                         name="email"
                                         className="w-full rounded-md bg-[#e9eae4] p-3 focus:ring-[#149247] focus:ring-1 outline-none"
-                                        placeholder="Your Email Address*"
+                                        placeholder=" Email Address*"
                                         required
                                         value={form.email}
                                         onChange={handleChange}
@@ -88,7 +88,7 @@ export default function ContactSection() {
                                         type="number"
                                         name="phone"
                                         className="w-full rounded-md bg-[#e9eae4] p-3 focus:ring-[#149247] focus:ring-1 outline-none"
-                                        placeholder="Your Phone Number*"
+                                        placeholder=" Phone Number*"
                                         required
                                         value={form.phone}
                                         onChange={handleChange}
@@ -104,7 +104,7 @@ export default function ContactSection() {
                                     type="text"
                                     name="category"
                                     className="w-full rounded-md bg-[#e9eae4] p-3 focus:ring-[#149247] focus:ring-1 outline-none"
-                                    placeholder="Your Category*"
+                                    placeholder=" Category*"
                                     required
                                     value={form.category}
                                     onChange={handleChange}
@@ -112,7 +112,7 @@ export default function ContactSection() {
                             </div>
 
                             <div>
-                                <label className="block text-[#0d2317] font-medium text-sm mb-2">Your message*</label>
+                                <label className="block text-[#0d2317] font-medium text-sm mb-2"> Message*</label>
                                 <textarea
                                     name="message"
                                     className="w-full rounded-md bg-[#e9eae4] p-3 h-28 min-h-[80px] focus:ring-[#149247] focus:ring-1 outline-none resize-none"

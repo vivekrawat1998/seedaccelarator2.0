@@ -43,12 +43,12 @@ export default function BlogDetails() {
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold font-parkinsans text-prime mb-6">{blog.title}</h1>
                 <div
-                    className="text-gray-700 font-Nunito  leading-relaxed"
+                    className="text-gray-700 font-Karla  leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: blog.content }}
                 ></div>
 
                 {/* Other Blogs */}
-                <h2 className="text-2xl font-bold mt-12 mb-6 font-prakinsans text-prime/80">Other Blogs</h2>
+                <h2 className="text-2xl font-bold mt-12 mb-6 font-Nunito text-prime/80">Other Blogs</h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {otherBlogs.map((b) => (
                         <div
@@ -59,7 +59,7 @@ export default function BlogDetails() {
                             <img src={b.image} alt={b.title} className="w-full h-44 object-cover" />
                             <div className="p-4">
                                 <h3 className="font-semibold text-lg font-parkinsans  text-prime mb-2">{b.title}</h3>
-                                <p className="text-gray-500 font-Nunito text-sm">{b.description.slice(0, 200)}...</p>
+                                <p className="text-gray-500 font-Karla text-sm">{b.description.slice(0, 200)}...</p>
                             </div>
                         </div>
                     ))}

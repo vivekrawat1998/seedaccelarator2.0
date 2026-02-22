@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Typography from "../../ui/Heading";
 
 const snapshotImg = "/hero1.jpg";
 
@@ -28,12 +29,11 @@ export default function VarietiesScalingSnapshot() {
         className="w-full max-w-3xl bg-white border border-green-700 rounded shadow-lg px-6 md:px-12 py-8 mb-8 md:mb-0"
         data-aos="zoom-in"
       >
-        <h2
-          className="text-2xl md:text-3xl font-extrabold font-Nunito text-green-700 mb-6 text-center"
-          data-aos="fade-up"
-        >
-          Varieties and Scaling (2020-2025)
-        </h2>
+        <Typography data-aos="fade-up" variant="h1" className='mb-5'>
+
+          Varieties and Scaling Snapshot
+        </Typography>
+
         <ul className="text-gray-800 font-Karla space-y-4 text-base md:text-lg">
           <li data-aos="fade-right" className="leading-relaxed">
             <span className="text-green-700 font-bold">●</span>{" "}
@@ -70,7 +70,7 @@ export default function VarietiesScalingSnapshot() {
         </ul>
       </div>
 
-  
+
     </div>
   );
 }

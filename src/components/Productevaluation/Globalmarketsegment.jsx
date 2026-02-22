@@ -1,4 +1,5 @@
 import React from "react";
+import Typography from "../../ui/Heading";
 
 const marketSegmentsData = [
     {
@@ -59,15 +60,15 @@ const marketSegmentsData = [
 
 export default function MarketSegmentsTable() {
     return (
-        <section className="bg-white rounded-lg shadow-lg px-4 py-8 container mx-auto my-10">
-            <h2 className="text-2xl font-bold font-parkinsans text-green-800 mb-2">
+        <section className=" mt-10 ">
+            <Typography variant="h1">
                 Global Market Segments and Description
-            </h2>
-            <p className="text-gray-700 font-Nunito mb-5">
+            </Typography>
+            <Typography variant="h2">
                 Below table describes the major rice market segments, their maturity group, and varietal features for each segment.
-            </p>
+            </Typography>
             <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 bg-white rounded text-left shadow font-parkinsans">
+                <table className="min-w-full divide-y divide-gray-200 bg-white rounded text-left shadow ">
                     <thead>
                         <tr className="bg-green-200 font-parkinsans">
                             <th className="px-4 py-2 text-md font-semibold text-green-900">S.No</th>
@@ -78,7 +79,7 @@ export default function MarketSegmentsTable() {
                     </thead>
                     <tbody>
                         {marketSegmentsData.map(row => (
-                            <tr key={row.id} className="odd:bg-green-50 even:bg-white">
+                            <tr key={row.id} className="odd:bg-green-50 font-Karla even:bg-white">
                                 <td className="px-4 py-2 font-medium text-green-700">{row.id}</td>
                                 <td className="px-4 py-2">{row.segment}</td>
                                 <td className="px-4 py-2">{row.maturity}</td>

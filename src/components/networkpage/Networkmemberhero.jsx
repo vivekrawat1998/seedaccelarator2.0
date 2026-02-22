@@ -3,6 +3,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 import mapImg from "/our work.png"; // Adjust this path as per your setup
+import Typography from "../../ui/Heading";
 
 const NetworkMembersHero = () => {
   useEffect(() => {
@@ -35,13 +36,14 @@ const NetworkMembersHero = () => {
         data-aos="fade-left"
         data-aos-delay="200"
       >
-        <h1 className="text-4xl md:text-5xl font-extrabold bg-prime font-parkinsans text-transparent bg-clip-text drop-shadow-lg mb-4 animate-fadein">
+      
+        <Typography variant="h1" className="text-4xl md:text-5xl font-extrabold bg-prime font-Karla text-transparent bg-clip-text drop-shadow-lg mb-4 animate-fadein">
           SAN <span className="text-gray-900"> Network Participants</span>
-        </h1>
-        <p className="text-lg text-gray-700 font-Nunito mb-4">
+        </Typography>
+        <p className=" text-gray-700 font-Karla mb-4">
           Spanning India’s diverse ecosystems, fostering innovation through collaboration for resilient seed systems.
         </p>
-        <ul className="mt-3 pl-5 text-gray-800 font-Nunito space-y-2 list-disc text-base">
+        <ul className="mt-3 pl-5 text-gray-800 font-Karla space-y-2 list-disc">
           <li>
             <span className="font-semibold text-green-700">Representation</span> across all regions of India
           </li>

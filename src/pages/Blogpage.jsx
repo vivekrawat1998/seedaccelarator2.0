@@ -30,7 +30,7 @@ export default function AllBlogs() {
                         <h1 className="text-xl md:text-5xl font-parkinsans font-bold text-prime mb-3">
                             Our Blog Posts
                         </h1>
-                        <p className="text-gray-600 font-Nunito max-w-2xl mx-auto">
+                        <p className="text-gray-600 font-Karla max-w-2xl mx-auto">
                             Explore our latest insights, innovations, and stories in agriculture and sustainability.
                         </p>
                     </div>
@@ -63,10 +63,10 @@ export default function AllBlogs() {
                                     <h3 className="font-bold font-parkinsans text-lg text-prime mb-3">
                                         {blog.title}
                                     </h3>
-                                    <p className="text-gray-600 font-Nunito text-sm line-clamp-3 flex-1">
+                                    <p className="text-gray-600 font-Karla text-sm line-clamp-3 flex-1">
                                         {blog.description}
                                     </p>
-                                    <button className="mt-4 font-Nunito text-[#149247] font-medium hover:underline">
+                                    <button className="mt-4 font-Karla cursor-pointer text-[#149247] font-medium hover:underline">
                                         Read More →
                                     </button>
                                 </div>
