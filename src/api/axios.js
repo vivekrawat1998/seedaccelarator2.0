@@ -1,18 +1,29 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:1337/api", // change if needed
+    baseURL: "http://localhost:1337/api",
 });
 
-/* ⭐ AUTO ATTACH TOKEN TO EVERY REQUEST */
+// ✅ FIXED: Skip auth headers for PUBLIC endpoints
 api.interceptors.request.use((config) => {
-
     const token = localStorage.getItem("token");
-
-    if (token) {
+    
+    // 🎯 PUBLIC ENDPOINTS - NO TOKEN REQUIRED
+    const publicEndpoints = [
+        '/auth/local',
+        '/auth/forgot-password', 
+        '/auth/local/register'
+    ];
+    
+    // Skip token for public endpoints
+    const isPublicEndpoint = publicEndpoints.some(endpoint => 
+        config.url.endsWith(endpoint)
+    );
+    
+    if (token && !isPublicEndpoint) {
         config.headers.Authorization = `Bearer ${token}`;
     }
-
+    
     return config;
 });
 

@@ -1,100 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthProvider";
 import api from "../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from "lucide-react";
 
-export default function LoginModal({ onClose }) {
-
+export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
   /* ================= UI STATE ================= */
-
   const [tab, setTab] = useState("signin"); 
   const [signupType, setSignupType] = useState(null);
-
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  /* ================= LOGIN FORM ================= */
+  /* ================= FORMS ================= */
+  const [loginForm, setLoginForm] = useState({ identifier: "", password: "" });
+  const [memberForm, setMemberForm] = useState({ name: "", email: "", password: "", category: "" });
+  const [forgotEmail, setForgotEmail] = useState("");
 
-  const [loginForm, setLoginForm] = useState({
-    identifier: "",
-    password: "",
+  // ✅ Track input focus/active states for floating labels
+  const [activeFields, setActiveFields] = useState({
+    identifier: false, password: false, name: false, email: false, memberPassword: false, forgotEmail: false
   });
 
   const handleLoginChange = (e) => {
-    setLoginForm(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setLoginForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
-
-  /* ================= MEMBER FORM ================= */
-
-  const [memberForm, setMemberForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    category: "",
-  });
 
   const handleMemberChange = (e) => {
-    setMemberForm(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setMemberForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  /* ======================================================
-      🔐 SIGN IN (ALL USER TYPES)
-  ====================================================== */
-
+  // ✅ FIXED #1: COMPLETE handleSignin FUNCTION
   const handleSignin = async () => {
-
+    console.log("🔐 Signin clicked - API CALL STARTING");
     setLoading(true);
     setError("");
 
     try {
-
+      console.log("📤 POST /auth/local", { identifier: loginForm.identifier, password: loginForm.password });
+      
       const res = await api.post("/auth/local", {
         identifier: loginForm.identifier,
         password: loginForm.password,
       });
 
+      console.log("✅ LOGIN SUCCESS", res.data);
+      
+      // Update auth context
       login(res.data);
-
+      
       alert("✅ Login successful");
-
-      onClose();
       navigate("/dashboard");
 
     } catch (err) {
-
-      console.error(err.response?.data || err);
-
+      console.error("❌ LOGIN ERROR:", err.response?.data || err);
       setError(
-        err?.response?.data?.error?.message ||
+        err?.response?.data?.error?.message || 
+        err.response?.statusText ||
         "Invalid email or password"
       );
-
     } finally {
       setLoading(false);
     }
   };
 
-  /* ======================================================
-      🧑 MEMBER SIGNUP (FULL FLOW)
-  ====================================================== */
-
+  // ✅ FIXED #2: COMPLETE handleMemberSignup FUNCTION
   const handleMemberSignup = async () => {
-
+    console.log("👥 Member signup clicked - API CALL STARTING");
     setLoading(true);
     setError("");
 
     try {
-
       /* ===== STEP 1: REGISTER USER ===== */
+      console.log("📤 POST /auth/local/register");
       const registerRes = await api.post("/auth/local/register", {
         username: memberForm.name,
         email: memberForm.email,
@@ -102,263 +83,326 @@ export default function LoginModal({ onClose }) {
       });
 
       const authData = registerRes.data;
-
       login(authData);
-
       const token = authData.jwt;
+      console.log("✅ REGISTER SUCCESS", authData);
 
       /* ===== STEP 2: GET CURRENT USER ===== */
+      console.log("📤 GET /users/me");
       const meRes = await api.get("/users/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       const currentUser = meRes.data;
+      console.log("✅ USER FETCHED", currentUser);
 
-      /* ===== STEP 3: UPDATE USER ROLE (optional) ===== */
+      /* ===== STEP 3: UPDATE USER TYPE ===== */
       try {
-        await api.put(
-          "/users/me",
-          { userType: "member" },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        console.log("📤 PUT /users/me - userType: member");
+        await api.put("/users/me", { userType: "member" }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        console.log("✅ UserType updated");
       } catch (e) {
-        console.warn("UserType update skipped");
+        console.warn("⚠️ UserType update skipped:", e.message);
       }
 
       /* ===== STEP 4: CREATE MEMBER PROFILE ===== */
-      await api.post(
-        "/members",
-        {
-          data: {
-            name: memberForm.name,
-            email: memberForm.email,
-            Organization: memberForm.category,
-            users_permissions_user: {
-              connect: [currentUser.id],
-            },
-          },
+      console.log("📤 POST /members");
+      await api.post("/members", {
+        data: {
+          name: memberForm.name,
+          email: memberForm.email,
+          Organization: memberForm.category,
+          users_permissions_user: { connect: [currentUser.id] },
         },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
+      console.log("🎉 ALL STEPS COMPLETE");
       alert("🎉 Member account created successfully!");
-
-      onClose();
       navigate("/dashboard");
 
     } catch (err) {
-
-      console.error("❌ MEMBER CREATE ERROR:", err.response?.data || err);
-
+      console.error("❌ MEMBER SIGNUP ERROR:", err.response?.data || err);
       setError(
         err?.response?.data?.error?.message ||
+        err.response?.statusText ||
         "Signup failed"
       );
-
     } finally {
       setLoading(false);
     }
   };
 
-  /* ======================================================
-      🔑 FORGOT PASSWORD
-  ====================================================== */
-
-  const [forgotEmail, setForgotEmail] = useState("");
-
+  // ✅ FIXED #3: COMPLETE handleForgotPassword FUNCTION
   const handleForgotPassword = async () => {
-
+    console.log("🔑 Forgot password clicked");
     setLoading(true);
     setError("");
 
     try {
-
+      console.log("📤 POST /auth/forgot-password");
       await api.post("/auth/forgot-password", {
         email: forgotEmail,
       });
-
+      
       alert("📧 Password reset email sent!");
-
       setTab("signin");
+      setForgotEmail("");
 
     } catch (err) {
-
-      console.error(err.response?.data || err);
-
+      console.error("❌ FORGOT PASSWORD ERROR:", err.response?.data || err);
       setError("Failed to send reset email");
-
     } finally {
       setLoading(false);
     }
   };
 
-  /* ======================================================
-      🚀 REDIRECT ACCELERATOR / BREEDER
-  ====================================================== */
-
   const goToNetworkPage = () => {
-    onClose();
+    console.log("🚀 Redirecting to network page");
     navigate("/network-members#register");
   };
 
-  /* ======================================================
-      UI
-  ====================================================== */
+  // Floating label handlers
+  const handleFocus = (field) => setActiveFields(prev => ({ ...prev, [field]: true }));
+  const handleBlur = (field, value) => {
+    if (!value) setActiveFields(prev => ({ ...prev, [field]: false }));
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
-      <div className="bg-white rounded-xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4 py-12">
+      <div className="w-full max-w-md">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 space-y-8 hover:shadow-3xl transition-all duration-500">
+          
+          {/* Header */}
+          <div className="text-center space-y-4">
+            <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg ring-4 ring-white/50">
+              <div className="text-3xl drop-shadow-lg">
+                {tab === "signin" ? "🔐" : tab === "forgot" ? "🔑" : signupType ? "👥" : "🌱"}
+              </div>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent font-Nunito">
+                {tab === "signin" ? "Welcome Back" : 
+                 tab === "forgot" ? "Reset Password" : 
+                 signupType ? "Member Account" : "Join SAN Network"}
+              </h1>
+              <p className="text-gray-500 text-sm mt-1">Quick sign in or join our network</p>
+            </div>
+          </div>
 
-        {/* ===== TABS ===== */}
-        <div className="flex mb-6 border-b">
+          {/* Tab Switcher */}
+          <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl p-1 shadow-inner">
+            <div className="flex">
+              <button 
+                onClick={() => {setTab("signin"); setSignupType(null); setError("");}}
+                className={`flex-1 py-4 px-6 rounded-xl font-bold text-sm transition-all duration-300 relative group ${
+                  tab === "signin"
+                    ? "bg-white shadow-lg shadow-green-100 text-green-700 -translate-y-0.5"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50 hover:shadow-md"
+                }`}
+              >
+                Sign In
+              </button>
+              <button 
+                onClick={() => {setTab("signup"); setSignupType(null); setError("");}}
+                className={`flex-1 py-4 px-6 rounded-xl font-bold text-sm transition-all duration-300 relative group ${
+                  tab === "signup"
+                    ? "bg-white shadow-lg shadow-green-100 text-green-700 -translate-y-0.5"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50 hover:shadow-md"
+                }`}
+              >
+                Sign Up
+              </button>
+            </div>
+          </div>
 
-          <button
-            onClick={() => {
-              setTab("signin");
-              setSignupType(null);
-            }}
-            className={`flex-1 py-2 font-semibold ${tab === "signin" ? "border-b-2 border-green-700 text-green-700" : ""}`}
-          >
-            Sign In
-          </button>
+          {/* Error */}
+          {error && (
+            <div className="bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-200/50 text-red-800 backdrop-blur-sm px-5 py-4 rounded-2xl shadow-lg">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 bg-red-500/20 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-bold">!</span>
+                </div>
+                <span className="text-sm font-medium">{error}</span>
+              </div>
+            </div>
+          )}
 
-          <button
-            onClick={() => setTab("signup")}
-            className={`flex-1 py-2 font-semibold ${tab === "signup" ? "border-b-2 border-green-700 text-green-700" : ""}`}
-          >
-            Sign Up
-          </button>
+          {/* ================= SIGN IN FORM ================= */}
+          {tab === "signin" && (
+            <div className="space-y-5">
+              {/* Email Input */}
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+                <input
+                  name="identifier"
+                  placeholder="Email"
+                  value={loginForm.identifier}
+                  onChange={handleLoginChange}
+                  onFocus={() => handleFocus('identifier')}
+                  onBlur={() => handleBlur('identifier', loginForm.identifier)}
+                  className="w-full pl-12 pr-5 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 shadow-sm peer z-0"
+                />
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
+                  activeFields.identifier || loginForm.identifier
+                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                    : 'top-1/2 -translate-y-1/2 text-gray-500'
+                }`}>
+                  Email Address
+                </label>
+              </div>
 
+              {/* Password Input */}
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  value={loginForm.password}
+                  onChange={handleLoginChange}
+                  onFocus={() => handleFocus('password')}
+                  onBlur={() => handleBlur('password', loginForm.password)}
+                  className="w-full pl-12 pr-12 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 shadow-sm peer z-0"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-500 p-1 transition-all duration-200 z-10"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
+                  activeFields.password || loginForm.password
+                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                    : 'top-1/2 -translate-y-1/2 text-gray-500'
+                }`}>
+                  Password
+                </label>
+              </div>
+
+              {/* ✅ FIXED #4: Working Sign In Button */}
+              <button
+                onClick={handleSignin}
+                disabled={loading || !loginForm.identifier || !loginForm.password}
+                className="group relative w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold py-5 px-6 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-lg transition-all duration-300 overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-5 h-5" />
+                      Sign In
+                    </>
+                  )}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setTab("forgot")}
+                className="w-full text-sm bg-gradient-to-r from-blue-500/10 to-indigo-500/10 text-blue-700 hover:text-blue-800 border border-blue-200/50 py-3 px-4 rounded-xl backdrop-blur-sm hover:shadow-md transition-all duration-200 font-medium"
+              >
+                🔑 Forgot Password?
+              </button>
+            </div>
+          )}
+
+          {/* Forgot Password Form */}
+          {tab === "forgot" && (
+            <div className="space-y-5">
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+                <input
+                  placeholder="Email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  onFocus={() => handleFocus('forgotEmail')}
+                  onBlur={() => handleBlur('forgotEmail', forgotEmail)}
+                  className="w-full pl-12 pr-5 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 shadow-sm peer z-0"
+                />
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
+                  activeFields.forgotEmail || forgotEmail
+                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                    : 'top-1/2 -translate-y-1/2 text-gray-500'
+                }`}>
+                  Enter your email
+                </label>
+              </div>
+
+              <button
+                onClick={handleForgotPassword}
+                disabled={loading || !forgotEmail}
+                className="group relative w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold py-5 px-6 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-lg transition-all duration-300 overflow-hidden"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    "Send Reset Link"
+                  )}
+                </span>
+              </button>
+            </div>
+          )}
+
+          {/* Sign Up Options */}
+          {tab === "signup" && !signupType && (
+            <div className="space-y-4">
+              <div className="text-center text-sm text-gray-600 mb-6 py-4 border-b border-gray-100">
+                Choose your account type
+              </div>
+              <button
+                onClick={() => setSignupType("member")}
+                className="group relative w-full bg-gradient-to-br from-emerald-500 to-green-600 text-white py-6 px-6 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
+              >
+                <div className="flex flex-col items-center gap-2 p-4">
+                  <div className="w-16 h-16 bg-white/30 rounded-2xl flex items-center justify-center text-2xl">👥</div>
+                  <div className="font-bold text-lg">Member Account</div>
+                  <div className="text-sm opacity-90">Join as regular network member</div>
+                </div>
+              </button>
+              <button
+                onClick={goToNetworkPage}
+                className="group relative w-full bg-gradient-to-br from-yellow-500 to-orange-500 text-white py-6 px-6 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
+              >
+                <div className="flex flex-col items-center gap-2 p-4">
+                  <div className="w-16 h-16 bg-white/30 rounded-2xl flex items-center justify-center text-2xl">🚀🌱</div>
+                  <div className="font-bold text-lg">Accelerator / Breeder</div>
+                  <div className="text-sm opacity-90">Specialized startup accounts</div>
+                </div>
+              </button>
+            </div>
+          )}
+
+          {/* Back button */}
+          {(tab === "forgot" || (tab === "signup" && signupType)) && (
+            <button
+              onClick={() => {
+                setTab("signin");
+                setSignupType(null);
+                setError("");
+                setActiveFields({ identifier: false, password: false, name: false, email: false, memberPassword: false, forgotEmail: false });
+              }}
+              className="flex items-center justify-center gap-2 w-full text-sm text-gray-600 hover:text-gray-900 py-3 px-4 border-t border-gray-100/50 mt-6 backdrop-blur-sm hover:bg-gray-50/50 rounded-b-xl transition-all duration-200 font-medium"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Sign In
+            </button>
+          )}
         </div>
 
-        {/* ERROR */}
-        {error && (
-          <p className="text-red-600 text-sm mb-4 bg-red-50 p-3 rounded-lg border">
-            {error}
-          </p>
-        )}
-
-        {/* ================= SIGNIN ================= */}
-        {tab === "signin" && (
-          <div className="space-y-4">
-
-            <input
-              name="identifier"
-              placeholder="Email"
-              value={loginForm.identifier}
-              onChange={handleLoginChange}
-              className="w-full border p-3 rounded-lg"
-            />
-
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={loginForm.password}
-              onChange={handleLoginChange}
-              className="w-full border p-3 rounded-lg"
-            />
-
-            <button
-              onClick={handleSignin}
-              disabled={loading}
-              className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold"
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-
-            <button
-              onClick={() => setTab("forgot")}
-              className="text-sm text-blue-600 underline"
-            >
-              Forgot Password?
-            </button>
-
-          </div>
-        )}
-
-        {/* ================= FORGOT ================= */}
-        {tab === "forgot" && (
-          <div className="space-y-4">
-
-            <input
-              placeholder="Enter your email"
-              value={forgotEmail}
-              onChange={(e) => setForgotEmail(e.target.value)}
-              className="w-full border p-3 rounded-lg"
-            />
-
-            <button
-              onClick={handleForgotPassword}
-              className="w-full bg-green-700 text-white py-3 rounded-lg"
-            >
-              Send Reset Link
-            </button>
-
-          </div>
-        )}
-
-        {/* ================= SIGNUP OPTIONS ================= */}
-        {tab === "signup" && !signupType && (
-          <div className="space-y-4">
-
-            <button
-              onClick={() => setSignupType("member")}
-              className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold"
-            >
-              🧑 Sign up as Member
-            </button>
-
-            <button
-              onClick={goToNetworkPage}
-              className="w-full bg-yellow-500 text-white py-3 rounded-lg font-semibold"
-            >
-              🚀 Accelerator / 🌱 Breeder
-            </button>
-
-          </div>
-        )}
-
-        {/* ================= MEMBER FORM ================= */}
-        {signupType === "member" && (
-          <div className="space-y-4">
-
-            <input name="name" placeholder="Full Name" onChange={handleMemberChange} className="w-full border p-3 rounded-lg" />
-
-            <input name="email" placeholder="Email" onChange={handleMemberChange} className="w-full border p-3 rounded-lg" />
-
-            <input type="password" name="password" placeholder="Password" onChange={handleMemberChange} className="w-full border p-3 rounded-lg" />
-
-            <select name="category" onChange={handleMemberChange} className="w-full border p-3 rounded-lg">
-              <option value="">Select Category</option>
-              <option>Farmer</option>
-              <option>Student</option>
-              <option>Private Company</option>
-              <option>Government Organization</option>
-              <option>FPO/FPC/NGO</option>
-              <option>Others</option>
-            </select>
-
-            <button
-              onClick={handleMemberSignup}
-              disabled={loading}
-              className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold"
-            >
-              {loading ? "Creating..." : "Create Member Account"}
-            </button>
-
-          </div>
-        )}
-
-        <button
-          onClick={onClose}
-          className="w-full mt-6 border border-gray-300 py-2 rounded-lg"
-        >
-          Close
-        </button>
-
+        <div className="text-center mt-8 text-xs text-gray-500 space-y-1">
+          <p>Need help? <Link to="/contact" className="text-green-600 hover:underline font-medium">Contact support</Link></p>
+        </div>
       </div>
     </div>
   );

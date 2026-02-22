@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import ProfileSection from "../components/Profilesection";
+import api from "../api/axios";
 import profileBg from '/hero/Contact us.jpg';
 
 const categories = [
@@ -24,33 +25,36 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
 
-  // Real-time validation
-  const validateField = (name, value) => {
-    const newErrors = { ...errors };
+  // ✅ FIXED: Real-time validation with useCallback
+  const validateField = useCallback((name, value) => {
+    let error = '';
 
     switch (name) {
       case 'name':
-        newErrors.name = value.trim() ? '' : 'Name is required';
+        error = value.trim() ? '' : 'Name is required';
         break;
       case 'email':
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        newErrors.email = emailRegex.test(value) ? '' : 'Please enter a valid email';
+        error = emailRegex.test(value) ? '' : 'Please enter a valid email';
         break;
       case 'phone':
-        newErrors.phone = /^\d{10,15}$/.test(value) ? '' : 'Phone must be 10-15 digits';
+        error = /^\d{10,15}$/.test(value) ? '' : 'Phone must be 10-15 digits';
         break;
       case 'category':
-        newErrors.category = value ? '' : 'Please select a category';
+        error = value ? '' : 'Please select a category';
         break;
       case 'message':
-        newErrors.message = value.trim().length >= 10 ? '' : 'Message must be at least 10 characters';
+        error = value.trim().length >= 10 ? '' : 'Message must be at least 10 characters';
         break;
       default:
         break;
     }
 
-    setErrors(newErrors);
-  };
+    setErrors(prev => ({
+      ...prev,
+      [name]: error
+    }));
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,11 +64,10 @@ export default function ContactPage() {
       [name]: value
     }));
 
-    // Real-time validation
+    // ✅ Validate immediately
     validateField(name, value);
   };
 
-  // Allow only digits for phone input
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, '').slice(0, 15);
     handleInputChange({
@@ -75,7 +78,7 @@ export default function ContactPage() {
     });
   };
 
-  // Form validation
+  // ✅ FIXED: Simpler form validation
   const validateForm = () => {
     const newErrors = {};
 
@@ -92,43 +95,50 @@ export default function ContactPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      setSubmitStatus('Please fix the errors above');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitStatus('');
-
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      alert("Thanks for contacting us! We'll get back to you soon.");
-
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        category: '',
-        message: ''
+      // NO AXIOS - Direct fetch
+      const response = await fetch('http://localhost:1337/api/contact-us', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            category: formData.category,
+            message: formData.message
+          }
+        })
       });
-      setErrors({});
-      setSubmitStatus('Message sent successfully! 🎉');
+
+      console.log('STATUS:', response.status);
+      console.log('HEADERS:', response.headers.get('allow'));
+
+      const text = await response.text();
+      console.log('RAW RESPONSE:', text);
+
+      if (response.ok) {
+        setSubmitStatus('✅ SUCCESS!');
+      } else {
+        setSubmitStatus(`❌ ${response.status}: ${text}`);
+      }
     } catch (error) {
-      setSubmitStatus('Something went wrong. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+      setSubmitStatus('Network error');
     }
   };
 
-  const isFormValid = Object.keys(errors).length === 0 &&
-    formData.name && formData.email && formData.phone &&
-    formData.category && formData.message.length >= 10;
+
+
+  // ✅ FIXED: Better isFormValid logic
+  const isFormValid = Object.values(errors).every(error => !error) &&
+    formData.name.trim() &&
+    formData.email &&
+    formData.phone &&
+    formData.category &&
+    formData.message.trim().length >= 10;
 
   return (
     <>
@@ -167,13 +177,12 @@ export default function ContactPage() {
                   onChange={handleInputChange}
                   className={`w-full px-4 py-3 rounded-xl text-green-800 border-2 shadow-sm focus:outline-none focus:ring-4 focus:ring-green-200/50 transition-all duration-300 ${errors.name
                     ? 'border-red-300 bg-red-50'
-                    : formData.name
+                    : formData.name.trim()
                       ? 'border-green-300 bg-green-50'
                       : 'border-green-200 hover:border-green-300'
                     }`}
                   type="text"
                   placeholder="Enter your full name"
-                  required
                 />
                 {errors.name && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
@@ -197,7 +206,6 @@ export default function ContactPage() {
                     }`}
                   type="email"
                   placeholder="your.email@example.com"
-                  required
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
@@ -223,7 +231,6 @@ export default function ContactPage() {
                     }`}
                   type="tel"
                   placeholder="10-15 digits only"
-                  required
                 />
                 {errors.phone && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
@@ -245,7 +252,6 @@ export default function ContactPage() {
                       ? 'border-green-300 bg-green-50'
                       : 'border-green-200 hover:border-green-300'
                     }`}
-                  required
                 >
                   <option value="">Select Category *</option>
                   {categories.map((cat) => (
@@ -270,12 +276,11 @@ export default function ContactPage() {
                 rows={5}
                 className={`w-full px-4 py-3 rounded-xl text-green-800 border-2 shadow-sm focus:outline-none focus:ring-4 focus:ring-green-200/50 resize-vertical transition-all duration-300 ${errors.message
                   ? 'border-red-300 bg-red-50'
-                  : formData.message
+                  : formData.message.trim().length >= 10
                     ? 'border-green-300 bg-green-50'
                     : 'border-green-200 hover:border-green-300'
                   }`}
                 placeholder="Tell us how we can help you (min 10 characters)..."
-                required
               />
               {errors.message && (
                 <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
@@ -285,6 +290,7 @@ export default function ContactPage() {
               )}
             </div>
 
+            {/* ✅ FIXED: Button now clickable */}
             <button
               className={`w-full py-4 px-8 rounded-xl font-bold text-lg shadow-xl transform transition-all duration-300 flex items-center justify-center gap-3 ${isSubmitting || !isFormValid
                 ? 'bg-green-400 cursor-not-allowed opacity-70 shadow-green-300'
@@ -307,9 +313,8 @@ export default function ContactPage() {
           </form>
         </div>
 
-        {/* Info Section + Map */}
+        {/* Info Section + Map - UNCHANGED */}
         <div className="w-full max-w-7xl mt-16 grid grid-cols-1 xl:grid-cols-2 gap-10 mb-20">
-          {/* Info Card */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-green-100/50 shadow-2xl px-10 py-12 flex flex-col gap-8 justify-center hover:shadow-3xl transition-all duration-300">
             <h3 className="text-2xl font-bold text-green-800 font-parkinsans text-center mb-6">Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -347,7 +352,7 @@ export default function ContactPage() {
                 <FaEnvelope className="text-green-600 text-4xl mb-4" />
                 <div className="font-bold text-xl text-green-800 font-parkinsans mb-4">Email Us</div>
                 <div className="text-gray-800 text-lg font-semibold bg-green-50 px-4 py-2 rounded-xl border-2 border-green-100 hover:bg-green-100 transition-all duration-200 cursor-pointer">
-                  info@irri.org
+                  <a href="mailto:info@irri.org" className="hover:underline">info@irri.org</a>
                 </div>
               </div>
             </div>

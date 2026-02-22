@@ -1,10 +1,8 @@
-// src/pages/Dashboard.jsx
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
-/* ================= SMALL FIELD UI ================= */
 const Field = ({ label, value }) => (
     <div>
         <p className="text-sm text-gray-500">{label}</p>
@@ -17,15 +15,22 @@ const Field = ({ label, value }) => (
 const DownloadItem = ({ download }) => (
     <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-white transition-all">
         <div className="flex-1 min-w-0">
-            <p className="font-semibold text-gray-900 truncate">{download.title || download.fileName || "Download"}</p>
-            <p className="text-sm text-gray-500 truncate">{download.filePath || download.url}</p>
+            <p className="font-semibold text-gray-900 truncate">
+                {download.attributes?.fileTitle || download.fileTitle || download.attributes?.fileName || "Download"}
+            </p>
+            <p className="text-sm text-gray-500 truncate">
+                {download.attributes?.filePath || download.filePath || download.attributes?.downloadUrl || "N/A"}
+            </p>
         </div>
         <div className="text-right ml-4">
             <p className="text-sm font-medium text-gray-900">
-                {new Date(download.createdAt || download.downloadDate).toLocaleDateString()}
+                {new Date(download.attributes?.createdAt || download.createdAt).toLocaleDateString()}
             </p>
             <p className="text-xs text-gray-500">
-                {new Date(download.createdAt || download.downloadDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {new Date(download.attributes?.createdAt || download.createdAt).toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                })}
             </p>
         </div>
     </div>
@@ -35,10 +40,9 @@ const Dashboard = () => {
     const { user, logout, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
-    // ✅ PROTECTED ROUTE - Redirect unauthenticated users to /home
     useEffect(() => {
         if (!isAuthenticated || !user) {
-            navigate("/home", { replace: true });
+            navigate("/login", { replace: true });
             return;
         }
     }, [isAuthenticated, user, navigate]);
@@ -48,10 +52,9 @@ const Dashboard = () => {
     const [acceleratorData, setAcceleratorData] = useState([]);
     const [memberData, setMemberData] = useState([]);
     const [orders, setOrders] = useState([]);
-    const [downloads, setDownloads] = useState([]); // ✅ NEW: Download history
+    const [downloads, setDownloads] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    /* ================= FETCH DATA ================= */
     useEffect(() => {
         const fetchData = async () => {
             if (!user) return;
@@ -59,12 +62,11 @@ const Dashboard = () => {
             try {
                 setLoading(true);
 
-                /* ===== USER PROFILE ===== */
                 const profileRes = await api.get("/users/me?populate=*");
                 const profileData = profileRes.data;
                 setProfile(profileData);
 
-                /* ================= BREEDER FETCH ================= */
+                // Breeder fetch (unchanged)
                 let breeders = [];
                 try {
                     if (profileData.email) {
@@ -85,7 +87,7 @@ const Dashboard = () => {
                 }
                 setBreederData(breeders);
 
-                /* ================= ACCELERATOR FETCH ================= */
+                // Accelerator fetch (unchanged)
                 let accelerators = [];
                 try {
                     if (profileData.email) {
@@ -106,7 +108,7 @@ const Dashboard = () => {
                 }
                 setAcceleratorData(accelerators);
 
-                /* ================= MEMBER FETCH ================= */
+                // Member fetch (unchanged)
                 let members = [];
                 try {
                     if (profileData.email) {
@@ -127,21 +129,22 @@ const Dashboard = () => {
                 }
                 setMemberData(members);
 
-                /* ================= ORDERS ================= */
+                // Orders fetch (unchanged)
                 const ordersRes = await api
                     .get(`/orders?filters[user][id][$eq]=${profileData.id}`)
                     .catch(() => ({ data: { data: [] } }));
                 setOrders(ordersRes.data.data || []);
 
-                /* ================= DOWNLOAD HISTORY ================= */
-                // Try common download log endpoints
-                const downloadRes = await api
-                    .get(`/download-logs?filters[user][id][$eq]=${profileData.id}&populate=*&sort=createdAt:desc`)
-                    .catch(() =>
-                        api.get(`/downloads?filters[user][id][$eq]=${profileData.id}&populate=*&sort=createdAt:desc`)
-                            .catch(() => ({ data: { data: [] } }))
+                // ✅ FIXED DOWNLOAD HISTORY FETCH
+                try {
+                    const downloadRes = await api.get(
+                        `/download-logs?filters[users_permissions_user][id][$eq]=${profileData.id}&populate=*&sort=createdAt:desc`
                     );
-                setDownloads(downloadRes.data.data || []);
+                    setDownloads(downloadRes.data.data || []);
+                } catch (error) {
+                    console.error("Download history fetch failed:", error);
+                    setDownloads([]);
+                }
 
             } catch (err) {
                 console.error("Dashboard fetch error:", err);
@@ -153,7 +156,6 @@ const Dashboard = () => {
         fetchData();
     }, [user]);
 
-    /* ================= CATEGORY DETECTION ================= */
     const category = (() => {
         if (profile?.userType) return profile.userType;
         if (acceleratorData.length > 0) return "accelerator";
@@ -162,7 +164,6 @@ const Dashboard = () => {
         return "normal";
     })();
 
-    /* ================= LOADING ================= */
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -176,18 +177,15 @@ const Dashboard = () => {
             logout();
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            navigate("/home", { replace: true });
+            navigate("/login", { replace: true });
         } catch (err) {
             console.error("Logout error:", err);
         }
     };
 
-    /* ================= UI ================= */
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-8">
             <div className="max-w-6xl mx-auto space-y-8">
-
-                {/* HEADER */}
                 <div className="bg-white p-6 rounded-2xl shadow flex justify-between">
                     <h1 className="text-2xl font-bold">
                         Welcome {profile?.username}
@@ -200,7 +198,6 @@ const Dashboard = () => {
                     </button>
                 </div>
 
-                {/* PROFILE */}
                 <div className="bg-white p-6 rounded-2xl shadow">
                     <h2 className="text-xl font-bold mb-4">👤 Profile</h2>
                     <p><strong>Name:</strong> {profile?.username}</p>
@@ -208,7 +205,6 @@ const Dashboard = () => {
                     <p><strong>Category:</strong> {category}</p>
                 </div>
 
-                {/* 🌱 BREEDER MEMBERSHIP */}
                 {breederData.length > 0 && (
                     <div className="bg-white p-6 rounded-2xl shadow">
                         <h2 className="text-xl font-bold mb-6">🌱 Breeder Membership</h2>
@@ -223,8 +219,9 @@ const Dashboard = () => {
                                     <Field label="Designation" value={item.Designation} />
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
-                                        <div className={`p-3 rounded-lg font-bold text-white ${item.Approval === true ? "bg-green-500" : "bg-yellow-500"
-                                            }`}>
+                                        <div className={`p-3 rounded-lg font-bold text-white ${
+                                            item.Approval === true ? "bg-green-500" : "bg-yellow-500"
+                                        }`}>
                                             {status}
                                         </div>
                                     </div>
@@ -234,7 +231,6 @@ const Dashboard = () => {
                     </div>
                 )}
 
-                {/* 👥 MEMBER MEMBERSHIP */}
                 {memberData.length > 0 && (
                     <div className="bg-white p-6 rounded-2xl shadow">
                         <h2 className="text-xl font-bold mb-6">👥 Member Membership</h2>
@@ -248,9 +244,10 @@ const Dashboard = () => {
                                     <Field label="Approval Status" value={status} />
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
-                                        <div className={`p-3 rounded-lg font-bold text-white ${item.Approval === true || item.attributes?.Approval === true
-                                            ? "bg-green-500" : "bg-yellow-500"
-                                            }`}>
+                                        <div className={`p-3 rounded-lg font-bold text-white ${
+                                            item.Approval === true || item.attributes?.Approval === true
+                                                ? "bg-green-500" : "bg-yellow-500"
+                                        }`}>
                                             {status}
                                         </div>
                                     </div>
@@ -260,7 +257,6 @@ const Dashboard = () => {
                     </div>
                 )}
 
-                {/* 🚀 ACCELERATOR MEMBERSHIP */}
                 {acceleratorData.length > 0 && (
                     <div className="bg-white p-6 rounded-2xl shadow">
                         <h2 className="text-xl font-bold mb-6">🚀 Accelerator Membership</h2>
@@ -279,8 +275,9 @@ const Dashboard = () => {
                                     <Field label="Purpose" value={item.PurposeofParticipation} />
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
-                                        <div className={`p-3 rounded-lg font-bold text-white ${item.Approval === true ? "bg-green-500" : "bg-yellow-500"
-                                            }`}>
+                                        <div className={`p-3 rounded-lg font-bold text-white ${
+                                            item.Approval === true ? "bg-green-500" : "bg-yellow-500"
+                                        }`}>
                                             {status}
                                         </div>
                                     </div>
@@ -290,10 +287,8 @@ const Dashboard = () => {
                     </div>
                 )}
 
-                {/* 📥 DOWNLOAD HISTORY - NEW SECTION */}
                 <div className="bg-white p-6 rounded-2xl shadow">
                     <h2 className="text-xl font-bold mb-6">📥 Download History ({downloads.length})</h2>
-
                     {downloads.length === 0 ? (
                         <div className="text-center py-12 text-gray-500">
                             <div className="text-4xl mb-4">📥</div>
@@ -308,8 +303,7 @@ const Dashboard = () => {
                     )}
                 </div>
 
-                {/* 📦 ORDERS */}
-                <div className="bg-white p-6 rounded-2xl shadow">
+                {/* <div className="bg-white p-6 rounded-2xl shadow">
                     <h2 className="text-xl font-bold mb-4">📦 Orders ({orders.length})</h2>
                     {orders.length === 0 ? (
                         <p>No orders yet</p>
@@ -320,8 +314,7 @@ const Dashboard = () => {
                             </div>
                         ))
                     )}
-                </div>
-
+                </div> */}
             </div>
         </div>
     );
