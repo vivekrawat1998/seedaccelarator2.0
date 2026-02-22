@@ -51,7 +51,6 @@ export default function RegistrationPage() {
     const [showseedsterms, setSeedsterms] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [resetEmailSent, setResetEmailSent] = useState(false);
 
     const [formData, setFormData] = useState({
         username: "",
@@ -78,6 +77,7 @@ export default function RegistrationPage() {
         setError("");
     };
 
+    // ✅ Numbers only for mobile
     const handleMobileChange = (e) => {
         const numericValue = e.target.value.replace(/\D/g, '');
         setFormData(prev => ({
@@ -93,37 +93,6 @@ export default function RegistrationPage() {
             [e.target.name]: e.target.value,
         }));
         setError("");
-    };
-
-    // ✅ NEW: Forgot Password Handler
-    const handleForgotPassword = async () => {
-        if (!formData.email) {
-            setError("Please enter your email first");
-            return;
-        }
-
-        setLoading(true);
-        setError("");
-
-        try {
-            console.log("📧 Sending reset email to:", formData.email);
-            
-            // ✅ PUBLIC API ENDPOINT (not admin)
-            const response = await api.post('/api/auth/forgot-password', {
-                email: formData.email
-            });
-
-            if (response.status === 200) {
-                setResetEmailSent(true);
-                setError("✅ Reset email sent! Check your inbox (and spam folder).");
-            }
-        } catch (err) {
-            console.error("Reset email error:", err.response?.data || err);
-            const errorMsg = err?.response?.data?.message || "Failed to send reset email";
-            setError(errorMsg);
-        } finally {
-            setLoading(false);
-        }
     };
 
     // ✅ FIXED: Exact Strapi Schema Match
@@ -191,11 +160,11 @@ export default function RegistrationPage() {
                 const acceleratorData = {
                     name: formData.name,
                     Designation: formData.Designation || "",
-                    Mobilenumber: parseInt(formData.Mobilenumber),           
+                    Mobilenumber: parseInt(formData.Mobilenumber),           // ✅ INTEGER
                     email: formData.email,
                     NameofOrganization: formData.NameofOrganization,
                     TypeofOrganization: formData.TypeofOrganization,
-                    RegistrationNumber: parseInt(formData.RegistrationNumber) || null,  
+                    RegistrationNumber: parseInt(formData.RegistrationNumber) || null,  // ✅ INTEGER/NULL
                     State: formData.State || "",
                     PurposeofParticipation: formData.PurposeofParticipation,
                     Declaration: true,
@@ -206,10 +175,10 @@ export default function RegistrationPage() {
                 // ✅ FIXED: Breeder schema with email for dashboard lookup
                 const breederData = {
                     name: formData.name,
-                    Designation: formData.Designation || "",      
-                    Organization: formData.NameofOrganization,    
-                    email: formData.email,                        
-                    phone: parseInt(formData.Mobilenumber),       
+                    Designation: formData.Designation || "",      // ⭐ ADD THIS
+                    Organization: formData.NameofOrganization,    // ⭐ FIX FIELD NAME
+                    email: formData.email,                        // ⭐ KEEP EMAIL
+                    phone: parseInt(formData.Mobilenumber),       // INTEGER
                     Declaration: true,
                 };
                 console.log("🌱 Breeder data (FIXED):", breederData);
@@ -234,7 +203,6 @@ export default function RegistrationPage() {
         setShowModal(false);
         setSeedsterms(false);
         setError("");
-        setResetEmailSent(false);
         setFormData({
             username: "", email: "", password: "", name: "", Designation: "",
             Mobilenumber: "", NameofOrganization: "", TypeofOrganization: "",
@@ -252,7 +220,7 @@ export default function RegistrationPage() {
                     <p className="text-xl text-gray-600 mb-12 font-Karla max-w-md mx-auto leading-relaxed">
                         Joining the SAN is voluntary, and there is no membership fee at present.”
                     </p>
-                    <div className=" flex gap-10  justify-between">
+                    <div className=" flex gap-10   justify-between">
                         <button
                             className="w-full bg-gradient-to-r cursor-pointer from-green-600 to-green-700 text-white py-6 px-8 rounded-2xl shadow-xl font-bold text-lg hover:shadow-2xl hover:from-green-700 transition-all"
                             onClick={() => setRegisterAs("accelerator")}
@@ -311,39 +279,6 @@ export default function RegistrationPage() {
                                 </div>
                             </div>
                         </fieldset>
-
-                        {/* ✅ NEW: FORGOT PASSWORD */}
-                        <div className="bg-gradient-to-r from-red-50 to-orange-50 p-6 rounded-2xl border-2 border-red-200">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
-                                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                    </svg>
-                                </div>
-                                <h3 className="text-xl font-bold text-red-700 font-Nunito">Forgot Password?</h3>
-                            </div>
-                            
-                            <div className="flex gap-3">
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email address"
-                                    className="flex-1 border-2 border-red-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={handleForgotPassword}
-                                    disabled={loading || !formData.email}
-                                    className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {loading ? "⏳ Sending..." : "Send Reset Link"}
-                                </button>
-                            </div>
-                            {resetEmailSent && (
-                                <p className="mt-2 text-sm text-green-700 font-medium">✅ Check your inbox/spam folder!</p>
-                            )}
-                        </div>
 
                         {/* PERSONAL */}
                         <fieldset className="p-8 bg-gray-50 rounded-2xl border-2 border-gray-200">

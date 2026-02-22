@@ -16,6 +16,7 @@ import AllBlogs from './pages/Blogpage'
 import ScrollToTop from './utils/Scrolltotop'
 import Dashboard from './pages/Dashboard'
 import ResetPassword from './pages/Resetpassword'
+import LoginModal from './components/Loginmodal'
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="/blog" element={<AllBlogs />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/login" element={<LoginModal />} />
           </Route>
         </Routes>
       </div>

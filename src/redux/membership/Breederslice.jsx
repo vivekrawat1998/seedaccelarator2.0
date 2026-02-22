@@ -1,4 +1,3 @@
-// redux/membership/Breederslice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { breederService } from './Breederservice';
 
@@ -6,21 +5,12 @@ export const submitBreederRequest = createAsyncThunk(
     'breeder/submit',
     async (formData, { rejectWithValue }) => {
         try {
-            const cleanData = {
-                ...formData, // ⭐ KEEP ALL FIELDS (email, Designation, etc)
-
-                Organization: formData.Organization || formData.organization || "",
-                phone: parseInt(formData.Mobilenumber || formData.phone),
-                Designation: formData.Designation || "",
-                email: formData.email || "",
-                Declaration: formData.Declaration ?? true,
-            };
-
-            console.log("🧹 Clean data for service:", cleanData);
-            const response = await breederService.createBreederRequest(cleanData);
+            // ✅ NO data cleaning needed - pass exactly as RegistrationPage sends
+            console.log("🌱 Breeder data to API:", formData);
+            const response = await breederService.createBreederRequest(formData);
             return response.data;
         } catch (error) {
-            console.error("❌ Breeder error:", error.response?.data);
+            console.error("❌ Breeder API error:", error.response?.data);
             return rejectWithValue(error.response?.data);
         }
     }
