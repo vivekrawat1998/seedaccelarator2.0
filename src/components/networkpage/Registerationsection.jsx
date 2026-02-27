@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, updateUserRole } from "../../api/auth";
 import SeedScalingTerms from "../../components/networkpage/Seedterms";
@@ -7,6 +7,7 @@ import { submitBreederRequest } from "../../redux/membership/Breederslice";
 import Typography from "../../ui/Heading";
 import { useAuth } from "../../context/AuthProvider";
 import api from "../../api/axios";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const orgTypes = [
     "FPO/FPC", "NGO", "ICAR Institutes/Name", "Universities/Name",
@@ -43,6 +44,7 @@ const SuccessModal = ({ show, onClose, userType }) => {
 export default function RegistrationPage() {
     const dispatch = useDispatch();
     const { login } = useAuth();
+    const navigate = useNavigate();
     const acceleratorState = useSelector((state) => state.accelartor) || { status: "idle" };
     const breederState = useSelector((state) => state.breeder) || { isLoading: false };
 
@@ -201,6 +203,7 @@ export default function RegistrationPage() {
     const resetForm = () => {
         setRegisterAs("none");
         setShowModal(false);
+        navigate("/network-members#register");
         setSeedsterms(false);
         setError("");
         setFormData({
@@ -295,16 +298,16 @@ export default function RegistrationPage() {
                                         className="w-full border rounded-xl py-3 px-4 focus:ring-2 focus:ring-green-500" />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <label className="block font-semibold text-gray-700 mb-3">Mobile Number * (10 digits)</label>
+                                    <label className="block font-semibold text-gray-700 mb-3">Mobile Number *</label>
                                     <input
                                         type="tel"
                                         name="Mobilenumber"
                                         value={formData.Mobilenumber}
                                         onChange={handleMobileChange}
-                                        maxLength={10}
+                                        maxLength={16}
                                         className="w-full border rounded-xl py-3 px-4 focus:ring-2 focus:ring-green-500"
                                         required
-                                        placeholder="1234567890"
+                                        placeholder=""
                                     />
                                 </div>
                             </div>

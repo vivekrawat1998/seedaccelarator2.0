@@ -9,9 +9,10 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   /* ================= UI STATE ================= */
-  const [tab, setTab] = useState("signin"); 
+  const [tab, setTab] = useState("signin");
   const [signupType, setSignupType] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showMemberPassword, setShowMemberPassword] = useState(false); // ✅ NEW
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -22,7 +23,8 @@ export default function LoginPage() {
 
   // ✅ Track input focus/active states for floating labels
   const [activeFields, setActiveFields] = useState({
-    identifier: false, password: false, name: false, email: false, memberPassword: false, forgotEmail: false
+    identifier: false, password: false,
+    name: false, email: false, memberPassword: false, forgotEmail: false
   });
 
   const handleLoginChange = (e) => {
@@ -33,7 +35,7 @@ export default function LoginPage() {
     setMemberForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // ✅ FIXED #1: COMPLETE handleSignin FUNCTION
+  // ✅ FIXED #1: COMPLETE handleSignin FUNCTION (unchanged)
   const handleSignin = async () => {
     console.log("🔐 Signin clicked - API CALL STARTING");
     setLoading(true);
@@ -41,24 +43,24 @@ export default function LoginPage() {
 
     try {
       console.log("📤 POST /auth/local", { identifier: loginForm.identifier, password: loginForm.password });
-      
+
       const res = await api.post("/auth/local", {
         identifier: loginForm.identifier,
         password: loginForm.password,
       });
 
       console.log("✅ LOGIN SUCCESS", res.data);
-      
+
       // Update auth context
       login(res.data);
-      
+
       alert("✅ Login successful");
       navigate("/dashboard");
 
     } catch (err) {
       console.error("❌ LOGIN ERROR:", err.response?.data || err);
       setError(
-        err?.response?.data?.error?.message || 
+        err?.response?.data?.error?.message ||
         err.response?.statusText ||
         "Invalid email or password"
       );
@@ -67,7 +69,7 @@ export default function LoginPage() {
     }
   };
 
-  // ✅ FIXED #2: COMPLETE handleMemberSignup FUNCTION
+  // ✅ FIXED #2: COMPLETE handleMemberSignup FUNCTION (unchanged)
   const handleMemberSignup = async () => {
     console.log("👥 Member signup clicked - API CALL STARTING");
     setLoading(true);
@@ -135,7 +137,7 @@ export default function LoginPage() {
     }
   };
 
-  // ✅ FIXED #3: COMPLETE handleForgotPassword FUNCTION
+  // ✅ FIXED #3: COMPLETE handleForgotPassword FUNCTION (unchanged)
   const handleForgotPassword = async () => {
     console.log("🔑 Forgot password clicked");
     setLoading(true);
@@ -146,7 +148,7 @@ export default function LoginPage() {
       await api.post("/auth/forgot-password", {
         email: forgotEmail,
       });
-      
+
       alert("📧 Password reset email sent!");
       setTab("signin");
       setForgotEmail("");
@@ -174,44 +176,48 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4 py-12">
       <div className="w-full max-w-md">
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 space-y-8 hover:shadow-3xl transition-all duration-500">
-          
+
           {/* Header */}
           <div className="text-center space-y-4">
             <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg ring-4 ring-white/50">
               <div className="text-3xl drop-shadow-lg">
-                {tab === "signin" ? "🔐" : tab === "forgot" ? "🔑" : signupType ? "👥" : "🌱"}
+                {tab === "signin" ? "🔐" :
+                  tab === "forgot" ? "🔑" :
+                    signupType === "member" ? "👥" : "🌱"}
               </div>
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent font-Nunito">
-                {tab === "signin" ? "Welcome Back" : 
-                 tab === "forgot" ? "Reset Password" : 
-                 signupType ? "Member Account" : "Join SAN Network"}
+                {tab === "signin" ? "Welcome Back" :
+                  tab === "forgot" ? "Reset Password" :
+                    signupType === "member" ? "Member Account" : "Join SAN Network"}
               </h1>
-              <p className="text-gray-500 text-sm mt-1">Quick sign in or join our network</p>
+              <p className="text-gray-500 text-sm mt-1">
+                {tab === "signin" ? "Quick sign in to your account" :
+                  tab === "forgot" ? "Enter email to reset password" :
+                    signupType === "member" ? "Create your member profile" : "Choose your account type"}
+              </p>
             </div>
           </div>
 
           {/* Tab Switcher */}
           <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl p-1 shadow-inner">
             <div className="flex">
-              <button 
-                onClick={() => {setTab("signin"); setSignupType(null); setError("");}}
-                className={`flex-1 py-4 px-6 rounded-xl font-bold text-sm transition-all duration-300 relative group ${
-                  tab === "signin"
-                    ? "bg-white shadow-lg shadow-green-100 text-green-700 -translate-y-0.5"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50 hover:shadow-md"
-                }`}
+              <button
+                onClick={() => { setTab("signin"); setSignupType(null); setError(""); }}
+                className={`flex-1 py-4 px-6 rounded-xl font-bold text-sm transition-all duration-300 relative group ${tab === "signin"
+                  ? "bg-white shadow-lg shadow-green-100 text-green-700 -translate-y-0.5"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-white/50 hover:shadow-md"
+                  }`}
               >
                 Sign In
               </button>
-              <button 
-                onClick={() => {setTab("signup"); setSignupType(null); setError("");}}
-                className={`flex-1 py-4 px-6 rounded-xl font-bold text-sm transition-all duration-300 relative group ${
-                  tab === "signup"
-                    ? "bg-white shadow-lg shadow-green-100 text-green-700 -translate-y-0.5"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-white/50 hover:shadow-md"
-                }`}
+              <button
+                onClick={() => { setTab("signup"); setSignupType(null); setError(""); }}
+                className={`flex-1 py-4 px-6 rounded-xl font-bold text-sm transition-all duration-300 relative group ${tab === "signup"
+                  ? "bg-white shadow-lg shadow-green-100 text-green-700 -translate-y-0.5"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-white/50 hover:shadow-md"
+                  }`}
               >
                 Sign Up
               </button>
@@ -245,11 +251,10 @@ export default function LoginPage() {
                   onBlur={() => handleBlur('identifier', loginForm.identifier)}
                   className="w-full pl-12 pr-5 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 shadow-sm peer z-0"
                 />
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.identifier || loginForm.identifier
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${activeFields.identifier || loginForm.identifier
+                  ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                  : 'top-1/2 -translate-y-1/2 text-gray-500'
+                  }`}>
                   Email Address
                 </label>
               </div>
@@ -274,16 +279,15 @@ export default function LoginPage() {
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.password || loginForm.password
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${activeFields.password || loginForm.password
+                  ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                  : 'top-1/2 -translate-y-1/2 text-gray-500'
+                  }`}>
                   Password
                 </label>
               </div>
 
-              {/* ✅ FIXED #4: Working Sign In Button */}
+              {/* Sign In Button */}
               <button
                 onClick={handleSignin}
                 disabled={loading || !loginForm.identifier || !loginForm.password}
@@ -326,11 +330,10 @@ export default function LoginPage() {
                   onBlur={() => handleBlur('forgotEmail', forgotEmail)}
                   className="w-full pl-12 pr-5 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 shadow-sm peer z-0"
                 />
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.forgotEmail || forgotEmail
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${activeFields.forgotEmail || forgotEmail
+                  ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                  : 'top-1/2 -translate-y-1/2 text-gray-500'
+                  }`}>
                   Enter your email
                 </label>
               </div>
@@ -348,6 +351,128 @@ export default function LoginPage() {
                     </>
                   ) : (
                     "Send Reset Link"
+                  )}
+                </span>
+              </button>
+            </div>
+          )}
+
+          {/* ✅ NEW: MEMBER REGISTRATION FORM */}
+          {tab === "signup" && signupType === "member" && (
+            <div className="space-y-5">
+              {/* Name Input */}
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+                <input
+                  name="name"
+                  placeholder="Full Name"
+                  value={memberForm.name}
+                  onChange={handleMemberChange}
+                  onFocus={() => handleFocus('name')}
+                  onBlur={() => handleBlur('name', memberForm.name)}
+                  className="w-full pl-12 pr-5 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 shadow-sm peer z-0"
+                />
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${activeFields.name || memberForm.name
+                  ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                  : 'top-1/2 -translate-y-1/2 text-gray-500'
+                  }`}>
+                  Full Name
+                </label>
+              </div>
+
+              {/* Email Input */}
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  value={memberForm.email}
+                  onChange={handleMemberChange}
+                  onFocus={() => handleFocus('email')}
+                  onBlur={() => handleBlur('email', memberForm.email)}
+                  className="w-full pl-12 pr-5 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 shadow-sm peer z-0"
+                />
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${activeFields.email || memberForm.email
+                  ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                  : 'top-1/2 -translate-y-1/2 text-gray-500'
+                  }`}>
+                  Email Address
+                </label>
+              </div>
+
+              {/* Category Input */}
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+                <select
+                  name="category"
+                  value={memberForm.category}
+                  onChange={handleMemberChange}
+                  onFocus={() => handleFocus('category')}
+                  onBlur={() => handleBlur('category', memberForm.category)}
+                  className="w-full pl-12 pr-5 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 shadow-sm peer z-0 appearance-none"
+                >
+                  <option value="">Select Category</option>
+                  <option value="individual">Farmer</option>
+                  <option value="Student">Student</option>
+                  <option value="Private Company">Private Company</option>
+                  <option value="Government Organization">Government Organization</option>
+                  <option value="FPO/FPC/NGO">FPO/FPC/NGO</option>
+                  <option value="Others">Others</option>
+                </select>
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${activeFields.category || memberForm.category
+                  ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                  : 'top-1/2 -translate-y-1/2 text-gray-500'
+                  }`}>
+                  Organization/Category
+                </label>
+              </div>
+
+              {/* Password Input */}
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+                <input
+                  name="password"
+                  type={showMemberPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={memberForm.password}
+                  onChange={handleMemberChange}
+                  onFocus={() => handleFocus('memberPassword')}
+                  onBlur={() => handleBlur('memberPassword', memberForm.password)}
+                  className="w-full pl-12 pr-12 py-4 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 hover:border-gray-300 shadow-sm peer z-0"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowMemberPassword(!showMemberPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-500 p-1 transition-all duration-200 z-10"
+                >
+                  {showMemberPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${activeFields.memberPassword || memberForm.password
+                  ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
+                  : 'top-1/2 -translate-y-1/2 text-gray-500'
+                  }`}>
+                  Password
+                </label>
+              </div>
+
+              {/* Member Sign Up Button */}
+              <button
+                onClick={handleMemberSignup}
+                disabled={loading || !memberForm.name || !memberForm.email || !memberForm.password || !memberForm.category}
+                className="group relative w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-5 px-6 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-lg transition-all duration-300 overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Creating Account...
+                    </>
+                  ) : (
+                    <>
+                      <User className="w-5 h-5" />
+                      Create Member Account
+                    </>
                   )}
                 </span>
               </button>
@@ -384,13 +509,17 @@ export default function LoginPage() {
           )}
 
           {/* Back button */}
-          {(tab === "forgot" || (tab === "signup" && signupType)) && (
+          {(tab === "forgot" || (tab === "signup" && signupType === "member")) && (
             <button
               onClick={() => {
                 setTab("signin");
                 setSignupType(null);
                 setError("");
-                setActiveFields({ identifier: false, password: false, name: false, email: false, memberPassword: false, forgotEmail: false });
+                setActiveFields({
+                  identifier: false, password: false,
+                  name: false, email: false, memberPassword: false, forgotEmail: false
+                });
+                setMemberForm({ name: "", email: "", password: "", category: "" });
               }}
               className="flex items-center justify-center gap-2 w-full text-sm text-gray-600 hover:text-gray-900 py-3 px-4 border-t border-gray-100/50 mt-6 backdrop-blur-sm hover:bg-gray-50/50 rounded-b-xl transition-all duration-200 font-medium"
             >

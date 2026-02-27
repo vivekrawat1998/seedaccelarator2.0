@@ -241,7 +241,7 @@ const Dashboard = () => {
                                     <Field label="Name" value={item.name || item.attributes?.name} />
                                     <Field label="Email" value={item.email || item.attributes?.email} />
                                     <Field label="Organization" value={item.Organization || item.attributes?.Organization} />
-                                    <Field label="Approval Status" value={status} />
+                                    {/* <Field label="Approval Status" value={status} /> */}
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
                                         <div className={`p-3 rounded-lg font-bold text-white ${

@@ -345,6 +345,7 @@ export default function ContactPage() {
                   <div>+63 2 8845 0563</div>
                   <div>+63 2 8580 5699</div>
                   <div>+63 2 8845 0606</div>
+                  <div>+011 6676 3000</div>
                 </div>
               </div>
 
