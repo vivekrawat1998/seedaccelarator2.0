@@ -11,7 +11,7 @@ export default function VarietalTurnoverImpact() {
   return (
     <div className="bg-white container mx-auto py-16 px-6 grid place-items-center">
       {/* Chart Section */}
-      <div className="flex-1 w-full max-w-xl flex items-star gap-5 justify-center mb-8 md:mb-0" data-aos="fade-left">
+      <div className="flex-1 w-full max-w-xl md:flex items-center justify-center mb-8 md:mb-0" data-aos="fade-left">
         {/* Replace with your actual chart image path */}
         <img 
           src="/impactstories.png"

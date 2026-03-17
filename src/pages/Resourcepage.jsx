@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthProvider"; // Adjust path
 import AOS from "aos";
 import "aos/dist/aos.css";
 import ProfileSection from "../components/Profilesection";
-import profileBg from "/Resources.JPG";
+import profileBg from "/banner/Resources_1920X1080 px.jpg";
 import Typography from "../ui/Heading";
 import { trackDownload } from "../utils/trackDownload"; // Adjust path
 
@@ -65,7 +65,7 @@ const resources = [
     category: "SAN Meet Reports",
     name: "Seed Accelerator 1.0 Report",
     title: "Seed Accelerator 1.0 Report 2024",
-    url: "/uploads/Seed_Accelerator_Report_1.0_2024.pdf", // Update to Strapi upload path
+    url: "/Seed-Accelerator-Report-1.0-2024.pdf", // Update to Strapi upload path
     size: 2457600 // ~2.3MB
   },
   {
@@ -73,7 +73,7 @@ const resources = [
     category: "SAN Meet Reports",
     name: "Seed Accelerator 2.0 Report",
     title: "Seed Accelerator 2.0 Report 2025",
-    url: "/uploads/Seed_Accelerator_Report_2.0_2025.pdf",
+    url: "/Seed-Acclerator-Report-2.0-2025.pdf",
     size: 3124000 // ~3MB
   },
   {
@@ -81,7 +81,7 @@ const resources = [
     category: "Product Diaries",
     name: "Product Diary - India",
     title: "Product Diary India Edition",
-    url: "/uploads/Product_Diary_India.pdf",
+    url: "/Product Diary Final India.pdf",
     size: 1890000 // ~1.8MB
   },
   {
@@ -89,7 +89,7 @@ const resources = [
     category: "Product Diaries",
     name: "Product Diary - Bangladesh",
     title: "Key Product Diary Rice Bangladesh",
-    url: "/uploads/Product_Diary_Bangladesh.pdf",
+    url: "/Key_Product_Diary_Rice_(Bangladesh).pdf",
     size: 2234000 // ~2.2MB
   },
 ];
@@ -176,10 +176,10 @@ export default function ResourcesPage() {
 
               {/* PDF Preview - ORIGINAL UI PRESERVED */}
               <div className="bg-white">
-                <iframe
+                <embed
                   src={`${import.meta.env.VITE_STRAPI_URL}${res.url}`}
-                  title={res.name}
-                  className="w-full h-[500px] border-0"
+                  type="application/pdf"
+                  className="w-full h-[500px]"
                 />
               </div>
             </div>

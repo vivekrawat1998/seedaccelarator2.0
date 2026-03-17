@@ -128,11 +128,8 @@ const FooterSection = () => {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-white/10">
-                    <div className="max-w-7xl mx-auto px-4 py-6 text-sm text-gray-400 flex flex-col md:flex-row items-center justify-between">
-                        <span>© 2025 International Rice Research Institute</span>
-                        <span className="mt-2 md:mt-0 text-gray-500">
-                            Building a food-secure future
-                        </span>
+                    <div className="max-w-7xl mx-auto px-4 py-6 text-sm text-gray-900 flex flex-col md:flex-row items-center justify-between">
+                        <span>© 2025 Seed Accelerator Network</span>
                     </div>
                 </div>
             </div>

@@ -3,7 +3,7 @@ import React from 'react';
 const ProfileSection = ({ bgImage, name, breadcrumbs }) => {
     return (
         <div
-            className="h-[60vh] relative bg-no-repeat bg-cover bg-center brightness-75"
+            className="md:h-[60vh] h-[30vh] relative bg-no-repeat bg-cover bg-center brightness-75"
             style={{
                 backgroundImage: `url(${bgImage})`,
                 backgroundPosition: "center 30%", 

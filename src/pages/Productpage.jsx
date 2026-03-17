@@ -1,5 +1,4 @@
 import React from 'react'
-import ProductFilter from '../components/ProductEvaluation'
 import FilterPage from '../components/Productevaluation/Filterbystateandmarket'
 import ProductInfoSection from '../components/Productevaluation/Productinfosection'
 import MarketSegmentsTable from '../components/Productevaluation/Globalmarketsegment'
@@ -9,7 +8,7 @@ import StatisticalAnalysisSection from '../components/Productevaluation/Staticsa
 import ProfileSection from '../components/Profilesection'
 import ProductProfiles from '../components/Productevaluation/ProductProfiles'
 import SegmentationProcessSection from '../components/Productevaluation/Segmentprocess'
-import productImage from '/Product evaluation.jpg';
+import productImage from '/banner/Product Evalution_1920X1080 px.jpg';
 import { Link } from 'react-router-dom'
 import Typography from '../ui/Heading'
 

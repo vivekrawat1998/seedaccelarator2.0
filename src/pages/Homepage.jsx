@@ -18,14 +18,10 @@ const Homepage = () => {
         <div className='overflow-hidden'>
             <HeroSection />
             <AboutUsSection />
-            {/* <OurWork /> */}
-            {/* <WhyChooseUs /> */}
             <CountupSection />
             <Ourpartners />
             <BlogSection />
             <ContactSection />
-            {/* <ServicesSection />
-            <TestimonialCarousel /> */}
         </div>
     )
 }

@@ -108,7 +108,7 @@ const OurWorkDownstairsFlow = () => {
         {/* Map Section */}
         <div className="grid place-items-center mb-24">
           <img
-            src="/our work.png"
+            src="/Resources.JPG"
             alt="Our Work Map"
             className="w-[80vh] h-full object-cover rounded-xl"
           />
