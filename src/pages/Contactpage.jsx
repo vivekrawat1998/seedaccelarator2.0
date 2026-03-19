@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import ProfileSection from "../components/Profilesection";
 import api from "../api/axios";
-import profileBg from "/hero/Contact us.jpg";
+import profileBg from "/banner/Contact Us_1920X1080 px.jpg";
 
 const categories = [
   "Farmer",

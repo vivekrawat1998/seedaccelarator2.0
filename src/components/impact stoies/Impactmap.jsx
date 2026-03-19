@@ -11,7 +11,7 @@ import { X, MapPin, Calendar, Activity } from "lucide-react";
 import indiaMap from "../../utils/India_states.json";
 import api from "../../api/axios";
 
-const ImpactMap = ({ filters }) => {
+const ImpactMap = ({ filters = {} }) => {
     const [mapData, setMapData] = useState([]);
     const [tooltipContent, setTooltipContent] = useState("");
     const [selectedState, setSelectedState] = useState(null);
@@ -20,28 +20,36 @@ const ImpactMap = ({ filters }) => {
         const fetchData = async () => {
             try {
                 const res = await api.get("/mapdatas");
-                setMapData(res.data.data);
+
+                console.log("API Response:", res);
+
+                // ✅ SAFE DATA SET
+                setMapData(res?.data?.data || []);
             } catch (error) {
                 console.log("Map API Error:", error);
+
+                // ✅ fallback (important for production)
+                setMapData([]);
             }
         };
 
         fetchData();
     }, []);
 
-    const filteredData = mapData.filter((item) => {
+    // ✅ SAFE FILTER
+    const filteredData = (mapData || []).filter((item) => {
         return (
-            (!filters.year || item.year === filters.year) &&
-            (!filters.activity || item.activityType === filters.activity) &&
-            (!filters.state || item.state === filters.state)
+            (!filters?.year || item?.year === filters.year) &&
+            (!filters?.activity || item?.activityType === filters.activity) &&
+            (!filters?.state || item?.state === filters.state)
         );
     });
 
     const getStateInfo = (stateName) => {
         return filteredData.find(
             (d) =>
-                d.state?.trim().toLowerCase() ===
-                stateName?.trim().toLowerCase()
+                d?.state?.trim()?.toLowerCase() ===
+                stateName?.trim()?.toLowerCase()
         );
     };
 
@@ -91,12 +99,13 @@ const ImpactMap = ({ filters }) => {
                 >
                     <Geographies geography={indiaMap}>
                         {({ geographies }) =>
-                            geographies.map((geo) => {
+                            (geographies || []).map((geo) => {
                                 const stateName =
-                                    geo.properties.st_nm || geo.properties.NAME_1;
+                                    geo?.properties?.st_nm ||
+                                    geo?.properties?.NAME_1 ||
+                                    "";
 
                                 const stateInfo = getStateInfo(stateName);
-
                                 const isHighlighted = !!stateInfo;
 
                                 return (
@@ -106,16 +115,19 @@ const ImpactMap = ({ filters }) => {
                                         data-tooltip-id="mapTooltip"
 
                                         onMouseEnter={() => {
-                                            if (stateInfo) {
-                                                setTooltipContent(stateName);
+                                            setTooltipContent(stateName);
 
+                                            if (stateInfo) {
                                                 setSelectedState({
                                                     state: stateName,
                                                     ...stateInfo
                                                 });
-                                            } else {
-                                                setTooltipContent(stateName);
                                             }
+                                        }}
+
+                                        onMouseLeave={() => {
+                                            // Optional: remove selection on leave
+                                            // setSelectedState(null);
                                         }}
 
                                         style={{
@@ -151,13 +163,13 @@ const ImpactMap = ({ filters }) => {
                 id="mapTooltip"
                 className="bg-gray-900 text-white px-3 py-2 rounded-md text-xs shadow-lg"
             >
-                {tooltipContent}
+                {tooltipContent || "No data"}
             </Tooltip>
 
             {/* STATE PANEL */}
             {selectedState && (
-
-                <div className="
+                <div
+                    className="
         fixed md:absolute
         bottom-0 md:bottom-16
         left-0 md:left-auto
@@ -169,18 +181,16 @@ const ImpactMap = ({ filters }) => {
         rounded-t-xl md:rounded-md
         p-5
         z-50
-        ">
-
+        "
+                >
                     <div className="flex justify-between items-center mb-4">
 
                         <div className="flex items-center gap-2">
-
                             <MapPin size={18} className="text-green-600" />
 
                             <h3 className="font-semibold text-gray-800">
-                                {selectedState.state}
+                                {selectedState?.state}
                             </h3>
-
                         </div>
 
                         <button
@@ -189,7 +199,6 @@ const ImpactMap = ({ filters }) => {
                         >
                             <X size={18} />
                         </button>
-
                     </div>
 
                     <div className="grid grid-cols-1 gap-3 text-sm">
@@ -197,47 +206,36 @@ const ImpactMap = ({ filters }) => {
                         <div className="flex items-center gap-2 text-gray-600">
                             <Calendar size={16} />
                             <span>
-                                <b>Year:</b> {selectedState.year}
+                                <b>Year:</b> {selectedState?.year || "N/A"}
                             </span>
                         </div>
 
                         <div className="flex items-center gap-2 text-gray-600">
-                            <Activity className="font-bold text-red-900" size={16} />
+                            <Activity size={16} />
                             <span>
-                                <b>Activity:</b> {selectedState.activityType}
+                                <b>Activity:</b> {selectedState?.activityType || "N/A"}
                             </span>
                         </div>
 
                         <div className="flex justify-between bg-prime/50 rounded-lg p-3">
-
                             <div>
-                                <p className="text-xs text-black">
-                                    Quantity
-                                </p>
-
+                                <p className="text-xs text-black">Quantity</p>
                                 <p className="font-semibold text-gray-800">
-                                    {selectedState.quantity}
+                                    {selectedState?.quantity || 0}
                                 </p>
                             </div>
 
                             <div>
-                                <p className="text-xs text-black">
-                                    Count
-                                </p>
-
+                                <p className="text-xs text-black">Count</p>
                                 <p className="font-semibold text-gray-800">
-                                    {selectedState.count}
+                                    {selectedState?.count || 0}
                                 </p>
                             </div>
-
                         </div>
 
                     </div>
-
                 </div>
-
             )}
-
         </div>
     );
 };
