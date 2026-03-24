@@ -6,29 +6,22 @@ import {
 } from "react-simple-maps";
 
 import { Tooltip } from "react-tooltip";
-import { X, MapPin, Calendar, Activity } from "lucide-react";
-
 import indiaMap from "../../utils/India_states.json";
 import api from "../../api/axios";
 
 const ImpactMap = ({ filters = {} }) => {
     const [mapData, setMapData] = useState([]);
-    const [tooltipContent, setTooltipContent] = useState("");
-    const [selectedState, setSelectedState] = useState(null);
+    const [tooltipData, setTooltipData] = useState(null);
+    const [selectedState, setSelectedState] = useState(null); // ✅ RIGHT PANEL DATA
 
+    // ✅ Fetch data
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const res = await api.get("/mapdatas");
-
-                console.log("API Response:", res);
-
-                // ✅ SAFE DATA SET
                 setMapData(res?.data?.data || []);
             } catch (error) {
-                console.log("Map API Error:", error);
-
-                // ✅ fallback (important for production)
+                console.error("API Error:", error);
                 setMapData([]);
             }
         };
@@ -36,27 +29,32 @@ const ImpactMap = ({ filters = {} }) => {
         fetchData();
     }, []);
 
-    // ✅ SAFE FILTER
+    // ✅ Normalize helper
+    const normalize = (value) =>
+        value?.toString().trim().toLowerCase();
+
+    // ✅ Filter logic
     const filteredData = (mapData || []).filter((item) => {
         return (
-            (!filters?.year || item?.year === filters.year) &&
-            (!filters?.activity || item?.activityType === filters.activity) &&
-            (!filters?.state || item?.state === filters.state)
+            (!filters?.year ||
+                Number(item?.year) === Number(filters.year)) &&
+            (!filters?.activity ||
+                normalize(item?.activityType) === normalize(filters.activity)) &&
+            (!filters?.state ||
+                normalize(item?.state) === normalize(filters.state))
         );
     });
 
+    // ✅ Match state
     const getStateInfo = (stateName) => {
         return filteredData.find(
-            (d) =>
-                d?.state?.trim()?.toLowerCase() ===
-                stateName?.trim()?.toLowerCase()
+            (d) => normalize(d?.state) === normalize(stateName)
         );
     };
 
     return (
-        <div className="bg-green-200 rounded-md border font-Karla border-prime shadow-lg p-4 md:p-6 relative">
+        <div className="bg-green-100 rounded-xl shadow-lg p-4 md:p-6">
 
-            {/* HEADER */}
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
 
                 <div>
@@ -82,160 +80,174 @@ const ImpactMap = ({ filters = {} }) => {
                 </div>
             </div>
 
-            {/* MAP */}
-            <div className="border rounded-md overflow-hidden bg-gray-50">
+            {/* ✅ RESPONSIVE GRID */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                <ComposableMap
-                    projection="geoMercator"
-                    projectionConfig={{
-                        scale: 900,
-                        center: [82, 22]
-                    }}
-                    style={{
-                        width: "100%",
-                        height: "auto"
-                    }}
-                    className="h-[350px] sm:h-[450px] md:h-[550px] lg:h-[650px]"
-                >
-                    <Geographies geography={indiaMap}>
-                        {({ geographies }) =>
-                            (geographies || []).map((geo) => {
-                                const stateName =
-                                    geo?.properties?.st_nm ||
-                                    geo?.properties?.NAME_1 ||
-                                    "";
+                {/* 🌍 MAP SECTION */}
+                <div className="lg:col-span-2 border rounded-lg overflow-hidden bg-white">
+                    <ComposableMap
+                        projection="geoMercator"
+                        projectionConfig={{
+                            scale: 1000,
+                            center: [80, 23]
+                        }}
+                        className="h-[400px] md:h-[500px] w-full"
+                    >
+                        <Geographies geography={indiaMap}>
+                            {({ geographies }) =>
+                                geographies.map((geo) => {
+                                    const stateName =
+                                        geo?.properties?.st_nm ||
+                                        geo?.properties?.NAME_1 ||
+                                        "";
 
-                                const stateInfo = getStateInfo(stateName);
-                                const isHighlighted = !!stateInfo;
+                                    const stateInfo = getStateInfo(stateName);
+                                    const isHighlighted = !!stateInfo;
 
-                                return (
-                                    <Geography
-                                        key={geo.rsmKey}
-                                        geography={geo}
-                                        data-tooltip-id="mapTooltip"
+                                    return (
+                                        <Geography
+                                            key={geo.rsmKey}
+                                            geography={geo}
+                                            data-tooltip-id="mapTooltip"
 
-                                        onMouseEnter={() => {
-                                            setTooltipContent(stateName);
+                                            onMouseEnter={() => {
+                                                if (stateInfo) {
+                                                    setTooltipData({
+                                                        state: stateName,
+                                                        year: stateInfo.year,
+                                                        activity: stateInfo.activityType,
+                                                        quantity: stateInfo.quantity,
+                                                        count: stateInfo.count
+                                                    });
+                                                } else {
+                                                    setTooltipData({ state: stateName });
+                                                }
+                                            }}
 
-                                            if (stateInfo) {
-                                                setSelectedState({
-                                                    state: stateName,
-                                                    ...stateInfo
-                                                });
-                                            }
-                                        }}
+                                            // ✅ CLICK → SHOW RIGHT PANEL
+                                            onClick={() => {
+                                                if (stateInfo) {
+                                                    setSelectedState({
+                                                        state: stateName,
+                                                        ...stateInfo
+                                                    });
+                                                }
+                                            }}
 
-                                        onMouseLeave={() => {
-                                            // Optional: remove selection on leave
-                                            // setSelectedState(null);
-                                        }}
+                                            style={{
+                                                default: {
+                                                    fill: isHighlighted
+                                                        ? "#166534"
+                                                        : "#d1d5db",
+                                                    outline: "none"
+                                                },
+                                                hover: {
+                                                    fill: "#f97316",
+                                                    cursor: "pointer"
+                                                }
+                                            }}
+                                        />
+                                    );
+                                })
+                            }
+                        </Geographies>
+                    </ComposableMap>
+                </div>
 
-                                        style={{
-                                            default: {
-                                                fill: isHighlighted
-                                                    ? "#166534"
-                                                    : "#d1d5db",
-                                                outline: "none",
-                                                transition: "all .25s ease"
-                                            },
+                {/* 📊 RIGHT PANEL */}
+                <div className="bg-white rounded-lg font-Karla shadow-md p-5 min-h-[200px] flex flex-col justify-center">
 
-                                            hover: {
-                                                fill: "#f97316",
-                                                outline: "none",
-                                                cursor: "pointer"
-                                            },
+                    {!selectedState ? (
+                        <div className="text-center text-gray-500">
+                            <p className="text-lg font-semibold">
+                                Select a state
+                            </p>
+                            <p className="text-sm mt-2">
+                                Click on map to see details
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            <h3 className="text-2xl font-bold text-green-700">
+                                {selectedState.state}
+                            </h3>
 
-                                            pressed: {
-                                                fill: "#ea580c",
-                                                outline: "none"
-                                            }
-                                        }}
-                                    />
-                                );
-                            })
-                        }
-                    </Geographies>
-                </ComposableMap>
+                            <div className="bg-green-50 p-3 rounded-md">
+                                <p className="text-sm text-gray-600">Year</p>
+                                <p className="text-lg font-semibold">
+                                    {selectedState.year || "N/A"}
+                                </p>
+                            </div>
+
+                            <div className="bg-green-50 p-3 rounded-md">
+                                <p className="text-sm text-gray-600">
+                                    Activity
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {selectedState.activityType || "N/A"}
+                                </p>
+                            </div>
+                            <div className="bg-green-50 p-3 rounded-md">
+                                <p className="text-sm text-gray-600">
+                                    Quantity
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {selectedState.quantity || "N/A"}
+                                </p>
+                            </div>
+                            <div className="bg-green-50 p-3 rounded-md">
+                                <p className="text-sm text-gray-600">
+                                    Count
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {selectedState.count || "N/A"}
+                                </p>
+                            </div>
+
+                            {/* 👉 ADD MORE FIELDS FROM API */}
+                            {selectedState.value && (
+                                <div className="bg-green-50 p-3 rounded-md">
+                                    <p className="text-sm text-gray-600">
+                                        Value
+                                    </p>
+                                    <p className="text-lg font-semibold">
+                                        {selectedState.value}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
 
-            {/* TOOLTIP */}
+            {/* 🔥 TOOLTIP */}
             <Tooltip
                 id="mapTooltip"
-                className="bg-gray-900 text-white px-3 py-2 rounded-md text-xs shadow-lg"
+                place="top"
+                className="!bg-black !text-white !p-2 !rounded-md"
             >
-                {tooltipContent || "No data"}
+                {tooltipData && (
+                    <div className="text-sm">
+                        <div className="font-bold">
+                            {tooltipData.state}
+                        </div>
+
+                        {tooltipData.year && (
+                            <div>📅 {tooltipData.year}</div>
+                        )}
+
+                        {tooltipData.activity && (
+                            <div>⚡ {tooltipData.activity}</div>
+                        )}
+                        {tooltipData.quantity && (
+                            <div>📦 {tooltipData.quantity}</div>
+                        )}
+                        {tooltipData.count && (
+                            <div>📊 {tooltipData.count}</div>
+                        )}
+                    </div>
+                )}
             </Tooltip>
-
-            {/* STATE PANEL */}
-            {selectedState && (
-                <div
-                    className="
-        fixed md:absolute
-        bottom-0 md:bottom-16
-        left-0 md:left-auto
-        right-0 md:right-6
-        w-full md:w-72
-        bg-white
-        border border-prime
-        shadow-xl
-        rounded-t-xl md:rounded-md
-        p-5
-        z-50
-        "
-                >
-                    <div className="flex justify-between items-center mb-4">
-
-                        <div className="flex items-center gap-2">
-                            <MapPin size={18} className="text-green-600" />
-
-                            <h3 className="font-semibold text-gray-800">
-                                {selectedState?.state}
-                            </h3>
-                        </div>
-
-                        <button
-                            onClick={() => setSelectedState(null)}
-                            className="text-gray-400 hover:text-red-500"
-                        >
-                            <X size={18} />
-                        </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-3 text-sm">
-
-                        <div className="flex items-center gap-2 text-gray-600">
-                            <Calendar size={16} />
-                            <span>
-                                <b>Year:</b> {selectedState?.year || "N/A"}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center gap-2 text-gray-600">
-                            <Activity size={16} />
-                            <span>
-                                <b>Activity:</b> {selectedState?.activityType || "N/A"}
-                            </span>
-                        </div>
-
-                        <div className="flex justify-between bg-prime/50 rounded-lg p-3">
-                            <div>
-                                <p className="text-xs text-black">Quantity</p>
-                                <p className="font-semibold text-gray-800">
-                                    {selectedState?.quantity || 0}
-                                </p>
-                            </div>
-
-                            <div>
-                                <p className="text-xs text-black">Count</p>
-                                <p className="font-semibold text-gray-800">
-                                    {selectedState?.count || 0}
-                                </p>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

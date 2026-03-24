@@ -128,7 +128,7 @@ const FooterSection = () => {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-white/10">
-                    <div className="max-w-7xl mx-auto px-4 py-6 text-sm text-gray-900 flex flex-col md:flex-row items-center justify-between">
+                    <div className="max-w-7xl mx-auto px-4 py-6 text-sm text-white flex flex-col md:flex-row items-center justify-between">
                         <span>© 2025 Seed Accelerator Network</span>
                     </div>
                 </div>

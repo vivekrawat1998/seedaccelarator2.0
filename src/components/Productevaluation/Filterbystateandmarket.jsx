@@ -9,12 +9,17 @@ import api from "../../api/axios";
 export default function Filterbystateandmarket() {
   const { isAuthenticated, user } = useAuth();
 
+  // 🔥 FIXED: extractYear at TOP LEVEL
+  const extractYear = (marketSegment) => {
+    const match = marketSegment.match(/(\d{4})/);
+    return match ? match[1] : "";
+  };
+
   const [remoteUser, setRemoteUser] = useState(null);
   const [breederRequests, setBreederRequests] = useState([]);
   const [acceleratorRequests, setAcceleratorRequests] = useState([]);
   const [memberRequests, setMemberRequests] = useState([]);
 
-  // ✅ FIXED: Move ALL hooks to top level before any returns
   const [filters, setFilters] = useState({
     state: "",
     year: "",
@@ -26,23 +31,18 @@ export default function Filterbystateandmarket() {
   /* ================= FETCH CURRENT USER ================= */
   useEffect(() => {
     let mounted = true;
-
     const fetchMe = async () => {
       if (!isAuthenticated) return;
-
       try {
         const res = await api.get("/users/me?populate=*");
-
         let normalized = res?.data?.data
           ? { id: res.data.data.id, ...(res.data.data.attributes || {}) }
           : res.data;
-
         if (mounted) setRemoteUser(normalized);
       } catch (err) {
         console.warn("Could not fetch current user:", err);
       }
     };
-
     fetchMe();
     return () => (mounted = false);
   }, [isAuthenticated]);
@@ -52,32 +52,25 @@ export default function Filterbystateandmarket() {
   /* ================= FETCH MEMBERSHIP REQUESTS ================= */
   useEffect(() => {
     let mounted = true;
-
     const fetchRequests = async () => {
       const userId = effectiveUser?.id;
       const email = effectiveUser?.email;
-
       if (!userId && !email) return;
 
       try {
-        let breeders = [];
-        let accelerators = [];
-        let members = [];
+        let breeders = [], accelerators = [], members = [];
 
         /* ===== BREEDER ===== */
         if (email) {
           const byEmail = await api
             .get(`/breeder-requests?filters[email][$eq]=${encodeURIComponent(email)}&populate=*`)
             .catch(() => ({ data: { data: [] } }));
-
           breeders = byEmail.data.data || [];
         }
-
         if (!breeders.length && userId) {
           const byUser = await api
             .get(`/breeder-requests?filters[users_permissions_user][id][$eq]=${userId}&populate=*`)
             .catch(() => ({ data: { data: [] } }));
-
           breeders = byUser.data.data || [];
         }
 
@@ -86,15 +79,12 @@ export default function Filterbystateandmarket() {
           const byEmail = await api
             .get(`/members?filters[email][$eq]=${encodeURIComponent(email)}&populate=*`)
             .catch(() => ({ data: { data: [] } }));
-
           members = byEmail.data.data || [];
         }
-
         if (!members.length && userId) {
           const byUser = await api
             .get(`/members?filters[users_permissions_user][id][$eq]=${userId}&populate=*`)
             .catch(() => ({ data: { data: [] } }));
-
           members = byUser.data.data || [];
         }
 
@@ -103,91 +93,114 @@ export default function Filterbystateandmarket() {
           const accByEmail = await api
             .get(`/accelartor-requests?filters[email][$eq]=${encodeURIComponent(email)}&populate=*`)
             .catch(() => ({ data: { data: [] } }));
-
           accelerators = accByEmail.data.data || [];
         }
-
         if (!accelerators.length && userId) {
           const accByUser = await api
             .get(`/accelartor-requests?filters[users_permissions_user][id][$eq]=${userId}&populate=*`)
             .catch(() => ({ data: { data: [] } }));
-
           accelerators = accByUser.data.data || [];
         }
 
         if (!mounted) return;
-
         setBreederRequests(breeders);
         setAcceleratorRequests(accelerators);
         setMemberRequests(members);
-
-        console.log("✅ Requests loaded:", {
-          breeders,
-          accelerators,
-          members
-        });
       } catch (err) {
         console.warn("Could not fetch membership:", err);
       }
     };
-
     fetchRequests();
     return () => (mounted = false);
   }, [effectiveUser?.id, effectiveUser?.email]);
 
   /* ================= ACCESS CONTROL ================= */
-  const isBlocked =
-    effectiveUser?.blocked === true ||
-    effectiveUser?.blocked === "true";
-
+  const isBlocked = effectiveUser?.blocked === true || effectiveUser?.blocked === "true";
   const breederApproved = breederRequests.some(
     (b) => b?.Approval === true || b?.attributes?.Approval === true
   );
-
   const acceleratorApproved = acceleratorRequests.some(
     (a) => a?.Approval === true || a?.attributes?.Approval === true
   );
-
   const memberApproved = memberRequests.some(
     (m) => m?.Approval === true || m?.attributes?.Approval === true
   );
-
   const isApproved = breederApproved || acceleratorApproved || memberApproved;
 
-  console.log("🔍 Approval Debug:", {
-    breederApproved,
-    acceleratorApproved,
-    memberApproved,
-    isApproved,
-  });
-
-  // Data processing logic (moved before returns)
+  // Data processing
   const rawGraphData = Stateandmarketes?.[0]?.graphData || [];
   const rawTableData = ProductEvaluationData || [];
 
-  const extractYear = (marketSegment) => {
-    const match = marketSegment.match(/(\d{4})/);
-    return match ? match[1] : "";
+  const graphData = useMemo(() =>
+    rawGraphData.map(item => ({
+      state: (item?.state || "").trim(),
+      marketSegment: (item?.marketSegment || "").trim(),
+      year: extractYear(item?.marketSegment || ""),
+      variety: (item?.variety || "").trim(),
+      institute: (item?.nominatingInstitute || "").trim(),
+      src: item?.src || ""
+    })), [rawGraphData]
+  );
+
+  const tableData = useMemo(() =>
+    rawTableData.map(item => ({
+      state: (item?.State || "").trim(),
+      marketSegment: (item?.MarketSegment || "").trim(),
+      year: (item?.Year || "").trim(),
+      TestVarieties: Array.isArray(item?.TestVarieties)
+        ? (item.TestVarieties || []).map(v => (v || "").trim()).filter(Boolean)
+        : [],
+      Benchmark: (item?.Benchmark || "").trim(),
+      LocalCheck: (item?.LocalCheck || "").trim(),
+      BestPerformer: (item?.BestPerformer || "").trim()
+    })), [rawTableData]
+  );
+
+  // 🔥 FIXED: getUniqueValues utility
+  const getUniqueValues = (data, key) => {
+    return [...new Set(data.map(item => item[key]).filter(Boolean))]
+      .map(val => val.trim())
+      .filter((val, index, self) => self.indexOf(val) === index)
+      .sort();
   };
 
-  const graphData = rawGraphData.map(item => ({
-    state: (item?.state || "").trim(),
-    marketSegment: (item?.marketSegment || "").trim(),
-    year: extractYear(item?.marketSegment || ""),
-    variety: item?.variety || "",
-    institute: (item?.nominatingInstitute || "").trim(),
-    src: item?.src || ""
-  }));
+  const states = useMemo(() =>
+    getUniqueValues([...graphData, ...tableData], 'state'), [graphData, tableData]
+  );
+  const years = useMemo(() =>
+    getUniqueValues([...graphData, ...tableData], 'year'), [graphData, tableData]
+  );
+  const segments = useMemo(() =>
+    getUniqueValues([...graphData, ...tableData], 'marketSegment'), [graphData, tableData]
+  );
 
-  const tableData = rawTableData.map(item => ({
-    state: (item?.State || "").trim(),
-    marketSegment: (item?.MarketSegment || "").trim(),
-    year: (item?.Year || "").trim(),
-    TestVarieties: (item?.TestVarieties || []).map(v => (v || "").trim()),
-    Benchmark: (item?.Benchmark || "").trim(),
-    LocalCheck: (item?.LocalCheck || "").trim(),
-    BestPerformer: (item?.BestPerformer || "").trim()
-  }));
+  // 🔥 FIXED: Varieties from TestVarieties array
+  const varieties = useMemo(() => {
+    const allVarieties = [];
+    tableData.forEach(item => {
+      if (item.TestVarieties && Array.isArray(item.TestVarieties)) {
+        item.TestVarieties.forEach(variety => {
+          if (variety && !allVarieties.includes(variety)) {
+            allVarieties.push(variety);
+          }
+        });
+      }
+    });
+    return allVarieties.sort();
+  }, [tableData]);
+
+  // 🔥 FIXED: Institutes from Benchmark/LocalCheck/BestPerformer
+  const institutes = useMemo(() => {
+    const allInstitutes = new Set();
+    tableData.forEach(item => {
+      [item.Benchmark, item.LocalCheck, item.BestPerformer].forEach(inst => {
+        if (inst && inst.trim()) {
+          allInstitutes.add(inst.trim());
+        }
+      });
+    });
+    return Array.from(allInstitutes).sort();
+  }, [tableData]);
 
   const updateFilter = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
@@ -196,19 +209,6 @@ export default function Filterbystateandmarket() {
   const clearFilters = () => {
     setFilters({ state: "", year: "", marketSegment: "", variety: "", institute: "" });
   };
-
-  const getUniqueValues = (data, key) => {
-    return [...new Set(data.map(item => item[key]).filter(Boolean))]
-      .map(val => val.trim())
-      .filter((val, index, self) => self.indexOf(val) === index)
-      .sort();
-  };
-
-  const states = getUniqueValues([...graphData, ...tableData], 'state');
-  const years = getUniqueValues([...graphData, ...tableData], 'year');
-  const segments = getUniqueValues([...graphData, ...tableData], 'marketSegment');
-  const varieties = getUniqueValues(graphData, 'variety');
-  const institutes = getUniqueValues(graphData, 'institute');
 
   const filteredGraphs = useMemo(() => {
     return graphData.filter(item => {
@@ -226,8 +226,15 @@ export default function Filterbystateandmarket() {
       const stateMatch = !filters.state || item.state.toLowerCase() === filters.state.toLowerCase();
       const segmentMatch = !filters.marketSegment || item.marketSegment.toLowerCase() === filters.marketSegment.toLowerCase();
       const yearMatch = !filters.year || item.year === filters.year;
-      const varietyMatch = !filters.variety || item.TestVarieties.some(v => v.toLowerCase() === filters.variety.toLowerCase());
-      const instituteMatch = !filters.institute || [item.Benchmark, item.LocalCheck, item.BestPerformer].some(inst => inst.toLowerCase() === filters.institute.toLowerCase());
+
+      const varietyMatch = !filters.variety ||
+        item.TestVarieties.some(v => v.toLowerCase() === filters.variety.toLowerCase());
+
+      const instituteMatch = !filters.institute ||
+        [item.Benchmark, item.LocalCheck, item.BestPerformer].some(inst =>
+          inst && inst.toLowerCase() === filters.institute.toLowerCase()
+        );
+
       return stateMatch && segmentMatch && yearMatch && varietyMatch && instituteMatch;
     });
   }, [filters, tableData]);
@@ -269,17 +276,12 @@ export default function Filterbystateandmarket() {
             Your account is <strong>blocked</strong>.
             Contact administrator to get unblocked.
           </Typography>
-
           <div className="bg-orange-100 p-4 rounded-lg mb-6 text-left text-sm">
             <p><strong>Account Status:</strong></p>
             <p>User: <span className="font-medium">{effectiveUser?.email || 'Unknown'}</span></p>
             <p>Blocked: <span className="font-semibold text-red-600">YES</span></p>
             <p>Access: <span className="font-semibold text-red-600">DENIED</span></p>
-            <p className="mt-2 text-xs text-gray-600">
-              Admin must go to Content Manager → Users → Toggle "Blocked" OFF
-            </p>
           </div>
-
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link to="/dashboard" className="px-6 py-3 bg-orange-600 text-white rounded-md font-semibold hover:bg-orange-700 transition">
               Dashboard
@@ -305,7 +307,6 @@ export default function Filterbystateandmarket() {
           <Typography variant="h2">
             Your account is created but waiting for admin approval.
           </Typography>
-
           <Link to="/dashboard" className="px-6 py-3 bg-yellow-600 text-white rounded-md mt-6 inline-block font-semibold hover:bg-yellow-700 transition">
             Go to Dashboard
           </Link>
@@ -314,7 +315,7 @@ export default function Filterbystateandmarket() {
     );
   }
 
-  // ✅ APPROVED CONTENT RENDERS HERE - UI unchanged
+  // ✅ APPROVED CONTENT RENDERS HERE
   return (
     <div className="min-h-screen container mx-auto mt-10 bg-gray-100 p-6">
       <div className="flex flex-col lg:flex-row gap-6">
@@ -340,6 +341,12 @@ export default function Filterbystateandmarket() {
                 </span>
               )}
             </div>
+          </div>
+
+          {/* 🔥 FILTER COUNTS DEBUG */}
+          <div className="mb-4 p-3 bg-green-50 border rounded-lg text-xs">
+            <div>States: {states.length} | Years: {years.length} | Segments: {segments.length}</div>
+            <div>🔥 Varieties: {varieties.length} | Institutes: {institutes.length}</div>
           </div>
 
           {/* GRAPHS */}
