@@ -4,7 +4,7 @@ import { FaUser, FaCommentDots } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Aos from "aos";
 import "aos/dist/aos.css";
-import profileBg from '/blogs.jpg'
+import profileBg from '/banner/All Blogs.jpg.jpeg'
 import blogs from "../utils/Blogs";
 import ProfileSection from "../components/Profilesection";
 

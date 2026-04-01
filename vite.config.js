@@ -11,8 +11,11 @@ export default defineConfig({
     watch: {
       usePolling: true, // ✅ Fixes Windows refresh issue
     },
+    host: true, // important
+    allowedHosts: [
+      "deferred-clemente-nittier.ngrok-free.dev"
+    ],
     hmr: true,
   },
 });
 
- 

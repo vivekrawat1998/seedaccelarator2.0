@@ -12,12 +12,12 @@ const regionData = [
 ];
 
 const orgData = [
-  { type: "Private Seed Cos", p2024: 17, p2025: 20, total: 37, percent: 40.66 },
-  { type: "Public Institutes", p2024: 16, p2025: 3, total: 19, percent: 20.88 },
+  { type: "Private Seed Companies", p2024: 17, p2025: 20, total: 37, percent: 40.66 },
+  { type: "Public Institutions", p2024: 16, p2025: 3, total: 19, percent: 20.88 },
   { type: "NGOs", p2024: 1, p2025: 3, total: 4, percent: 4.40 },
-  { type: "State Gov Depts", p2024: 1, p2025: 1, total: 2, percent: 2.20 },
-  { type: "National and state seed organisation", p2024: 1, p2025: 8, total: 9, percent: 9.89 },
-  { type: "FPO/FPC", p2024: 15, p2025: 5, total: 20, percent: 21.98 },
+  { type: "State Government Departments", p2024: 1, p2025: 1, total: 2, percent: 2.20 },
+  { type: "National and State Seed Corporations", p2024: 1, p2025: 8, total: 9, percent: 9.89 },
+  { type: "FPOs/FPCs", p2024: 15, p2025: 5, total: 20, percent: 21.98 },
 ];
 
 const CoolStatsTables = () => {
@@ -35,31 +35,29 @@ const CoolStatsTables = () => {
         className="bg-white rounded-3xl shadow-2xl md:p-8 p-3 border border-prime relative"
         data-aos="fade-right"
       >
-        <h2 className="md:text-2xl text-lg font-extrabold text-green-700 mb-7 font-parkinsans text-center tracking-wide">
+        <h2 className="md:text-2xl text-lg font-extrabold text-black mb-7 font-Nunito  text-center tracking-[3px]">
           Regions-Wise Participants
         </h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm border-separate border-spacing-y-2">
-            <thead>
-              <tr className="bg-prime text-white font-parkinsans">
-                <th className="px-4 py-3 rounded-l-xl">Region</th>
+          <table className="min-w-full text-start text-sm border-separate border-spacing-y-2">
+            <thead className="text-[16px]">
+              <tr className="bg-prime text-white font-Karla ">
+                <th className="px-4 py-3 text-start rounded-l-xl">Region</th>
                 <th className="px-4 py-3">2024</th>
                 <th className="px-4 py-3">2025</th>
                 <th className="px-4 py-3">Total</th>
-                <th className="px-4 py-3 rounded-r-xl">% of Total</th>
               </tr>
             </thead>
             <tbody>
               {regionData.map((row, idx) => (
                 <tr
                   key={row.region}
-                  className={`${idx % 2 === 0 ? "bg-green-50" : "bg-white"} hover:bg-emerald-50 text-start font-Karla transition`}
+                  className={`${idx % 2 === 0 ? "bg-green-50" : "bg-white"} hover:bg-emerald-50 text-[16px] text-start font-Karla transition`}
                 >
                   <td className="px-4 py-3 font-semibold text-green-900">{row.region}</td>
                   <td className="px-4 py-3 text-center text-yellow-700 font-bold">{row.p2024}</td>
                   <td className="px-4 py-3 text-center text-green-700 font-bold">{row.p2025}</td>
                   <td className="px-4 py-3 text-center font-bold text-yellow-700">{row.total}</td>
-                  <td className="px-4 py-3 font-bold">{row.percent}%</td>
                 </tr>
               ))}
             </tbody>
@@ -69,34 +67,32 @@ const CoolStatsTables = () => {
 
       {/* Organization Type Table */}
       <div
-        className="bg-white rounded-3xl shadow-2xl md:p-8 p-3 border border-yellow-700 relative"
+        className="bg-white rounded-3xl shadow-2xl md:p-8 p-3 border border-green-700 relative"
         data-aos="fade-left"
       >
-        <h2 className="md:text-2xl text-lg font-extrabold text-yellow-700 mb-7 font-parkinsans text-center tracking-wide">
+        <h2 className="md:text-2xl text-lg font-extrabold text-black mb-7 font-Nunito  text-center tracking-[3px]">
           Organization Type and Participation
         </h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm border-separate border-spacing-y-2">
-            <thead>
-              <tr className="bg-yellow-700 text-white font-parkinsans">
-                <th className="px-4 py-3 rounded-l-xl">Organization Type</th>
+          <table className="min-w-full border-separate border-spacing-y-2">
+            <thead className="text-[16px]">
+              <tr className="bg-prime text-sm  text-white font-Karla">
+                <th className="px-4 py-3 text-start rounded-l-xl">Organization Type</th>
                 <th className="px-4 py-3">2024</th>
                 <th className="px-4 py-3">2025</th>
                 <th className="px-4 py-3">Total</th>
-                <th className="py-3 rounded-r-xl">% of Total</th>
               </tr>
             </thead>
             <tbody>
               {orgData.map((row, idx) => (
                 <tr
                   key={row.type}
-                  className={`${idx % 2 === 0 ? "bg-yellow-50" : "bg-white"} hover:bg-yellow-100 font-Karla transition`}
+                  className={`${idx % 2 === 0 ? "bg-green-50" : "bg-white"} hover:bg-green-100 font-Karla transition`}
                 >
-                  <td className="px-4 py-3 font-semibold text-yellow-800">{row.type}</td>
+                  <td className="px-4 py-3 font-semibold text-green-800">{row.type}</td>
                   <td className="px-4 py-3 text-yellow-700 text-center font-bold">{row.p2024.toString().padStart(2, "0")}</td>
                   <td className="px-4 py-3 text-center text-prime font-bold">{row.p2025.toString().padStart(2, "0")}</td>
-                  <td className="px-4 py-3 font-bold text-center text-prime">{row.total}</td>
-                  <td className="px-4 py-3 text-center font-bold">{row.percent}%</td>
+                  <td className="px-4 py-3 font-bold text-center text-yellow-700">{row.total}</td>
                 </tr>
               ))}
             </tbody>

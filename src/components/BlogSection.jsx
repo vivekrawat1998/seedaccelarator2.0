@@ -21,13 +21,17 @@ export default function BlogSection() {
         <section className="w-full py-16 bg-white">
             <div className="max-w-7xl mx-auto px-4">
                 {/* Header */}
-                    <div data-aos="fade-up">
-                       
-                        <h2 className="text-3xl text-center mb-10 md:text-5xl font-Nunito font-bold text-[#173323] mb-2">
-                            Recent Blogs from Seeds
-                            System Insights
-                        </h2>
-                    </div>
+                <div data-aos="fade-up">
+
+                    <h2 className="text-3xl text-center mb-10 md:text-5xl font-Nunito tracking-[3px] font-bold text-[#173323] mb-2">
+                        Recent
+                        <span className="px-2 py-1  text-[#199b6a] rounded-xl font-Nunito tracking-[4px] ">
+                            Blogs
+                        </span>
+                        from Seeds
+                        System
+                    </h2>
+                </div>
 
                 {/* Swiper */}
                 <Swiper
@@ -55,7 +59,7 @@ export default function BlogSection() {
                                             <FaCommentDots /> {blog.comments}
                                         </div>
                                     </div>
-                                    <h3 className="font-bold text-lg text-[#1b2e1c] mb-4">{blog.title}</h3>
+                                    <h3 className="font-bold text-lg font-Karla font-bold text-[#1b2e1c] mb-4">{blog.title}</h3>
                                     <div className="mt-auto">
                                         <button
                                             onClick={() => navigate(`/blog/${blog.id}`)}

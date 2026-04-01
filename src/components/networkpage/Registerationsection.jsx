@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, updateUserRole } from "../../api/auth";
 import SeedScalingTerms from "../../components/networkpage/Seedterms";
@@ -217,24 +217,26 @@ export default function RegistrationPage() {
         return (
             <div className=" bg-gradient-to-br from-green-50 to-blue-50 py-10 px-4">
                 <div className="max-w-md mx-auto text-center font-karla">
-                    <Typography variant="h1" className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-800 text-transparent bg-clip-text mb-6">
-                        Create Account
+                    <Typography variant="h1" className="text-4xl  border-2 font-bold bg-gradient-to-r from-green-600 to-green-800 text-transparent bg-clip-text mb-6">
+                        Sign up 
+                        
+                        <br /> To Become a Member
                     </Typography>
                     <p className="text-xl text-gray-600 mb-12 font-Karla max-w-md mx-auto leading-relaxed">
-                        Joining the SAN is voluntary, and there is no membership fee at present.”
+                        Joining the SAN is voluntary, and there is no membership fee at present.
                     </p>
                     <div className=" flex gap-10   justify-between">
                         <button
-                            className="w-full bg-gradient-to-r cursor-pointer from-green-600 to-green-700 text-white py-6 px-8 rounded-2xl shadow-xl font-bold text-lg hover:shadow-2xl hover:from-green-700 transition-all"
+                            className="w-full bg-prime cursor-pointer text-white py-6 px-8 rounded-2xl shadow-xl font-bold text-lg hover:shadow-2xl hover:from-green-700 transition-all"
                             onClick={() => setRegisterAs("accelerator")}
                         >
-                            🚀 Accelerator
+                            Accelerator
                         </button>
                         <button
-                            className="w-full bg-gradient-to-r cursor-pointer from-yellow-500 to-yellow-600 text-white py-6 px-8 rounded-2xl shadow-xl font-bold text-lg hover:shadow-2xl hover:from-yellow-600 transition-all"
+                            className="w-full bg-yellow-400 cursor-pointer  text-black py-6 px-8 rounded-2xl shadow-xl font-bold text-lg hover:shadow-2xl hover:from-yellow-600 transition-all"
                             onClick={() => setRegisterAs("breeder")}
                         >
-                            🌱 Breeder
+                            Breeder
                         </button>
                     </div>
                 </div>

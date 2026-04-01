@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import blogs from "../utils/Blogs";
 import { FaUser, FaCommentDots, FaArrowLeft } from "react-icons/fa";
 import ProfileSection from "../components/Profilesection";
-import profileBg from '/blogsdetails.webp'
+import profileBg from '/banner/Individual Blog Header_1920X600 px.jpg.jpeg'
 
 export default function BlogDetails() {
     const { id } = useParams();

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-import mapImg from "/our work.png"; // Adjust this path as per your setup
+import mapImg from "/logo/map (1).png"; // Adjust this path as per your setup
 import Typography from "../../ui/Heading";
 
 const NetworkMembersHero = () => {
@@ -25,33 +25,30 @@ const NetworkMembersHero = () => {
           <img
             src={mapImg}
             alt="SAN Network Members Map"
-            className="w-full max-w-md object-contain"
+            className="w-full h-full object-cover"
             loading="lazy"
           />
         </div>
       </div>
       {/* Right: Text */}
       <div
-        className="w-full md:w-1/2 flex flex-col justify-center items-start"
+        className="w-full md:w-1/2 text-[20px] flex flex-col justify-center items-start"
         data-aos="fade-left"
         data-aos-delay="200"
       >
-      
-        <Typography variant="h1" className="text-4xl md:text-5xl font-extrabold bg-prime font-Karla text-transparent bg-clip-text drop-shadow-lg mb-4 animate-fadein">
-          SAN <span className="text-gray-900"> Network Participants</span>
-        </Typography>
-        <p className=" text-gray-700 font-Karla mb-4">
-          Spanning India’s diverse ecosystems, fostering innovation through collaboration for resilient seed systems.
+
+        <p className=" text-gray-700 text-[26px] font-Karla mb-4">
+          Spanning India’s diverse ecosystems and fostering innovation through collaboration for resilient seed systems.
         </p>
         <ul className="mt-3 pl-5 text-gray-800 font-Karla space-y-2 list-disc">
           <li>
-            <span className="font-semibold text-green-700">Representation</span> across all regions of India
+            <span className="font-semibold text-green-700">Inclusive representation</span>  from all regions of India
           </li>
           <li>
-            <span className="font-semibold text-emerald-700">Organizations</span> include FPCs, KVKs, NGOs, seed companies, universities, and more
+            <span className="font-semibold text-emerald-700">Stakeholders</span>  include FPCs, KVKs, NGOs, seed companies, universities, and other key institutions
           </li>
           <li>
-            <span className="font-semibold text-yellow-700">Collaborative projects</span> driving sustainable agriculture
+            <span className="font-semibold text-green-700">Partnership-driven efforts</span>  for locally adapted seed systems
           </li>
         </ul>
       </div>

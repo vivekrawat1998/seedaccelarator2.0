@@ -1,7 +1,7 @@
 import React from 'react'
 import ProfileSection from '../components/Profilesection'
 import NetworkMembersPage from './NetworkMembers'
-import profileBg from '/Member Network page .JPG'
+import profileBg from '/banner/SAN Members_1920X600 px.jpg.jpeg'
 
 const Networkpage = () => {
     return (

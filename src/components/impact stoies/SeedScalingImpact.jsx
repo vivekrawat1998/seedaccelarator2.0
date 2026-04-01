@@ -6,125 +6,163 @@ export default function SeedScalingDashboard() {
   const [selectedYear, setSelectedYear] = useState(seedDataByYear[0].year);
   const yearData = seedDataByYear.find((y) => y.year === selectedYear);
 
-  // Simplified columns - only Variety and Total Quantity
   const columns = [
-    { key: "variety", label: "Varieties" },
-    { key: "total", label: "Total Quantity (kg)" },
+    { key: "variety", label: "Rice Variety" },
+    { key: "breederSeeds", label: "Breeder Seed Distributed (kg)" },
+    { key: "tlsSeeds", label: "TLS/CS Seeds Produced (kg)*" },
+    { key: "area", label: "Area Covered (ha)*" },
   ];
 
-  // Table row data - calculate total from all state columns
-  const rows = yearData.data.map((row, i) => {
-    const variety = row.variety || row.Varieties || "";
-
-    // Sum all numeric values from state columns (skip variety column)
-    const total = Object.keys(row)
-      .filter(key => key !== 'variety' && key !== 'Varieties')
-      .reduce((sum, key) => {
-        const value = parseFloat(row[key]);
-        return sum + (isNaN(value) ? 0 : value);
-      }, 0);
-
-    return {
-      id: i,
-      variety,
-      total: total.toLocaleString() || "0",
-    };
-  });
-
-  // Find grand total row
-  const grandTotalRow = rows.find(
-    (r) => r.variety?.toLowerCase() === "grand total"
-  );
-  const normalRows = rows.filter(
-    (r) => r.variety?.toLowerCase() !== "grand total"
+  // ✅ Grand totals
+  const totals = yearData.data.reduce(
+    (acc, row) => {
+      acc.breederSeeds += row.breederSeeds || 0;
+      acc.tlsSeeds += row.tlsSeeds || 0;
+      acc.area += row.area || 0;
+      return acc;
+    },
+    { breederSeeds: 0, tlsSeeds: 0, area: 0 }
   );
 
   return (
     <div className="container mx-auto mt-12 px-4">
-      {/* Heading Section */}
-      <div className=" mb-6">
-        <Typography variant="h1">
+
+      {/* HEADER */}
+      <div className="mb-6">
+        <Typography variant="h1" className="text-black">
+          Regional Impact - Bangladesh and Nepal
+        </Typography>
+        <div className="grid md:grid-cols-2 gap-6 mb-20">
+
+          {/* BANGLADESH */}
+          <div className="bg-white rounded-2xl  border border-green-100 p-6  transition">
+
+            <h3 className="text-2xl font-bold text-[#116530] mb-4">
+              Bangladesh
+            </h3>
+
+            <div className="space-y-3 text-gray-700 font-Karla text-sm leading-relaxed">
+
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p>
+                  During 2022–23, IRRI lines accounted for <b>50%</b> of total BS indent and <b>98%</b> of STRVs.
+                </p>
+              </div>
+
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p>
+                  Key varieties: <b>BRRI dhan51, dhan52, dhan67, dhan71, dhan97, dhan99, BINA dhan-17</b>.
+                </p>
+              </div>
+
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p>
+                  In 2024–25, seed scaling was catalysed for <b>10 varieties</b> with <b>12 women-led federations</b>.
+                </p>
+              </div>
+
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p>
+                  Federations were linked with national partners like <b>BADC</b> and <b>DAE</b>.
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          {/* NEPAL */}
+          <div className="bg-white rounded-2xl  border border-green-100 p-6 transition">
+
+            <h3 className="text-2xl font-bold text-[#116530] mb-4">
+              Nepal
+            </h3>
+
+            <div className="space-y-3 text-gray-700 font-Karla text-sm leading-relaxed">
+
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p>
+                  During 2023–25, STRVs accounted for <b>31%</b> of total BS indent.
+                </p>
+              </div>
+
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p>
+                  All STRVs were developed using <b>IRRI germplasm</b>.
+                </p>
+              </div>
+
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p>
+                  In 2024-25, newer HYVs and STRVs 
+                  <b> (Hardinath-6, Gangasagar-2, Ghaya-3) </b>
+                   were scaled after the OFTs.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Typography variant="h1" className="text-black">
           Seed Scaling Impact
         </Typography>
-        <Typography variant="h3">
-          Dashboard showing variety-wise total EGS linkage facilitated (2022–2025) — seed quantity in kilograms.
-        </Typography>
-        <p className="text-gray-700 text-base font-Karla mt-2 max-w-2xl mx-auto leading-relaxed">
-        </p>
+
       </div>
 
-      {/* Year Filter Buttons */}
-      <div className="flex  flex-wrap gap-3 mb-6">
-        {seedDataByYear.map((yr) => (
-          <button
-            key={yr.year}
-            onClick={() => setSelectedYear(yr.year)}
-            className={`px-5 py-2.5 font-semibold rounded-lg transition-all duration-300 border shadow-sm font-Nunito
-              ${selectedYear === yr.year
-                ? "bg-[#116530] text-white scale-105 shadow-md"
-                : "bg-[#f3fcf7] text-[#0c8140] border-[#0c8140] hover:bg-[#e9f9ef]"
-              }`}
-          >
-            {yr.year}
-          </button>
-        ))}
-      </div>
-
-      {/* Table Container */}
-      <div className="bg-white rounded-2xl shadow-xl border border-green-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden ">
         <div className="overflow-x-auto">
-          <div style={{ maxHeight: "65vh" }} className="overflow-y-auto relative">
-            <table className="w-full text-sm font-Nunito relative">
-              {/* Table Header */}
-              <thead className="sticky top-0 z-20 bg-gradient-to-r from-[#116530] to-[#198754] text-white shadow-sm">
-                <tr>
-                  {columns.map((col) => (
-                    <th
-                      key={col.key}
-                      className="px-4 py-3 text-left font-Karla font-semibold text-[15px] border-b border-green-700/40"
-                    >
-                      {col.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
+          <table className="w-full text-sm font-Karla text-green-700">
 
-              {/* Table Body */}
-              <tbody>
-                {normalRows.map((row, i) => (
-                  <tr
-                    key={row.id}
-                    className={`transition-colors duration-300 ${i % 2 === 0
-                      ? "bg-white hover:bg-[#f3fcf7]"
-                      : "bg-[#f9fefb] hover:bg-[#e9f9ef]"
-                      }`}
+            {/* HEADER */}
+            <thead className="bg-prime text-black text-[20px]">
+              <tr>
+                {columns.map((col) => (
+                  <th
+                    key={col.key}
+                    className="px-4 py-3 font-semibold border"
                   >
-                    {columns.map((col) => (
-                      <td
-                        key={col.key}
-                        className="px-4 py-2 border-b border-gray-100 font-semibold"
-                      >
-                        {row[col.key] || "0"}
-                      </td>
-                    ))}
-                  </tr>
+                    {col.label}
+                  </th>
                 ))}
+              </tr>
+            </thead>
 
-                {/* Sticky Grand Total Row */}
-                {grandTotalRow && (
-                  <tr className="sticky bottom-0 bg-[#198754] text-white font-bold z-30 shadow-[0_-2px_6px_rgba(0,0,0,0.1)]">
-                    {columns.map((col) => (
-                      <td
-                        key={col.key}
-                        className="px-4 py-3 border-t border-green-700/50 font-extrabold text-lg"
-                      >
-                        {grandTotalRow[col.key] || "0"}
-                      </td>
-                    ))}
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            {/* BODY */}
+            <tbody>
+              {yearData.data.map((row, i) => (
+                <tr
+                  key={i}
+                  className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                >
+                  <td className="px-10 py-2 text-center text-black border ">{row.variety}</td>
+                  <td className="px-10 py-2 text-center text-black border ">
+                    {row.breederSeeds.toLocaleString()}
+                  </td>
+                  <td className="px-10 py-2 text-center text-black border ">
+                    {row.tlsSeeds.toLocaleString()}
+                  </td>
+                  <td className="px-10 py-2 text-center text-black border ">
+                    {row.area.toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+
+              {/* GRAND TOTAL */}
+              <tr className="bg-prime text-white font-bold">
+                <td className="px-4 py-3 text-black text-center ">Grand Total</td>
+                <td className="px-4 py-3 text-center text-black border ">
+                  {totals.breederSeeds.toLocaleString()}
+                </td>
+                <td className="px-4 py-3 text-center text-black border ">
+                  {totals.tlsSeeds.toLocaleString()}
+                </td>
+                <td className="px-4 py-3 text-center text-black border ">
+                  {totals.area.toLocaleString()}
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+          <div className="mt-4 px-4 py-3 bg-green-50 border border-green-200 rounded-lg text-sm font-Karla text-gray-700">
+            <span className="font-semibold text-black">* Estimated value</span>{" "}
           </div>
         </div>
       </div>

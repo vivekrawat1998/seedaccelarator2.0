@@ -1,7 +1,7 @@
 import React from 'react'
 import ProfileSection from '../components/Profilesection'
 import OurWorkTimeline from '../components/Ourworkpage/Ourworkpage'
-import profileBg from '/SAM_1JPG.JPG'
+import profileBg from '/banner/Our Work_1920X600 px.jpg.jpeg'
 
 const Ourwork = () => {
     return (

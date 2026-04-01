@@ -1,6 +1,6 @@
 import React from 'react'
 import ProfileSection from '../components/Profilesection'
-import profileBg from '/SAM_3.JPG'
+import profileBg from '/banner/About Us_1920X600 px.jpg.jpeg'
 import AboutSAN from '../components/Aboutpage/AboutSAN'
 
 const Aboutus = () => {

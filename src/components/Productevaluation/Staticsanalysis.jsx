@@ -63,29 +63,6 @@ const stateDistricts = [
 export default function StatisticalAnalysisSection() {
   return (
     <section className="bg-white rounded-2xl mt-10 ">
-      {/* Section Heading */}
-      <Typography variant="h1" >
-        Statistical Analysis
-      </Typography>
-      <Typography variant="p" className="">
-        Quantitative traits were analyzed using a Mixed Linear Model (BLUP). Trial reliability was evaluated
-        through broad-sense heritability (
-        <span className="italic">
-          H<sup>2</sup>
-        </span>
-        ) and coefficient of determination (
-        <span className="italic">
-          R<sup>2</sup>
-        </span>
-        ). Predicted values for each variable were tested for significance at
-        the 95% confidence level.
-      </Typography>
-
-      {/* Image Section */}
-      <Typography variant="h1" className="mt-10">
-        The KVK and NGO Network (2022–25)
-      </Typography>
-
       <div className="flex justify-center">
         <div className="w-full md:w-4/5 relative rounded-xl overflow-hidden shadow-xl group">
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
@@ -98,7 +75,7 @@ export default function StatisticalAnalysisSection() {
       </div>
 
       {/* Multi-Year Table */}
-      <Typography variant="h2" >
+      <Typography variant="h1" >
         Multi-Year OFT Summary
       </Typography>
 
@@ -134,8 +111,8 @@ export default function StatisticalAnalysisSection() {
         </table>
       </div>
 
-      <Typography variant="h2">
-        State / Districts
+      <Typography variant="h1">
+        States with OFT Implementation
       </Typography>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow-md text-left">

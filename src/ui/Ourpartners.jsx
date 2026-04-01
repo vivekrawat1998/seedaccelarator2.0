@@ -50,7 +50,7 @@ const Ourpartners = () => {
         >
             <h1 className="md:text-4xl text-3xl mb-10 font-Nunito text-black md:text-6xl font-bold  text-center ">
                 Our
-                <span className="px-2 py-1  text-prime rounded-xl font-parkinsans ">
+                <span className="px-2 py-1  text-[#199b6a] rounded-xl font-Nunito tracking-[4px] ">
                     Partners
                 </span>
             </h1>

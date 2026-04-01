@@ -5,10 +5,9 @@ import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
 
 const dashboard = [
-  { label: "Total Regions Covered", value: 6 },
-  { label: "Total Organizations Participated", value: 64 },
+  { label: " Regions Covered", value: 6 },
+  { label: " Organizations Participated", value: 64 },
   { label: "Seed Varieties Promoted", value: 60 },
-  { label: "Licensing Facilitated", value: "Yes" },
 ];
 
 const DashboardOverview = () => {
@@ -20,32 +19,34 @@ const DashboardOverview = () => {
 
   return (
     <section ref={ref} className="max-w-5xl mx-auto py-12" data-aos="fade-up">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
         {dashboard.map((item, idx) => (
           <div
             key={idx}
             className="
-              bg-gradient-to-br from-green-200 via-teal-200 to-emerald-200
-              p-0.5 rounded-2xl transition-all duration-200
-              hover:from-green-400 hover:to-emerald-400 hover:scale-105
-              shadow-lg
-            "
+    group
+    bg-[#50b487]
+    rounded-2xl
+    transition-all duration-300
+    hover:bg-yellow-400 hover:scale-105
+    shadow-lg hover:shadow-2xl
+  "
             data-aos="fade-up"
-            data-aos-delay={idx * 150} // stagger delays by 150ms per card
+            data-aos-delay={idx * 150}
           >
             <div
               className="
-                bg-white rounded-2xl h-full w-full text-center flex flex-col items-center justify-center
-                py-8 px-5
-                transition-all duration-200
-                hover:shadow-2xl
-              "
+      rounded-2xl h-full w-full text-center 
+      flex flex-col items-center justify-center
+      py-8 px-5
+    "
             >
+              {/* VALUE */}
               <div
                 className="
-                  text-4xl md:text-5xl font-extrabold text-green-700 mb-2 drop-shadow-[0_2px_4px_rgba(34,197,94,0.18)]
-                  transition-all duration-200
-                "
+        text-4xl md:text-5xl font-Nunito tracking-[3px] font-extrabold
+        text-white group-hover:text-black transition-colors duration-300 mb-2
+      "
               >
                 {typeof item.value === "number" ? (
                   inView ? (
@@ -54,10 +55,14 @@ const DashboardOverview = () => {
                     0
                   )
                 ) : (
-                  <span className="text-green-700">{item.value}</span>
+                  <span>{item.value}</span>
                 )}
               </div>
-              <div className="text-gray-700 mt-2 text-xs md:text-base font-semibold">{item.label}</div>
+
+              {/* LABEL */}
+              <div className="text-white/90 group-hover:text-black mt-2 text-xs md:text-base font-Karla font-semibold transition-colors duration-300">
+                {item.label}
+              </div>
             </div>
           </div>
         ))}

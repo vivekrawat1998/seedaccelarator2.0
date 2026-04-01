@@ -66,7 +66,7 @@ const SegmentationProcessSection = () => (
             {segmentationData.map((segment, idx) => (
                 <div
                     key={segment.title}
-                    className="bg-green-50 border-l-8 border-green-700 rounded-xl p-5 shadow flex flex-col"
+                    className="bg-prime/10 border-l-8 border-yellow-400 rounded-xl p-5 shadow flex flex-col"
                 >
                     <Typography variant="h2">
                         {segment.title}

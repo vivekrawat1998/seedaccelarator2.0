@@ -184,7 +184,7 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-8">
+        <div className="min-h-screen bg-gradient-to-br mt-24 from-green-50 to-blue-50 p-8">
             <div className="max-w-6xl mx-auto space-y-8">
                 <div className="bg-white p-6 rounded-2xl shadow flex justify-between">
                     <h1 className="text-2xl font-bold">

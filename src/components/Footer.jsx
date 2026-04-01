@@ -13,15 +13,15 @@ const FooterSection = () => {
     return (
         <footer className="font-Nunito">
             {/* Main Footer */}
-            <div className="bg-prime text-gray-200">
+            <div className="bg-[#008236] text-gray-200">
                 <div className="max-w-7xl mx-auto px-4 py-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-14">
 
                     {/* Brand */}
                     <div className="space-y-5">
                         <img
-                            src="/logo seed.jpg"
+                            src="/logo/IRRI-CG 3 lines spell out_IRRI Logo white.png"
                             alt="IRRI Logo"
-                            className="w-36 h-20 object-contain"
+                            className="w-[200px] h-16  object-cover"
                         />
 
                         <p className="text-sm font-Karla leading-relaxed text-gray-300">

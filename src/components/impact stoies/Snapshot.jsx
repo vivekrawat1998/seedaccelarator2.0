@@ -14,30 +14,30 @@ export default function VarietiesScalingSnapshot() {
     <div className="min-h-screen mt-20 grid grid-cols-1 md:grid-cols-2 gap-6 p-6 md:p-12">
       {/* Left Image Block */}
       <div
-        className="mb-8 md:mb-0 md:mr-10 flex-shrink-0 w-full  rounded overflow-hidden shadow-lg border border-green-700 bg-white flex items-center justify-center"
+        className="mb-8 md:mb-0 md:mr-10 flex-shrink-0 w-full rounded-3xl  overflow-hidden shadow-lg border border-green-700 bg-white flex items-center justify-center"
         data-aos="fade-right"
       >
         <img
           src={snapshotImg}
           alt="Snapshot"
-          className="object-cover w-full h-full"
+          className="object-cover w-full  h-full"
         />
       </div>
 
       {/* Main Card */}
       <div
-        className="w-full max-w-3xl bg-white border border-green-700 rounded shadow-lg px-6 md:px-12 py-8 mb-8 md:mb-0"
+        className="w-full max-w-3xl bg-white border border-green-700 rounded-3xl shadow-lg px-6 md:px-12 py-8 mb-8 md:mb-0"
         data-aos="zoom-in"
       >
-        <Typography data-aos="fade-up" variant="h1" className='mb-5'>
+        <Typography data-aos="fade-up" variant="h1" className='mb-5 text-black'>
 
           Varieties and Scaling Snapshot
         </Typography>
 
-        <ul className="text-gray-800 font-Karla space-y-4 text-base md:text-lg">
+        <ul className="text-gray-800 font-Karla space-y-4 text-base text-start md:text-lg">
           <li data-aos="fade-right" className="leading-relaxed">
             <span className="text-green-700 font-bold">●</span>{" "}
-            5 million ha in India under STRVs (drought, submergence, salinity, healthier rice).
+            5 million ha in India under STRVs (drought, submergence and salinity) and  healthier rice.
           </li>
           <li data-aos="fade-left" className="leading-relaxed">
             <span className="text-green-700 font-bold">●</span>{" "}
@@ -53,15 +53,15 @@ export default function VarietiesScalingSnapshot() {
           </li>
           <li data-aos="fade-right" className="leading-relaxed">
             <span className="text-green-700 font-bold">●</span>{" "}
-            ~15,000 MT of quality seed through the seed network convergence.
+            ~15,000 tons of quality seed through the seed network convergence.
           </li>
           <li data-aos="fade-left" className="leading-relaxed">
             <span className="text-green-700 font-bold">●</span>{" "}
-            ~322 MT EGS to SSCs and SAUs.
+            ~322 tons EGS to SSCs and SAUs.
           </li>
           <li data-aos="fade-right" className="leading-relaxed">
             <span className="text-green-700 font-bold">●</span>{" "}
-            Strengthening Kalanamak value chain - through SHGs.
+            Strengthening Kalanamak value chain  through SHGs.
           </li>
           <li data-aos="fade-left" className="leading-relaxed">
             <span className="text-green-700 font-bold">●</span>{" "}

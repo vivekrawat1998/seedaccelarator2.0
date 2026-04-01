@@ -130,7 +130,19 @@ export default function ContactSection() {
     }, []);
 
     return (
-        <section className="w-full py-16 bg-white">
+        <section className="w-full  bg-white">
+
+            <div data-aos="fade-up">
+
+                <h2 className="text-3xl text-center mb-10 md:text-5xl font-Nunito tracking-[3px] font-bold text-[#173323] mb-2">
+                    Get
+                    in
+                    <span className="px-2 py-1  text-[#199b6a] rounded-xl font-Nunito tracking-[4px] ">
+                        Touch
+                    </span>
+                    
+                </h2>
+            </div>
 
             <div
                 data-aos="fade-right"
@@ -140,24 +152,15 @@ export default function ContactSection() {
                 {/* LEFT SIDE */}
                 <div className="flex-1 w-full">
 
-                    <button className="flex font-Nunito items-center px-4 py-1 mb-6 rounded-full bg-gray-100 text-[#149247] font-semibold shadow-sm hover:bg-green-100 transition w-fit">
-                        <span className="mr-2">🐝</span>
-                        Get In Touch
-                    </button>
 
                     <h2 className="text-3xl md:text-4xl font-parkinsans text-[#0d2317] mb-8">
-                        Need information on new and improved rice varieties?
+                       Reach out anytime for information on new and improved rice varieties.
                         <br />
                         <br />
-                        <Link
-                            to="/contact"
-                            className="text-[#149247] underline hover:text-green-800 transition"
-                        >
-                            Contact Us Now.
-                        </Link>
+                       
                     </h2>
 
-                    <div className="overflow-hidden w-full max-w-md">
+                    <div className="overflow-hidden mt-20 w-full max-w-xl">
                         <img
                             src="/Women with Seedling.png"
                             alt="Contact Us"
@@ -176,21 +179,18 @@ export default function ContactSection() {
                         className="bg-prime/20 rounded-2xl shadow p-8 space-y-6 w-full"
                     >
 
-                        <h4 className="font-Nunito font-bold text-xl text-[#0d2317] mb-2">
+                        <h4 className="font-Nunito font-bold tracking-[3px] text-xl text-[#0d2317] mb-2">
                             Contact Form
                         </h4>
 
-                        <p className="text-[#6b726f] font-Karla text-sm mb-4">
-                            Reach out anytime — we’re here to help with your healthy food needs.
-                        </p>
-
+                     
                         {status && (
                             <div className="text-sm font-semibold bg-green-100 text-green-700">
                                 {status}
                             </div>
                         )}
 
-                        <div className="space-y-6">
+                        <div className="space-y-6 font-Karla">
 
                             {/* NAME */}
                             <div>

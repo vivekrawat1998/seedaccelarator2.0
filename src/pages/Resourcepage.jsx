@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthProvider"; // Adjust path
 import AOS from "aos";
 import "aos/dist/aos.css";
 import ProfileSection from "../components/Profilesection";
-import profileBg from "/banner/Resources_1920X1080 px.jpg";
+import profileBg from "/banner/Resources_1920X600 px.jpg.jpeg";
 import Typography from "../ui/Heading";
 import { trackDownload } from "../utils/trackDownload"; // Adjust path
 
@@ -49,7 +49,7 @@ const TrackedDownloadButton = ({ file, className = "" }) => {
   return (
     <button
       onClick={handleDownload}
-      className={`bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-lg font-semibold transition duration-150 font-Nunito flex items-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 ${className}`}
+      className={`bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-lg font-semibold transition duration-150 font-Karla flex items-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 ${className}`}
       disabled={!user}
     >
       <FaRegFilePdf className="text-sm" />
@@ -115,19 +115,18 @@ export default function ResourcesPage() {
       />
 
       <div className="min-h-screen container mx-auto bg-white py-14 px-6">
-        <Typography variant="h1">
+        <Typography variant="h1" className="text-black">
           Resources
         </Typography>
-        <Typography variant="h3" className="mb-10">
-          Explore our collection of reports and guides — preview them instantly or
-          download for in-depth insights.
+        <Typography variant="h3" className="mb-10 font-Karla text-[20px]">
+          Explore our reports and guides - preview instantly or download for comprehensive insightsc
         </Typography>
 
         {/* Category Filter Buttons */}
         <div className="flex flex-wrap gap-3 mb-8 w-full max-w-5xl">
           <button
             onClick={() => setSelectedCategory("all")}
-            className={`px-6 py-3 font-semibold rounded-xl transition-all duration-300 border shadow-sm font-Nunito ${selectedCategory === "all"
+            className={`px-6 py-3 font-semibold rounded-xl transition-all duration-300 border shadow-sm font-Karla ${selectedCategory === "all"
               ? "bg-green-700 text-white scale-105 shadow-md"
               : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
               }`}
@@ -136,7 +135,7 @@ export default function ResourcesPage() {
           </button>
           <button
             onClick={() => setSelectedCategory("SAN Meet Reports")}
-            className={`px-6 py-3 font-semibold rounded-xl transition-all duration-300 border shadow-sm font-Nunito ${selectedCategory === "SAN Meet Reports"
+            className={`px-6 py-3 font-semibold rounded-xl transition-all duration-300 border shadow-sm font-Karla ${selectedCategory === "SAN Meet Reports"
               ? "bg-green-700 text-white scale-105 shadow-md"
               : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
               }`}
@@ -145,7 +144,7 @@ export default function ResourcesPage() {
           </button>
           <button
             onClick={() => setSelectedCategory("Product Diaries")}
-            className={`px-6 py-3 font-semibold rounded-xl transition-all duration-300 border shadow-sm font-Nunito ${selectedCategory === "Product Diaries"
+            className={`px-6 py-3 font-semibold rounded-xl transition-all duration-300 border shadow-sm font-Karla ${selectedCategory === "Product Diaries"
               ? "bg-green-700 text-white scale-105 shadow-md"
               : "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
               }`}
@@ -166,7 +165,7 @@ export default function ResourcesPage() {
               <div className="flex items-center justify-between p-5 bg-green-100 border-b border-green-200">
                 <div className="flex items-center gap-3">
                   <FaRegFilePdf className="text-green-700 text-2xl" />
-                  <h3 className="font-semibold text-lg text-green-900 font-parkinsans">
+                  <h3 className="font-semibold text-lg text-green-900 font-Karla">
                     {res.name}
                   </h3>
                 </div>

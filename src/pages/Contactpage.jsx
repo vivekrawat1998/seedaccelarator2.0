@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import ProfileSection from "../components/Profilesection";
 import api from "../api/axios";
-import profileBg from "/banner/Contact Us_1920X1080 px.jpg";
+import profileBg from "/banner/Contact us_1920X600 px.jpg.jpeg";
 
 const categories = [
   "Farmer",
@@ -45,7 +45,7 @@ export default function ContactPage() {
       case "phone":
         error = /^\d{10,15}$/.test(value)
           ? ""
-          : "Phone must be 10-15 digits";
+          : "Please enter a valid phone number";
         break;
 
       case "category":
@@ -109,7 +109,7 @@ export default function ContactPage() {
       newErrors.email = "Please enter a valid email";
 
     if (!formData.phone || !/^\d{10,15}$/.test(formData.phone))
-      newErrors.phone = "Phone must be 10-15 digits";
+      newErrors.phone = "Your Mobile Number";
 
     if (!formData.category)
       newErrors.category = "Please select a category";
@@ -191,16 +191,16 @@ export default function ContactPage() {
         breadcrumbs={["Home", "Contact us"]}
       />
 
-      <div className="min-h-screen bg-gradient-to-br from-green-50/50 to-white font-Nunito py-16 px-4 flex flex-col items-center">
+      <div className="min-h-screen bg-gradient-to-br from-green-50/50 to-white font-Karla py-16 px-4 flex flex-col items-center">
 
         {/* Contact Form */}
-        <div className="w-full max-w-3xl bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-green-100/50 px-8 py-12 mx-4">
+        <div className="w-full max-w-3xl bg-white/80 backdrop-blur-[18px] rounded-2xl shadow-2xl border border-green-100/50 px-8 py-12 mx-4">
 
           <div className="flex flex-col items-center mb-10">
-            <h2 className="md:text-5xl text-4xl lg:text-6xl font-extrabold bg-gradient-to-r from-green-700 to-green-900 bg-clip-text text-transparent mb-4 text-center">
+            <h2 className="md:text-5xl text-4xl lg:text-6xl font-Nunito tracking-[1px] font-extrabold bg-gradient-to-r from-green-700 to-green-900 bg-clip-text text-transparent mb-4 text-center">
               Get in Touch
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-green-600 rounded-full"></div>
+            <div className="w-full h-1 bg-gradient-to-r from-yellow-500 to-green-600 rounded-full"></div>
           </div>
 
           {submitStatus && (
@@ -215,7 +215,7 @@ export default function ContactPage() {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              placeholder="Enter your full name"
+              placeholder="Please enter your full name"
               className="w-full px-4 py-3 rounded-xl border-2"
             />
 
@@ -223,7 +223,7 @@ export default function ContactPage() {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder="your.email@example.com"
+              placeholder="Please enter your email address"
               className="w-full px-4 py-3 rounded-xl border-2"
             />
 
@@ -231,7 +231,7 @@ export default function ContactPage() {
               name="phone"
               value={formData.phone}
               onChange={handlePhoneChange}
-              placeholder="10-15 digits only"
+              placeholder="Please enter your mobile number"
               className="w-full px-4 py-3 rounded-xl border-2"
             />
 
@@ -270,33 +270,30 @@ export default function ContactPage() {
         </div>
       </div>
       {/* Info Section + Map - UNCHANGED */}
-      <div className="w-full max-w-7xl mt-16 grid grid-cols-1 xl:grid-cols-2 gap-10 mb-20">
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-green-100/50 shadow-2xl px-10 py-12 flex flex-col gap-8 justify-center hover:shadow-3xl transition-all duration-300">
-          <h3 className="text-2xl font-bold text-green-800 font-parkinsans text-center mb-6">Contact Information</h3>
+      <div className="w-full max-w-7xl mx-auto mt-16 grid grid-cols-1 xl:grid-cols-2 gap-10 mb-20">
+        <div className="bg-white/80 backdrop-blur-[18px] rounded-2xl border border-green-100/50 shadow-2xl px-10 py-12 flex flex-col gap-8 justify-center hover:shadow-3xl transition-all duration-300">
+          <h3 className="text-2xl font-bold text-green-800 font-Nunito tracking-[2px] text-center mb-6">Contact Information</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="flex flex-col items-start md:items-center group hover:scale-105 transition-all duration-300">
               <FaMapMarkerAlt className="text-green-600 text-4xl mb-4 group-hover:scale-110 transition-all duration-300" />
-              <div className="font-bold text-xl text-green-800 font-parkinsans mb-3">Headquarters</div>
-              <div className="text-gray-700 font-Karla text-base mb-3 leading-relaxed">
+              <div className="font-bold text-xl text-green-800 font-Nunito tracking-[2px] mb-3">Headquarters</div>
+              <div className="text-gray-700 font-Karla text-[18px] mb-3 leading-relaxed">
                 Pili Drive, Los Baños,<br />
                 Laguna 4031, Philippines
               </div>
-              <div className="w-full h-px bg-gradient-to-r from-green-200 to-transparent"></div>
-              <div className="font-bold text-lg text-green-800 mt-3 font-parkinsans">Mailing Address</div>
-              <div className="text-gray-700 font-Karla text-sm leading-relaxed mt-1">
-                DAPO Box 7777<br />
-                Metro Manila 1301,<br />
-                Philippines<br /><br />
-                IRRI PO BOX 34499<br />
-                UPLB Post Office<br />
-                Los Baños, Laguna 4031
+              <div className="font-bold text-lg text-green-800 mt-3 font-Nunito tracking-[1px]">Mailing Address</div>
+              <div className="text-gray-700 font-Karla text-[18px] leading-relaxed mt-1">
+                1st Floor, CG Block, NASC Complex, Dev Prakash Shastri Marg, Pusa, New Delhi – 110012
+                <br />
+                <br />
+  
               </div>
             </div>
 
             <div className="flex flex-col items-start md:items-center">
               <FaPhoneAlt className="text-green-600 text-4xl mb-4" />
-              <div className="font-bold text-xl text-green-800 font-parkinsans mb-4">Contact Numbers</div>
-              <div className="space-y-1 text-gray-800 text-lg font-medium">
+              <div className="font-bold text-xl inline-block text-green-800 font-Nunito tracking-[1px] mb-4">Contact Numbers</div>
+              <div className="space-y-1 text-gray-700 text-[18px] ">
                 <div>+63 2 8580 5600</div>
                 <div>+63 2 8845 0563</div>
                 <div>+63 2 8580 5699</div>
@@ -305,10 +302,12 @@ export default function ContactPage() {
               </div>
             </div>
 
+
+
             <div className="flex flex-col items-start md:items-center">
               <FaEnvelope className="text-green-600 text-4xl mb-4" />
-              <div className="font-bold text-xl text-green-800 font-parkinsans mb-4">Email Us</div>
-              <div className="text-gray-800 text-lg font-semibold bg-green-50 px-4 py-2 rounded-xl border-2 border-green-100 hover:bg-green-100 transition-all duration-200 cursor-pointer">
+              <div className="font-bold text-xl text-green-800 font-Nunito tracking-[1px] mb-4">Email Us</div>
+              <div className="text-gray-800 text-[18px]  px-4 py-2 rounded-xl hover:bg-green-100 transition-all duration-200 cursor-pointer">
                 <a href="mailto:info@irri.org" className="hover:underline">info@irri.org</a>
               </div>
             </div>
@@ -336,4 +335,3 @@ export default function ContactPage() {
 }
 
 
- 

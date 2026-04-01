@@ -23,55 +23,49 @@ const breedingCenters = [
 export default function ProductInfoSection() {
   return (
     <section className="bg-white mt-10 rounded-lg ">
-      <Typography variant="h1">
-        Product Evaluation Information and Results
-      </Typography>
-
-      <Typography variant="h2" className="mb-4">
-        (Farmer led and multi-location)
-      </Typography>
+   
 
       <div className="mt-10">
         <Typography variant="h1">
           About multi-location adaptive trials
         </Typography>
-        <Typography variant='h3 ' className='mt-2 mb-5'>
+        <Typography variant='h3' className='mt-2 mb-5'>
           Every year, IRRI invites new-variety nomination (recently released) from national breeding centers in prescribed template. Once the varietal nominations from different breeders are received, those are categorized under preferred market segments.
         </Typography>
 
-        <div className="bg-green-50 font-parkinsans border-l-4 border-green-600 text-green-800 rounded-lg mt-10 p-4 mb-10">
-          <Typography variant="h2">
-            Based on the seeds availability and relevance of the varieties in target market segments and geography, nominations are finalized and put to test under adaptive trials (OFT).
+        <div className="bg-prime/80 font-parkinsans border-l-4 border-yellow-400 text-green-800 rounded-lg mt-10 p-4 mb-10">
+          <Typography variant="h2" className="font-Karla">
+            Based on the seeds availability and relevance of the varieties in target market segments and geography, nominations are finalized and put to test under adaptive trials (OFTs).
           </Typography>
         </div>
 
-        <Typography variant="h3">
-          Through various years of evolution and diverse designs and lay-outs exercised to run these trials, these are popularly known as H2H(Head to Head), TRICOTs (Tradic trials), OFTs (On-farm trials) or adaptive trials.
+        <Typography variant="h3" >
+          Through  years of evolution and diverse designs and lay-outs exercised to run these trials, these are popularly known as H2H(Head to Head), TRICOTs (Triadic trials), OFTs (On-farm trials) or adaptive trials.
         </Typography>
         <br />
 
-        <Typography variant="h3">
+        <Typography variant="h3" >
           These multi-location trials are primarily designed using TRICOT principles, to compare nearly 3-4 new rice varieties with local checks and established benchmarks under the associated market segment. Managed directly by farmers under real-world conditions, adaptive trials provide realistic estimates of genetic gain under farmer managed conditions and capture variability and average productivity in a more significant manner.
         </Typography>
 
 
-        <div className="bg-gray-50 border-l-4 font-Nunito border-gray-400 text-gray-800 rounded-lg p-4 mt-10 ">
-          <Typography variant="h2">
-            Results guide in evidence-based decisions on product positioning and scaling of varieties.
+        <div className="bg-prime/80 border-l-4 font-Nunito border-yellow-400 text-black rounded-lg p-4 mt-10 ">
+          <Typography variant="h2" className="font-Karla">
+            Results drive evidence-based decisions on product positioning and scaling of varieties.
           </Typography>
         </div>
       </div>
 
       <Typography variant="h1" className="mt-10 mb-5">
-        Breeding centers nominated varieties so far
+       Participating Breeding Centers (Nominated Varieties)
       </Typography>
      
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 bg-white rounded text-left shadow">
-          <thead className="bg-green-800">
+          <thead className="bg-prime">
             <tr>
-              <th className="px-4 py-2 text-md text-white font-bold">S.No</th>
-              <th className="px-4 py-2 text-md text-white font-bold">Breeding Institutes</th>
+              <th className="px-4 py-2 text-lg text-white font-bold">S.No</th>
+              <th className="px-4 py-2 text-lg text-white font-bold">Breeding Institutes</th>
             </tr>
           </thead>
           <tbody>

@@ -64,17 +64,15 @@ export default function MarketSegmentsTable() {
             <Typography variant="h1">
                 Global Market Segments and Description
             </Typography>
-            <Typography variant="h2">
-                Below table describes the major rice market segments, their maturity group, and varietal features for each segment.
-            </Typography>
+          
             <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200 bg-white rounded text-left shadow ">
                     <thead>
-                        <tr className="bg-green-200 font-parkinsans">
-                            <th className="px-4 py-2 text-md font-semibold text-green-900">S.No</th>
-                            <th className="px-4 py-2 text-md font-semibold text-green-900">Market Segments</th>
-                            <th className="px-4 py-2 text-md font-semibold text-green-900">Maturity Segment</th>
-                            <th className="px-4 py-2 text-md font-semibold text-green-900">Features</th>
+                        <tr className="bg-prime font-Nunito tracking-[2px]">
+                            <th className="px-4 py-2 text-md font-semibold text-white">S.No</th>
+                            <th className="px-4 py-2 text-md font-semibold text-white">Market Segments</th>
+                            <th className="px-4 py-2 text-md font-semibold text-white">Maturity Segment</th>
+                            <th className="px-4 py-2 text-md font-semibold text-white">Features</th>
                         </tr>
                     </thead>
                     <tbody>
