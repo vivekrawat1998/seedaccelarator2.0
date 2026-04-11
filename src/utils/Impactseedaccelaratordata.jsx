@@ -91,6 +91,13 @@ const ImpactseedAcceleratorsData = [
             { name: "Supreem Ganga Kaveri Pvt Ltd", type: "Private Seed Company" },
             { name: "Sustainable Human Development Association", type: "NGO" }
         ]
+    },
+    {
+        state: "West Bengal",
+        data: [
+            { name: "Borlagu Vision Society (BVS) ", type: "NGO" },
+            { name: "State Seed Testing Laboratory (SSTL), Malda   ", type: "State Dept. of Agriculture" },
+        ]
     }
 ];
 

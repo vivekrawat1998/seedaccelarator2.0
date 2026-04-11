@@ -95,7 +95,7 @@ const OurWorkDownstairsFlow = () => {
       {/* Intro Section */}
       <div className="container mx-auto text-center mb-16">
         <Typography variant='h1'>
-          <span className="text-black"> Our Strategic </span> Work Streams 🌱
+          <span className="text-black"> Our Strategic </span> Work Streams
         </Typography>
 
         <p className="text-lg md:text-xl mt-2 font-Karla text-gray-700 max-w-3xl mx-auto">

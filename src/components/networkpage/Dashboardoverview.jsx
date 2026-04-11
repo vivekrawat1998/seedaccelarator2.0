@@ -3,6 +3,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
+import Typography from "../../ui/Heading";
 
 const dashboard = [
   { label: " Regions Covered", value: 6 },
@@ -19,6 +20,7 @@ const DashboardOverview = () => {
 
   return (
     <section ref={ref} className="max-w-5xl mx-auto py-12" data-aos="fade-up">
+        <Typography variant="h1" className="md:text-2xl text-lg mb-10 font-bold text-black mb-6 text-center  tracking-wide">Seed Acclerator Network (SAN) Meets </Typography>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
         {dashboard.map((item, idx) => (
           <div

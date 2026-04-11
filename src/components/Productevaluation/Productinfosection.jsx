@@ -23,11 +23,11 @@ const breedingCenters = [
 export default function ProductInfoSection() {
   return (
     <section className="bg-white mt-10 rounded-lg ">
-   
+
 
       <div className="mt-10">
         <Typography variant="h1">
-          About multi-location adaptive trials
+          About Multi-Location Adaptive Trials
         </Typography>
         <Typography variant='h3' className='mt-2 mb-5'>
           Every year, IRRI invites new-variety nomination (recently released) from national breeding centers in prescribed template. Once the varietal nominations from different breeders are received, those are categorized under preferred market segments.
@@ -57,9 +57,9 @@ export default function ProductInfoSection() {
       </div>
 
       <Typography variant="h1" className="mt-10 mb-5">
-       Participating Breeding Centers (Nominated Varieties)
+        Breeding Institutes (Variety Nominators)
       </Typography>
-     
+
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 bg-white rounded text-left shadow">
           <thead className="bg-prime">

@@ -14,11 +14,11 @@ import Typography from '../ui/Heading'
 
 const Productpage = () => {
     return (
-        <div className=' py-10'>
+        <div className='  '>
             <ProfileSection bgImage={productImage}
                 name="Product Evaluation"
                 breadcrumbs={['Home', 'Product Evaluation']} />
-            <div className='container  px-4 mx-auto'>
+            <div className='container py-10  px-4 mx-auto'>
 
                 <ProductInfoSection />
                 <SegmentationProcessSection />

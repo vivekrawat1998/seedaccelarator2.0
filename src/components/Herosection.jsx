@@ -23,7 +23,7 @@ const sections = [
     caption: "Improved seeds increase yield, profitability and resilience, yet older varieties dominate.",
   },
   {
-    title: "From Research to Farmer's field",
+    title: "From Research to Farmers' Fields",
     desktop: "/hero/From Research to Farmer's Field.jpg.jpeg",
     caption: "Testing, positioning and advocating improved varieties and building stakeholders’ trust.",
   },
@@ -43,7 +43,7 @@ const sections = [
     caption: "Accelerate availability, access and adoption of improved rice varieties and catalyze seed enterprises.",
   },
   {
-    title: "Building a resilient farming future",
+    title: "Building a Resilient Farming Future",
     desktop: "/hero2/desktop/Slider7_Towards Resilient Farming  Features.JPG",
     caption: "Faster varietal turnover means higher yields, better incomes, and climate resilience.",
   },

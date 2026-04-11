@@ -8,7 +8,7 @@ export default function SeedScalingDashboard() {
 
   const columns = [
     { key: "variety", label: "Rice Variety" },
-    { key: "breederSeeds", label: "Breeder Seed Distributed (kg)" },
+    { key: "breederSeeds", label: "BS Linkage Facilitated (kg)" },
     { key: "tlsSeeds", label: "TLS/CS Seeds Produced (kg)*" },
     { key: "area", label: "Area Covered (ha)*" },
   ];
@@ -132,7 +132,7 @@ export default function SeedScalingDashboard() {
                   key={i}
                   className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}
                 >
-                  <td className="px-10 py-2 text-center text-black border ">{row.variety}</td>
+                  <td className="px-10 py-2 text-center uppercase text-black border ">{row.variety}</td>
                   <td className="px-10 py-2 text-center text-black border ">
                     {row.breederSeeds.toLocaleString()}
                   </td>

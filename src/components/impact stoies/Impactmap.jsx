@@ -197,7 +197,7 @@ const ImpactMap = ({ filters = {} }) => {
                             {/* TOTAL DATA */}
                             <div className="bg-green-50 p-3 rounded-md">
                                 <p className="text-sm text-gray-600">
-                                    Total Breeder Seeds (kg)
+                                    BS Linkage Facilitated (kg)
                                 </p>
                                 <p className="text-lg font-semibold">
                                     {totalData.breederSeeds.toLocaleString()}

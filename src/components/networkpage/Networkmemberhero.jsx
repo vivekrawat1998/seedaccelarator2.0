@@ -38,7 +38,7 @@ const NetworkMembersHero = () => {
       >
 
         <p className=" text-gray-700 text-[26px] font-Karla mb-4">
-          Spanning India’s diverse ecosystems and fostering innovation through collaboration for resilient seed systems.
+          Spanning India’s diverse ecosystems and fostering innovation through collaboration for resilient seed systems
         </p>
         <ul className="mt-3 pl-5 text-gray-800 font-Karla space-y-2 list-disc">
           <li>

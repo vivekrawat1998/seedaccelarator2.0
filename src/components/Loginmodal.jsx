@@ -429,13 +429,7 @@ export default function LoginPage() {
                       : 'border-gray-200 focus:ring-4 focus:ring-green-500/20 focus:border-green-500'
                   }`}
                 />
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.identifier || loginForm.identifier
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
-                  Email Address
-                </label>
+              
                 {fieldErrors.identifier && (
                   <div className="absolute bottom-[-10px] left-0 right-0 text-xs text-red-600 flex items-center gap-1 mt-1">
                     <AlertCircle size={12} />
@@ -468,13 +462,7 @@ export default function LoginPage() {
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.password || loginForm.password
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
-                  Password
-                </label>
+               
                 {fieldErrors.password && (
                   <div className="absolute bottom-[-10px] left-0 right-0 text-xs text-red-600 flex items-center gap-1 mt-1">
                     <AlertCircle size={12} />
@@ -530,13 +518,7 @@ export default function LoginPage() {
                       : 'border-gray-200 focus:ring-4 focus:ring-green-500/20 focus:border-green-500'
                   }`}
                 />
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.forgotEmail || forgotEmail
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
-                  Enter your email
-                </label>
+            
                 {fieldErrors.forgotEmail && (
                   <div className="absolute bottom-[-10px] left-0 right-0 text-xs text-red-600 flex items-center gap-1 mt-1">
                     <AlertCircle size={12} />
@@ -583,13 +565,7 @@ export default function LoginPage() {
                       : 'border-gray-200 focus:ring-4 focus:ring-green-500/20 focus:border-green-500'
                   }`}
                 />
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.name || memberForm.name
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
-                  Full Name
-                </label>
+            
                 {fieldErrors.name && (
                   <div className="absolute bottom-[-10px] left-0 right-0 text-xs text-red-600 flex items-center gap-1 mt-1">
                     <AlertCircle size={12} />
@@ -615,13 +591,7 @@ export default function LoginPage() {
                       : 'border-gray-200 focus:ring-4 focus:ring-green-500/20 focus:border-green-500'
                   }`}
                 />
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.email || memberForm.email
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
-                  Email Address
-                </label>
+                
                 {fieldErrors.email && (
                   <div className="absolute bottom-[-10px] left-0 right-0 text-xs text-red-600 flex items-center gap-1 mt-1">
                     <AlertCircle size={12} />
@@ -653,13 +623,7 @@ export default function LoginPage() {
                   <option value="FPO/FPC/NGO">FPO/FPC/NGO</option>
                   <option value="Others">Others</option>
                 </select>
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.category || memberForm.category
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
-                  Organization/Category
-                </label>
+              
                 {fieldErrors.category && (
                   <div className="absolute bottom-[-10px] left-0 right-0 text-xs text-red-600 flex items-center gap-1 mt-1">
                     <AlertCircle size={12} />
@@ -692,13 +656,7 @@ export default function LoginPage() {
                 >
                   {showMemberPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
-                <label className={`absolute left-12 text-xs font-medium transition-all duration-300 z-10 pointer-events-none ${
-                  activeFields.memberPassword || memberForm.password
-                    ? 'top-2 text-green-600 bg-white px-1 -translate-y-2'
-                    : 'top-1/2 -translate-y-1/2 text-gray-500'
-                }`}>
-                  Password
-                </label>
+                
                 {fieldErrors.memberPassword && (
                   <div className="absolute bottom-[-10px] left-0 right-0 text-xs text-red-600 flex items-center gap-1 mt-1">
                     <AlertCircle size={12} />

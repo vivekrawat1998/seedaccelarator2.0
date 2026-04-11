@@ -10,15 +10,15 @@ import api from "../../api/axios";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const orgTypes = [
-    "FPO/FPC", "NGO", "ICAR Institutes/Name", "Universities/Name",
-    "National Seed Organisation", "State Seed Organisation",
-    "State Seed Certification Agency", "State department of Agriculture",
-    "Private seed company", "Individual farmers", "Other"
+    "FPO/FPC", "NGO", "ICAR Institutes", "Universities",
+    "National Seed Corporation", "State Seed Corporation",
+    "State Seed Certification Agency", "State Department of Agriculture",
+    "Private Seed Company", "Individual farmers", "Other"
 ];
 
 const participationTypes = [
-    "Seed multiplication", "Research Collaboration",
-    "Knowledge Sharing", "Trainings", "Other"
+    "Seed Multiplication", "Research Collaboration",
+    "Knowledge Sharing", "Training", "Other"
 ];
 
 const SuccessModal = ({ show, onClose, userType }) => {
@@ -228,13 +228,13 @@ export default function RegistrationPage() {
                     <div className=" flex gap-10   justify-between">
                         <button
                             className="w-full bg-prime cursor-pointer text-white py-6 px-8 rounded-2xl shadow-xl font-bold text-lg hover:shadow-2xl hover:from-green-700 transition-all"
-                            onClick={() => setRegisterAs("accelerator")}
+                            onClick={() => setRegisterAs("Accelerator")}
                         >
                             Accelerator
                         </button>
                         <button
                             className="w-full bg-yellow-400 cursor-pointer  text-black py-6 px-8 rounded-2xl shadow-xl font-bold text-lg hover:shadow-2xl hover:from-yellow-600 transition-all"
-                            onClick={() => setRegisterAs("breeder")}
+                            onClick={() => setRegisterAs("Breeder")}
                         >
                             Breeder
                         </button>
@@ -253,7 +253,7 @@ export default function RegistrationPage() {
                             }`}>
                             {registerAs === "accelerator" ? "Accelerator" : "Breeder"} Registration
                         </Typography>
-                        <p className="text-xl text-gray-600">Create account + profile in one step</p>
+                        <p className="text-xl text-gray-600">Create your account and profile in a single step</p>
                     </div>
 
                     {error && (
@@ -408,7 +408,7 @@ export default function RegistrationPage() {
                         <div className="pt-12 space-y-4">
                             <button type="submit" disabled={loading || acceleratorState.status === "loading" || breederState.isLoading}
                                 className="w-full bg-gradient-to-r from-emerald-600 to-green-700 hover:from-emerald-700 hover:to-green-800 text-white py-6 px-8 rounded-2xl font-bold text-xl shadow-2xl transition-all disabled:opacity-50">
-                                {loading ? "⏳ Creating..." : `🚀 Create Account & ${registerAs} Profile`}
+                                {loading ? "⏳ Creating..." : ` Create Account & ${registerAs} Profile`}
                             </button>
                             <button type="button" onClick={resetForm}
                                 className="w-full border-2 border-gray-300 text-gray-700 py-4 rounded-2xl font-semibold hover:bg-gray-50">

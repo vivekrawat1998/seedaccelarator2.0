@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthProvider";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 import api from "../api/axios";
+import BreederVarietiesSection from "../components/breedervarietysection";
 
 const Field = ({ label, value }) => (
     <div>
@@ -12,48 +13,116 @@ const Field = ({ label, value }) => (
     </div>
 );
 
-const DownloadItem = ({ download }) => (
-    <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-white transition-all">
-        <div className="flex-1 min-w-0">
-            <p className="font-semibold text-gray-900 truncate">
-                {download.attributes?.fileTitle || download.fileTitle || download.attributes?.fileName || "Download"}
-            </p>
-            <p className="text-sm text-gray-500 truncate">
-                {download.attributes?.filePath || download.filePath || download.attributes?.downloadUrl || "N/A"}
-            </p>
+const DownloadItem = ({ download }) => {
+    const item = download?.attributes || download;
+    const createdAt = item?.createdAt ? new Date(item.createdAt) : null;
+
+    return (
+        <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-white transition-all">
+            <div className="flex-1 min-w-0">
+                <p className="font-semibold text-gray-900 truncate">
+                    {item?.fileTitle || item?.fileName || "Download"}
+                </p>
+                <p className="text-sm text-gray-500 truncate">
+                    {item?.filePath || item?.downloadUrl || "N/A"}
+                </p>
+            </div>
+            <div className="text-right ml-4">
+                <p className="text-sm font-medium text-gray-900">
+                    {createdAt ? createdAt.toLocaleDateString() : "N/A"}
+                </p>
+                <p className="text-xs text-gray-500">
+                    {createdAt
+                        ? createdAt.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        })
+                        : ""}
+                </p>
+            </div>
         </div>
-        <div className="text-right ml-4">
-            <p className="text-sm font-medium text-gray-900">
-                {new Date(download.attributes?.createdAt || download.createdAt).toLocaleDateString()}
-            </p>
-            <p className="text-xs text-gray-500">
-                {new Date(download.attributes?.createdAt || download.createdAt).toLocaleTimeString([], { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                })}
-            </p>
-        </div>
-    </div>
-);
+    );
+};
 
 const Dashboard = () => {
     const { user, logout, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!isAuthenticated || !user) {
-            navigate("/login", { replace: true });
-            return;
-        }
-    }, [isAuthenticated, user, navigate]);
-
     const [profile, setProfile] = useState(null);
     const [breederData, setBreederData] = useState([]);
     const [acceleratorData, setAcceleratorData] = useState([]);
     const [memberData, setMemberData] = useState([]);
-    const [orders, setOrders] = useState([]);
     const [downloads, setDownloads] = useState([]);
+    const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!isAuthenticated || !user) {
+            navigate("/login", { replace: true });
+        }
+    }, [isAuthenticated, user, navigate]);
+
+    const category = useMemo(() => {
+        if (profile?.userType) return profile.userType;
+        if (acceleratorData.length > 0) return "accelerator";
+        if (breederData.length > 0) return "breeder";
+        if (memberData.length > 0) return "member";
+        return "normal";
+    }, [profile, acceleratorData, breederData, memberData]);
+
+    const fetchBreeders = async (profileData) => {
+        let breeders = [];
+
+        try {
+            if (profileData?.email) {
+                const byEmail = await api.get(
+                    `/breeder-requests?filters[email][$eq]=${encodeURIComponent(
+                        profileData.email
+                    )}&populate[0]=nominatedvariety&populate[1]=nominatedvariety.variety`
+                );
+                breeders = byEmail?.data?.data || [];
+                console.log("Breeders fetched by email:", breeders);
+            }
+        } catch (error) {
+            console.error("Breeder fetch by email failed:", error);
+        }
+
+        if (!breeders.length && profileData?.id) {
+            try {
+                const byUser = await api.get(
+                    `/breeder-requests?filters[users_permissions_user][id][$eq]=${profileData.id}&populate[0]=nominatedvariety&populate[1]=nominatedvariety.variety`
+                );
+                breeders = byUser?.data?.data || [];
+                console.log("Breeders fetched by user:", breeders);
+            } catch (error) {
+                console.error("Breeder fetch by user failed:", error);
+            }
+        }
+
+        setBreederData(breeders);
+        return breeders;
+    };
+
+    const refreshBreederByDocumentId = async (documentId) => {
+        try {
+            const res = await api.get(
+                `/breeder-requests/${documentId}?populate[0]=nominatedvariety&populate[1]=nominatedvariety.variety`
+            );
+
+            const breeder = res?.data?.data;
+            const breeders = breeder ? [breeder] : [];
+
+            console.log("Breeder refreshed =>", breeders[0]);
+            console.log("Refreshed id =>", breeders[0]?.id);
+            console.log("Refreshed documentId =>", breeders[0]?.documentId);
+
+            setBreederData(breeders);
+            return breeders;
+        } catch (error) {
+            console.error("Breeder refresh failed:", error);
+            return [];
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -66,86 +135,79 @@ const Dashboard = () => {
                 const profileData = profileRes.data;
                 setProfile(profileData);
 
-                // Breeder fetch (unchanged)
-                let breeders = [];
-                try {
-                    if (profileData.email) {
-                        const byEmail = await api
-                            .get(`/breeder-requests?populate=*&filters[email][$eq]=${encodeURIComponent(profileData.email)}`)
-                            .catch(() => ({ data: { data: [] } }));
-                        breeders = byEmail.data.data || [];
-                    }
-                } catch (e) {
-                    console.warn("Breeder fetch by email failed", e);
-                }
+                await fetchBreeders(profileData);
 
-                if (!breeders.length) {
-                    const byUser = await api
-                        .get(`/breeder-requests?populate=*&filters[users_permissions_user][id][$eq]=${profileData.id}`)
-                        .catch(() => ({ data: { data: [] } }));
-                    breeders = byUser.data.data || [];
-                }
-                setBreederData(breeders);
-
-                // Accelerator fetch (unchanged)
                 let accelerators = [];
                 try {
                     if (profileData.email) {
-                        const accByEmail = await api
-                            .get(`/accelartor-requests?populate=*&filters[email][$eq]=${encodeURIComponent(profileData.email)}`)
-                            .catch(() => ({ data: { data: [] } }));
-                        accelerators = accByEmail.data.data || [];
+                        const accByEmail = await api.get(
+                            `/accelartor-requests?populate=*&filters[email][$eq]=${encodeURIComponent(
+                                profileData.email
+                            )}`
+                        );
+                        accelerators = accByEmail?.data?.data || [];
                     }
                 } catch (e) {
                     console.warn("Accelerator fetch by email failed", e);
                 }
 
-                if (!accelerators.length) {
-                    const accByUser = await api
-                        .get(`/accelartor-requests?populate=*&filters[users_permissions_user][id][$eq]=${profileData.id}`)
-                        .catch(() => ({ data: { data: [] } }));
-                    accelerators = accByUser.data.data || [];
+                if (!accelerators.length && profileData.id) {
+                    try {
+                        const accByUser = await api.get(
+                            `/accelartor-requests?populate=*&filters[users_permissions_user][id][$eq]=${profileData.id}`
+                        );
+                        accelerators = accByUser?.data?.data || [];
+                    } catch (e) {
+                        console.warn("Accelerator fetch by user failed", e);
+                    }
                 }
                 setAcceleratorData(accelerators);
 
-                // Member fetch (unchanged)
                 let members = [];
                 try {
                     if (profileData.email) {
-                        const memberByEmail = await api
-                            .get(`/members?populate=*&filters[email][$eq]=${encodeURIComponent(profileData.email)}`)
-                            .catch(() => ({ data: { data: [] } }));
-                        members = memberByEmail.data.data || [];
+                        const memberByEmail = await api.get(
+                            `/members?populate=*&filters[email][$eq]=${encodeURIComponent(
+                                profileData.email
+                            )}`
+                        );
+                        members = memberByEmail?.data?.data || [];
                     }
                 } catch (e) {
                     console.warn("Member fetch by email failed", e);
                 }
 
                 if (!members.length && profileData.id) {
-                    const memberByUser = await api
-                        .get(`/members?populate=*&filters[users_permissions_user][id][$eq]=${profileData.id}`)
-                        .catch(() => ({ data: { data: [] } }));
-                    members = memberByUser.data.data || [];
+                    try {
+                        const memberByUser = await api.get(
+                            `/members?populate=*&filters[users_permissions_user][id][$eq]=${profileData.id}`
+                        );
+                        members = memberByUser?.data?.data || [];
+                    } catch (e) {
+                        console.warn("Member fetch by user failed", e);
+                    }
                 }
                 setMemberData(members);
 
-                // Orders fetch (unchanged)
-                const ordersRes = await api
-                    .get(`/orders?filters[user][id][$eq]=${profileData.id}`)
-                    .catch(() => ({ data: { data: [] } }));
-                setOrders(ordersRes.data.data || []);
+                try {
+                    const ordersRes = await api.get(
+                        `/orders?filters[user][id][$eq]=${profileData.id}`
+                    );
+                    setOrders(ordersRes?.data?.data || []);
+                } catch (error) {
+                    console.warn("Orders API not found or failed:", error);
+                    setOrders([]);
+                }
 
-                // ✅ FIXED DOWNLOAD HISTORY FETCH
                 try {
                     const downloadRes = await api.get(
                         `/download-logs?filters[users_permissions_user][id][$eq]=${profileData.id}&populate=*&sort=createdAt:desc`
                     );
-                    setDownloads(downloadRes.data.data || []);
+                    setDownloads(downloadRes?.data?.data || []);
                 } catch (error) {
                     console.error("Download history fetch failed:", error);
                     setDownloads([]);
                 }
-
             } catch (err) {
                 console.error("Dashboard fetch error:", err);
             } finally {
@@ -155,22 +217,6 @@ const Dashboard = () => {
 
         fetchData();
     }, [user]);
-
-    const category = (() => {
-        if (profile?.userType) return profile.userType;
-        if (acceleratorData.length > 0) return "accelerator";
-        if (breederData.length > 0) return "breeder";
-        if (memberData.length > 0) return "member";
-        return "normal";
-    })();
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                Loading Dashboard...
-            </div>
-        );
-    }
 
     const handleLogout = () => {
         try {
@@ -183,13 +229,19 @@ const Dashboard = () => {
         }
     };
 
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                Loading Dashboard...
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br mt-24 from-green-50 to-blue-50 p-8">
             <div className="max-w-6xl mx-auto space-y-8">
-                <div className="bg-white p-6 rounded-2xl shadow flex justify-between">
-                    <h1 className="text-2xl font-bold">
-                        Welcome {profile?.username}
-                    </h1>
+                <div className="bg-white p-6 rounded-2xl shadow flex justify-between items-center">
+                    <h1 className="text-2xl font-bold">Welcome {profile?.username}</h1>
                     <button
                         onClick={handleLogout}
                         className="bg-red-600 text-white px-5 py-2 rounded-xl"
@@ -208,20 +260,26 @@ const Dashboard = () => {
                 {breederData.length > 0 && (
                     <div className="bg-white p-6 rounded-2xl shadow">
                         <h2 className="text-xl font-bold mb-6">🌱 Breeder Membership</h2>
+
                         {breederData.map((item) => {
-                            const status = item.Approval === true ? "Accepted" : "Pending";
+                            const status = item?.Approval === true ? "Accepted" : "Pending";
+
                             return (
-                                <div key={item.id} className="grid md:grid-cols-2 gap-4 mb-6">
-                                    <Field label="Name" value={item.name} />
-                                    <Field label="Email" value={item.email} />
-                                    <Field label="Organization" value={item.Organization} />
-                                    <Field label="Phone" value={item.phone} />
-                                    <Field label="Designation" value={item.Designation} />
+                                <div
+                                    key={item.documentId || item.id}
+                                    className="grid md:grid-cols-2 gap-4 mb-6"
+                                >
+                                    <Field label="Name" value={item?.name} />
+                                    <Field label="Email" value={item?.email} />
+                                    <Field label="Organization" value={item?.Organization} />
+                                    <Field label="Phone" value={item?.phone} />
+                                    <Field label="Designation" value={item?.Designation} />
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
-                                        <div className={`p-3 rounded-lg font-bold text-white ${
-                                            item.Approval === true ? "bg-green-500" : "bg-yellow-500"
-                                        }`}>
+                                        <div
+                                            className={`p-3 rounded-lg font-bold text-white ${item?.Approval === true ? "bg-green-500" : "bg-yellow-500"
+                                                }`}
+                                        >
                                             {status}
                                         </div>
                                     </div>
@@ -231,23 +289,35 @@ const Dashboard = () => {
                     </div>
                 )}
 
+                {category === "breeder" && breederData.length > 0 && (
+                    <BreederVarietiesSection
+                        breederData={breederData}
+                        refreshBreederByDocumentId={refreshBreederByDocumentId}
+                        api={api}
+                    />
+                )}
+
                 {memberData.length > 0 && (
                     <div className="bg-white p-6 rounded-2xl shadow">
                         <h2 className="text-xl font-bold mb-6">👥 Member Membership</h2>
                         {memberData.map((item) => {
-                            const status = item.Approval === true ? "Accepted" : "Pending";
+                            const row = item?.attributes || item;
+                            const status = row?.Approval === true ? "Accepted" : "Pending";
+
                             return (
-                                <div key={item.id} className="grid md:grid-cols-2 gap-4 mb-6">
-                                    <Field label="Name" value={item.name || item.attributes?.name} />
-                                    <Field label="Email" value={item.email || item.attributes?.email} />
-                                    <Field label="Organization" value={item.Organization || item.attributes?.Organization} />
-                                    {/* <Field label="Approval Status" value={status} /> */}
+                                <div
+                                    key={item.documentId || item.id}
+                                    className="grid md:grid-cols-2 gap-4 mb-6"
+                                >
+                                    <Field label="Name" value={row?.name} />
+                                    <Field label="Email" value={row?.email} />
+                                    <Field label="Organization" value={row?.Organization} />
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
-                                        <div className={`p-3 rounded-lg font-bold text-white ${
-                                            item.Approval === true || item.attributes?.Approval === true
-                                                ? "bg-green-500" : "bg-yellow-500"
-                                        }`}>
+                                        <div
+                                            className={`p-3 rounded-lg font-bold text-white ${row?.Approval === true ? "bg-green-500" : "bg-yellow-500"
+                                                }`}
+                                        >
                                             {status}
                                         </div>
                                     </div>
@@ -261,23 +331,29 @@ const Dashboard = () => {
                     <div className="bg-white p-6 rounded-2xl shadow">
                         <h2 className="text-xl font-bold mb-6">🚀 Accelerator Membership</h2>
                         {acceleratorData.map((item) => {
-                            const status = item.Approval === true ? "Accepted" : "Pending";
+                            const row = item?.attributes || item;
+                            const status = row?.Approval === true ? "Accepted" : "Pending";
+
                             return (
-                                <div key={item.id} className="grid md:grid-cols-2 gap-4 mb-6">
-                                    <Field label="Name" value={item.name} />
-                                    <Field label="Email" value={item.email} />
-                                    <Field label="Designation" value={item.Designation} />
-                                    <Field label="Mobile" value={item.Mobilenumber} />
-                                    <Field label="Organization" value={item.NameofOrganization} />
-                                    <Field label="Type" value={item.TypeofOrganization} />
-                                    <Field label="Registration No." value={item.RegistrationNumber} />
-                                    <Field label="State" value={item.State} />
-                                    <Field label="Purpose" value={item.PurposeofParticipation} />
+                                <div
+                                    key={item.documentId || item.id}
+                                    className="grid md:grid-cols-2 gap-4 mb-6"
+                                >
+                                    <Field label="Name" value={row?.name} />
+                                    <Field label="Email" value={row?.email} />
+                                    <Field label="Designation" value={row?.Designation} />
+                                    <Field label="Mobile" value={row?.Mobilenumber} />
+                                    <Field label="Organization" value={row?.NameofOrganization} />
+                                    <Field label="Type" value={row?.TypeofOrganization} />
+                                    <Field label="Registration No." value={row?.RegistrationNumber} />
+                                    <Field label="State" value={row?.State} />
+                                    <Field label="Purpose" value={row?.PurposeofParticipation} />
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
-                                        <div className={`p-3 rounded-lg font-bold text-white ${
-                                            item.Approval === true ? "bg-green-500" : "bg-yellow-500"
-                                        }`}>
+                                        <div
+                                            className={`p-3 rounded-lg font-bold text-white ${row?.Approval === true ? "bg-green-500" : "bg-yellow-500"
+                                                }`}
+                                        >
                                             {status}
                                         </div>
                                     </div>
@@ -288,7 +364,9 @@ const Dashboard = () => {
                 )}
 
                 <div className="bg-white p-6 rounded-2xl shadow">
-                    <h2 className="text-xl font-bold mb-6">📥 Download History ({downloads.length})</h2>
+                    <h2 className="text-xl font-bold mb-6">
+                        📥 Download History ({downloads.length})
+                    </h2>
                     {downloads.length === 0 ? (
                         <div className="text-center py-12 text-gray-500">
                             <div className="text-4xl mb-4">📥</div>
@@ -297,24 +375,11 @@ const Dashboard = () => {
                     ) : (
                         <div className="space-y-3 max-h-96 overflow-y-auto">
                             {downloads.map((download, index) => (
-                                <DownloadItem key={download.id || index} download={download} />
+                                <DownloadItem key={download.documentId || download.id || index} download={download} />
                             ))}
                         </div>
                     )}
                 </div>
-
-                {/* <div className="bg-white p-6 rounded-2xl shadow">
-                    <h2 className="text-xl font-bold mb-4">📦 Orders ({orders.length})</h2>
-                    {orders.length === 0 ? (
-                        <p>No orders yet</p>
-                    ) : (
-                        orders.map((o) => (
-                            <div key={o.id} className="border-b py-2">
-                                #{o.id} — ₹{o.attributes?.total}
-                            </div>
-                        ))
-                    )}
-                </div> */}
             </div>
         </div>
     );

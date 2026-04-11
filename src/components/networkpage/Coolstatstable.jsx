@@ -2,22 +2,49 @@ import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-const regionData = [
-  { region: "North India", p2024: 32, p2025: 6, total: 38, percent: 41.76 },
-  { region: "South India", p2024: 9, p2025: 19, total: 28, percent: 30.77 },
-  { region: "East India", p2024: 10, p2025: 3, total: 13, percent: 14.29 },
-  { region: "West India", p2024: 1, p2025: 3, total: 4, percent: 4.20 },
-  { region: "Central India", p2024: 2, p2025: 2, total: 4, percent: 4.20 },
-  { region: "Northeast India", p2024: 3, p2025: 3, total: 5, percent: 6.59 },
-];
-
 const orgData = [
-  { type: "Private Seed Companies", p2024: 17, p2025: 20, total: 37, percent: 40.66 },
-  { type: "Public Institutions", p2024: 16, p2025: 3, total: 19, percent: 20.88 },
-  { type: "NGOs", p2024: 1, p2025: 3, total: 4, percent: 4.40 },
-  { type: "State Government Departments", p2024: 1, p2025: 1, total: 2, percent: 2.20 },
-  { type: "National and State Seed Corporations", p2024: 1, p2025: 8, total: 9, percent: 9.89 },
-  { type: "FPOs/FPCs", p2024: 15, p2025: 5, total: 20, percent: 21.98 },
+  {
+    type: "National and State Seed Corporations",
+    org2024: 5,
+    participants2024: 8,
+    org2025: 4,
+    participants2025: 5,
+  },
+  {
+    type: "NARES",
+    org2024: 14,
+    participants2024: 16,
+    org2025: 3,
+    participants2025: 3,
+  },
+  {
+    type: "Private Seed Companies",
+    org2024: 17,
+    participants2024: 18,
+    org2025: 18,
+    participants2025: 22,
+  },
+  {
+    type: "NGOs",
+    org2024: 2,
+    participants2024: 2,
+    org2025: 1,
+    participants2025: 1,
+  },
+  {
+    type: "FPOs/FPCs",
+    org2024: 13,
+    participants2024: 13,
+    org2025: 3,
+    participants2025: 3,
+  },
+  {
+    type: "TOTAL",
+    org2024: 51,
+    participants2024: 57,
+    org2025: 29,
+    participants2025: 34,
+  },
 ];
 
 const CoolStatsTables = () => {
@@ -27,72 +54,51 @@ const CoolStatsTables = () => {
 
   return (
     <section
-      className="max-w-7xl grid md:grid-cols-2 grid-cols-1 gap-20 mx-auto my-14"
+      className="max-w-7xl mx-auto grid  mx-auto "
       data-aos="fade-up"
     >
-      {/* Region-Wise Participants Table */}
-      <div
-        className="bg-white rounded-3xl shadow-2xl md:p-8 p-3 border border-prime relative"
-        data-aos="fade-right"
-      >
-        <h2 className="md:text-2xl text-lg font-extrabold text-black mb-7 font-Nunito  text-center tracking-[3px]">
-          Regions-Wise Participants
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-start text-sm border-separate border-spacing-y-2">
-            <thead className="text-[16px]">
-              <tr className="bg-prime text-white font-Karla ">
-                <th className="px-4 py-3 text-start rounded-l-xl">Region</th>
-                <th className="px-4 py-3">2024</th>
-                <th className="px-4 py-3">2025</th>
-                <th className="px-4 py-3">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {regionData.map((row, idx) => (
-                <tr
-                  key={row.region}
-                  className={`${idx % 2 === 0 ? "bg-green-50" : "bg-white"} hover:bg-emerald-50 text-[16px] text-start font-Karla transition`}
-                >
-                  <td className="px-4 py-3 font-semibold text-green-900">{row.region}</td>
-                  <td className="px-4 py-3 text-center text-yellow-700 font-bold">{row.p2024}</td>
-                  <td className="px-4 py-3 text-center text-green-700 font-bold">{row.p2025}</td>
-                  <td className="px-4 py-3 text-center font-bold text-yellow-700">{row.total}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Organization Type Table */}
       <div
         className="bg-white rounded-3xl shadow-2xl md:p-8 p-3 border border-green-700 relative"
         data-aos="fade-left"
       >
-        <h2 className="md:text-2xl text-lg font-extrabold text-black mb-7 font-Nunito  text-center tracking-[3px]">
+        <h2 className="md:text-2xl text-lg font-extrabold text-black mb-7 font-Nunito text-center tracking-[3px]">
           Organization Type and Participation
         </h2>
+
         <div className="overflow-x-auto">
           <table className="min-w-full border-separate border-spacing-y-2">
             <thead className="text-[16px]">
-              <tr className="bg-prime text-sm  text-white font-Karla">
+              <tr className="bg-prime text-sm text-white font-Karla">
                 <th className="px-4 py-3 text-start rounded-l-xl">Organization Type</th>
-                <th className="px-4 py-3">2024</th>
-                <th className="px-4 py-3">2025</th>
-                <th className="px-4 py-3">Total</th>
+                <th className="px-4 py-3">2024 (Organizations)</th>
+                <th className="px-4 py-3">2024 (Participants)</th>
+                <th className="px-4 py-3">2025 (Organizations)</th>
+                <th className="px-4 py-3 rounded-r-xl">2025 (Participants)</th>
               </tr>
             </thead>
+
             <tbody>
               {orgData.map((row, idx) => (
                 <tr
                   key={row.type}
-                  className={`${idx % 2 === 0 ? "bg-green-50" : "bg-white"} hover:bg-green-100 font-Karla transition`}
+                  className={`${idx % 2 === 0 ? "bg-green-50" : "bg-white"
+                    } hover:bg-green-100 font-Karla transition`}
                 >
-                  <td className="px-4 py-3 font-semibold text-green-800">{row.type}</td>
-                  <td className="px-4 py-3 text-yellow-700 text-center font-bold">{row.p2024.toString().padStart(2, "0")}</td>
-                  <td className="px-4 py-3 text-center text-prime font-bold">{row.p2025.toString().padStart(2, "0")}</td>
-                  <td className="px-4 py-3 font-bold text-center text-yellow-700">{row.total}</td>
+                  <td className="px-4 py-3 font-semibold text-green-800">
+                    {row.type}
+                  </td>
+                  <td className="px-4 py-3 text-yellow-700 text-center font-bold">
+                    {row.org2024.toString().padStart(2, "0")}
+                  </td>
+                  <td className="px-4 py-3 text-center text-yellow-700 font-bold">
+                    {row.participants2024.toString().padStart(2, "0")}
+                  </td>
+                  <td className="px-4 py-3 text-center text-prime font-bold">
+                    {row.org2025.toString().padStart(2, "0")}
+                  </td>
+                  <td className="px-4 py-3 font-bold text-center text-prime">
+                    {row.participants2025.toString().padStart(2, "0")}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -33,7 +33,12 @@ const ProductEvaluationData = [{
     ],
     "Benchmark": "MTU 1001",
     "LocalCheck": "MTU 1010",
-    "BestPerformer": "AZ 8455 DT"
+    "BestPerformer": "AZ 8455 DT",
+    "institute": "ICAR-District Research Station, Patna",
+    "varietytype": "Test variety",
+    "predictedyield": "5.5 t/ha",
+    "% of gain over benchmark": "10%",
+    "% of gain over local check": "15%"
 },
 {
     "State": "BIHAR",

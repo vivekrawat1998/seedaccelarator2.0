@@ -64,16 +64,19 @@ const NetworkMembersFootprintsPage = () => {
     }
   }, [location]);
   return (
-    <div className="bg-white to-slate-100 min-h-screen overflow-hidden   px-2 font-sans">
+    <div className="bg-white to-slate-100 space-y-[100px] min-h-screen overflow-hidden   px-2 font-sans">
       <div ref={registrationFormRef}>
         <RegistrationPage />
       </div>
-      <NetworkMembersHero />
-      <DashboardStatsSection />
-      <CoolStatsTables />
+      <div >
+        <NetworkMembersHero />
+      </div>
+      <div>
+        <CoolStatsTables />
+      </div>
       <div className=" md:gap-10 md:px-10  ">
         <section className="  md:mt-10 mx-auto mb-20 bg-white rounded-3xl ">
-          <Typography variant="h1" className="md:text-2xl text-lg mb-10 font-bold text-black mb-6 text-center  tracking-wide">Seed Acclerator Network Meet 1.0 Participation</Typography>
+          <Typography variant="h1" className="md:text-2xl text-lg mb-10 font-bold text-black mb-6 text-center  tracking-wide">SAN Meet 1.0 Participation</Typography>
           <div className="overflow-auto max-h-[500px]  rounded-md">
             <table className="w-full table-auto border-collapse border border-gray-300">
               <thead className="bg-prime text-white font-Karla  sticky top-0">
@@ -106,7 +109,7 @@ const NetworkMembersFootprintsPage = () => {
         </section>
         <section className=" mb-20 bg-white md:mt-10 rounded-3xl  ">
           <Typography variant="h1" className="md:text-2xl text-lg mb-10 font-bold text-black mb-6 text-center tracking-wide">
-            Seed Acclerator Network Meet 2.0 Participation
+            SAN Meet 2.0 Participation
           </Typography>
           <div className="overflow-auto max-h-[500px] border border-green-300 rounded-md">
             <table className="w-full table-auto border-collapse border border-gray-300">
