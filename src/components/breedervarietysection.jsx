@@ -103,7 +103,10 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
     const [newVariety, setNewVariety] = useState({ ...emptyVariety });
 
     const savedVarieties = useMemo(() => {
-        return breederData?.[0]?.nominatedvariety?.variety || [];
+        const varietyData = breederData?.[0]?.nominatedvariety?.variety;
+        if (Array.isArray(varietyData)) return varietyData;
+        if (varietyData) return [varietyData];
+        return [];
     }, [breederData]);
 
     const openVarietyModal = (item) => {
@@ -159,8 +162,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                 PotentialYields: normalizeNumber(item?.PotentialYields),
                 Bsavailability: normalizeNumber(item?.Bsavailability),
                 Seedavailability: normalizeNumber(item?.Seedavailability),
-                StatetRecommended:
-                    item?.StatetRecommended || item?.StateitRecommended || "",
+                StatetRecommended: item?.StatetRecommended || item?.StateitRecommended || "",
                 SpecialTrait: item?.SpecialTrait || "",
             }));
 
@@ -170,7 +172,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                 Ecosystem: newVariety.Ecosystem?.trim() || "",
                 MarketSegment: newVariety.MarketSegment?.trim() || "",
                 GrainShape: normalizeNumber(newVariety.GrainShape),
-                PotentialYield: normalizeNumber(newVariety.PotentialYields),
+                PotentialYields: normalizeNumber(newVariety.PotentialYields),
                 Bsavailability: normalizeNumber(newVariety.Bsavailability),
                 Seedavailability: normalizeNumber(newVariety.Seedavailability),
                 StatetRecommended: newVariety.StatetRecommended?.trim() || "",
@@ -184,8 +186,6 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                     },
                 },
             };
-
-          
 
             await api.put(`/breeder-requests/${breederDocumentId}`, payload);
             await refreshBreederByDocumentId(breederDocumentId);
@@ -202,11 +202,10 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                 error?.response?.data?.error?.message ||
                 "Save failed. Check console for details."
             );
-        } finally {c
+        } finally {
             setSavingVarieties(false);
         }
     };
-
     return (
         <>
             <div className="bg-white p-6 rounded-2xl shadow">

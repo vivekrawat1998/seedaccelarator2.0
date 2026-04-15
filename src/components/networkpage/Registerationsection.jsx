@@ -10,15 +10,25 @@ import api from "../../api/axios";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const orgTypes = [
-    "FPO/FPC", "NGO", "ICAR Institutes", "Universities",
-    "National Seed Corporation", "State Seed Corporation",
-    "State Seed Certification Agency", "State Department of Agriculture",
-    "Private Seed Company", "Individual farmers", "Other"
+    { label: "FPO/FPC", value: "FPO/FPC" },
+    { label: "NGO", value: "NGO" },
+    { label: "ICAR Institutes", value: "ICAR Institutes/Name" },
+    { label: "Universities", value: "Universities/Name" },
+    { label: "National Seed Corporation", value: "National Seed Organisation" },
+    { label: "State Seed Corporation", value: "State Seed Organisation" },
+    { label: "State Seed Certification Agency", value: "State Seed Certification Agency" },
+    { label: "State Department of Agriculture", value: "State department of Agriculture" },
+    { label: "Private Seed Company", value: "Private seed company" },
+    { label: "Individual farmers", value: "Individual farmers" },
+    { label: "Other", value: "Other" }
 ];
 
 const participationTypes = [
-    "Seed Multiplication", "Research Collaboration",
-    "Knowledge Sharing", "Training", "Other"
+    { label: "Seed Multiplication", value: "Seed multiplication" },
+    { label: "Research Collaboration", value: "Research Collaboration" },
+    { label: "Knowledge Sharing", value: "Knowledge Sharing" },
+    { label: "Training", value: "Trainings" },
+    { label: "Other", value: "Other" }
 ];
 
 const SuccessModal = ({ show, onClose, userType }) => {
@@ -218,8 +228,8 @@ export default function RegistrationPage() {
             <div className=" bg-gradient-to-br from-green-50 to-blue-50 py-10 px-4">
                 <div className="max-w-md mx-auto text-center font-karla">
                     <Typography variant="h1" className="text-4xl  border-2 font-bold bg-gradient-to-r from-green-600 to-green-800 text-transparent bg-clip-text mb-6">
-                        Sign up 
-                        
+                        Sign up
+
                         <br /> To Become a Member
                     </Typography>
                     <p className="text-xl text-gray-600 mb-12 font-Karla max-w-md mx-auto leading-relaxed">
@@ -228,13 +238,13 @@ export default function RegistrationPage() {
                     <div className=" flex gap-10   justify-between">
                         <button
                             className="w-full bg-prime cursor-pointer text-white py-6 px-8 rounded-2xl shadow-xl font-bold text-lg hover:shadow-2xl hover:from-green-700 transition-all"
-                            onClick={() => setRegisterAs("Accelerator")}
+                            onClick={() => setRegisterAs("accelerator")}
                         >
                             Accelerator
                         </button>
                         <button
                             className="w-full bg-yellow-400 cursor-pointer  text-black py-6 px-8 rounded-2xl shadow-xl font-bold text-lg hover:shadow-2xl hover:from-yellow-600 transition-all"
-                            onClick={() => setRegisterAs("Breeder")}
+                            onClick={() => setRegisterAs("breeder")}
                         >
                             Breeder
                         </button>
@@ -331,13 +341,19 @@ export default function RegistrationPage() {
                                             <label className="block font-semibold text-gray-700 mb-3">Organization Type *</label>
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-48 overflow-y-auto p-2 bg-white rounded-xl border">
                                                 {orgTypes.map((type) => (
-                                                    <label key={type} className={`flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all ${formData.TypeofOrganization === type ? "bg-blue-100 border-blue-400 shadow-md" : "hover:bg-blue-50 border-gray-200"
+                                                    <label key={type.value} className={`flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all ${formData.TypeofOrganization === type.value
+                                                        ? "bg-blue-100 border-blue-400 shadow-md"
+                                                        : "hover:bg-blue-50 border-gray-200"
                                                         }`}>
-                                                        <input type="radio" name="TypeofOrganization" value={type}
-                                                            checked={formData.TypeofOrganization === type}
-                                                            onChange={() => handleOrgTypeChange(type)}
-                                                            className="w-5 h-5 accent-blue-600 mr-3" />
-                                                        <span className="text-sm">{type}</span>
+                                                        <input
+                                                            type="radio"
+                                                            name="TypeofOrganization"
+                                                            value={type.value}
+                                                            checked={formData.TypeofOrganization === type.value}
+                                                            onChange={() => handleOrgTypeChange(type.value)}
+                                                            className="w-5 h-5 accent-blue-600 mr-3"
+                                                        />
+                                                        <span className="text-sm">{type.label}</span>
                                                     </label>
                                                 ))}
                                             </div>
@@ -363,13 +379,19 @@ export default function RegistrationPage() {
                                     <legend className="text-2xl font-bold text-purple-600 mb-6">🎯 Purpose *</legend>
                                     <div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto p-2 bg-white rounded-xl border">
                                         {participationTypes.map((purpose) => (
-                                            <label key={purpose} className={`flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all ${formData.PurposeofParticipation === purpose ? "bg-purple-100 border-purple-400 shadow-md" : "hover:bg-purple-50 border-gray-200"
+                                            <label key={purpose.value} className={`flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all ${formData.PurposeofParticipation === purpose.value
+                                                ? "bg-purple-100 border-purple-400 shadow-md"
+                                                : "hover:bg-purple-50 border-gray-200"
                                                 }`}>
-                                                <input type="radio" name="PurposeofParticipation" value={purpose}
-                                                    checked={formData.PurposeofParticipation === purpose}
-                                                    onChange={() => handlePurposeChange(purpose)}
-                                                    className="w-5 h-5 accent-purple-600 mr-3" />
-                                                <span className="text-sm">{purpose}</span>
+                                                <input
+                                                    type="radio"
+                                                    name="PurposeofParticipation"
+                                                    value={purpose.value}
+                                                    checked={formData.PurposeofParticipation === purpose.value}
+                                                    onChange={() => handlePurposeChange(purpose.value)}
+                                                    className="w-5 h-5 accent-purple-600 mr-3"
+                                                />
+                                                <span className="text-sm">{purpose.label}</span>
                                             </label>
                                         ))}
                                     </div>
@@ -417,7 +439,7 @@ export default function RegistrationPage() {
                         </div>
                     </form>
                 </div>
-            </section>
+            </section >
 
             <SuccessModal show={showModal} onClose={resetForm} userType={registerAs.charAt(0).toUpperCase() + registerAs.slice(1)} />
         </>

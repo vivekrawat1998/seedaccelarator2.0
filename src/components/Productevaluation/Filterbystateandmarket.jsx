@@ -303,7 +303,7 @@ const FilterSidebar = ({
     { label: "Years", key: "year", data: years, icon: "📅" },
     { label: "Market Segments", key: "marketSegment", data: segments, icon: "🌾" },
     { label: "Varieties", key: "variety", data: varieties, icon: "🌱" },
-    { label: "Institutes", key: "institute", data: institutes, icon: "🏛" }
+    { label: "Breeder Institutes", key: "institute", data: institutes, icon: "🏛" }
   ];
 
   const activeCount = Object.values(filters).filter(Boolean).length;
@@ -516,18 +516,21 @@ export default function Filterbystateandmarket() {
 
   const tableData = useMemo(() => rawTableData.map((item) => ({
     state: String(item?.State || item?.state || "").trim(),
-    marketSegment: String(item?.["Market Segment"] || item?.MarketSegment || item?.marketSegment || "").trim(),
-    year: String(item?.Year || extractYear(item?.["Market Segment"] || item?.MarketSegment || "") || "").trim(),
-    institute: String(item?.Institute || "").trim(),
+    marketSegment: String(
+      item?.["Market Segment "] ||
+      item?.["Market Segment"] ||
+      item?.MarketSegment ||
+      item?.marketSegment ||
+      ""
+    ).trim(),
+    year: String(item?.Year || "").trim(),
+    institute: String(
+      item?.["Breeding Institute"] ||
+      item?.Institute ||
+      ""
+    ).trim(),
     variety: String(item?.["Variety Name"] || "").trim(),
     varietyType: String(item?.["Variety Type"] || "").trim(),
-    predictedMeans: Number(item?.["Predicted Means"] || 0),
-    gainLocal: Number(item?.["% Gain over Local Variety"] || 0),
-    gainBenchmark: Number(item?.["% Gain over Benchmark Variety"] || 0),
-    TestVarieties: item?.["Variety Name"] ? [String(item["Variety Name"]).trim()] : [],
-    Benchmark: "",
-    LocalCheck: "",
-    BestPerformer: ""
   })), [rawTableData]);
 
   const graphData = useMemo(() => {
@@ -839,7 +842,13 @@ export default function Filterbystateandmarket() {
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                       <thead>
                         <tr style={{ background: "linear-gradient(135deg, #f8fffe 0%, #f0f9ff 100%)" }}>
-                          {["State", "Segment", "Year", "Test Varieties"].map(h => (
+                          {["Breeding Institute",
+                            "Year",
+                            "Market Segment",
+                            "State",
+                            "Variety Name",
+                            "Variety Type",
+                          ].map(h => (
                             <th key={h} style={{
                               padding: "12px 16px",
                               textAlign: "left",
@@ -858,28 +867,16 @@ export default function Filterbystateandmarket() {
                       </thead>
                       <tbody>
                         {filteredTable.map((row, idx) => (
-                          <tr key={idx} style={{
-                            background: idx % 2 === 0 ? "#fff" : "#fafafa",
-                            transition: "background 0.1s"
-                          }}
-                            onMouseEnter={e => e.currentTarget.style.background = "#f0f9ff"}
-                            onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 0 ? "#fff" : "#fafafa"}
-                          >
-                            <td style={{ padding: "11px 16px", fontSize: 13, fontWeight: 600, color: "#111827", borderBottom: "1px solid #f3f4f6" }}>{row.state}</td>
-                            <td style={{ padding: "11px 16px", fontSize: 13, color: "#374151", borderBottom: "1px solid #f3f4f6", maxWidth: 200 }}>
-                              <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={row.marketSegment}>
-                                {row.marketSegment}
-                              </div>
-                            </td>
-                            <td style={{ padding: "11px 16px", fontSize: 13, fontWeight: 600, color: "#059669", borderBottom: "1px solid #f3f4f6" }}>{row.year}</td>
-                            <td style={{ padding: "11px 16px", fontSize: 13, color: "#374151", borderBottom: "1px solid #f3f4f6", maxWidth: 220 }}>
-                              <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={row.TestVarieties.join(", ")}>
-                                {row.TestVarieties.slice(0, 3).join(", ")}{row.TestVarieties.length > 3 ? "…" : ""}
-                              </div>
-                            </td>
-                            <td style={{ padding: "11px 16px", fontSize: 13, color: "#374151", borderBottom: "1px solid #f3f4f6" }}>{row.Benchmark}</td>
-                            <td style={{ padding: "11px 16px", fontSize: 13, color: "#374151", borderBottom: "1px solid #f3f4f6" }}>{row.LocalCheck}</td>
-                            <td style={{ padding: "11px 16px", fontSize: 13, fontWeight: 700, color: "#059669", borderBottom: "1px solid #f3f4f6" }}>{row.BestPerformer}</td>
+                          <tr className="" key={idx}>
+                            <td className="font-Karla pl-5">{row.institute}</td>
+                            <td className="font-Karla pl-2">{row.year}</td>
+                            <td className="font-Karla pl-2">{row.marketSegment}</td>
+                            <td className="font-Karla pl-2">{row.state}</td>
+                            <td className="font-Karla pl-2">{row.variety}</td>
+                            <td className="font-Karla pl-2">{row.varietyType}</td>
+                            <td className="font-Karla pl-2">{row.predictedMeans}</td>
+                            <td className="font-Karla pl-2">{row.gainLocal}</td>
+                            <td className="font-Karla pl-2">{row.gainBenchmark}</td>
                           </tr>
                         ))}
                       </tbody>
