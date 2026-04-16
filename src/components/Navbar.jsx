@@ -122,7 +122,7 @@ export default function Navbar() {
             {/* RIGHT LOGO */}
             <img
               src="/logo/IRRI-CG 3 lines spell out_IRRI Logo white.png"
-              className="h-[60px] w-[300px] object-contain hidden md:block"
+              className="h-[60px] w-[300px] object-contain"
               alt="Right Logo"
             />
 
