@@ -9,7 +9,7 @@ import Typography from "../ui/Heading";
 import { trackDownload } from "../utils/trackDownload";
 import api from "../api/axios";
 
-const STRAPI_ORIGIN = import.meta.env.VITE_STRAPI_URL || "http://localhost:1337";
+const STRAPI_ORIGIN = import.meta.env.VITE_STRAPI_URL || "https://sanseed.org/";
 
 const getFileUrl = (url) => {
   if (!url) return "";
