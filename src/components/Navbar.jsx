@@ -64,7 +64,7 @@ export default function Navbar() {
                 onClick={() => navigate("/dashboard")}
                 className="font-[18px] font-bold hover:underline"
               >
-                Dashboard
+                User Profile
               </button>
 
               <button
@@ -164,7 +164,7 @@ export default function Navbar() {
                   }}
                   className="py-3 px-6 bg-green-500 hover:bg-green-400 rounded-xl font-bold"
                 >
-                  Dashboard
+                  User Profile
                 </button>
 
                 <button
