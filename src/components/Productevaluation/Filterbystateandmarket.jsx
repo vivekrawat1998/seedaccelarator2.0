@@ -546,7 +546,11 @@ export default function Filterbystateandmarket() {
         ""
       ).trim();
       const year = String(item?.Year || extractYear(marketSegment) || "").trim();
-      const institute = String(item?.Institute || "").trim();
+      const institute = String(
+        item?.["Breeding Institute"] ||
+        item?.Institute ||
+        ""
+      ).trim();
       const variety = String(item?.["Variety Name"] || "").trim();
       const varietyType = String(item?.["Variety Type"] || "").trim();
       const predictedMeans = Number(item?.["Predicted Means"] || 0);
