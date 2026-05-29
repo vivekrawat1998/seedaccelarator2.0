@@ -86,7 +86,7 @@ export default function StatisticalAnalysisSection() {
               <th className="px-3 py-2 text-md font-bold text-green-900">Year</th>
               <th className="px-3 py-2 text-md font-bold text-green-900">Market Segments</th>
               <th className="px-3 py-2 text-md font-bold text-green-900">States</th>
-              <th className="px-3 py-2 text-md font-bold text-green-900">No. Of Trials</th>
+              <th className="px-3 py-2 text-md font-bold text-green-900">No. of Trials</th>
               <th className="px-3 py-2 text-md font-bold text-green-900">Test Varieties</th>
               <th className="px-3 py-2 text-md font-bold text-green-900">Benchmark Varieties</th>
               <th className="px-3 py-2 text-md font-bold text-green-900">NARES Partners</th>

@@ -52,13 +52,13 @@ const VarietyDetailsModal = ({ open, onClose, variety }) => {
 
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <InfoField label="Variety" value={variety.variety} />
-                    <InfoField label="Duration" value={variety.Duration} />
+                    <InfoField label="Duration (days after sowing)" value={variety.Duration} />
                     <InfoField label="Ecosystem" value={variety.Ecosystem} />
                     <InfoField label="Market Segment" value={variety.MarketSegment} />
                     <InfoField label="Grain Shape" value={variety.GrainShape} />
-                    <InfoField label="Potential Yields" value={variety.PotentialYields} />
-                    <InfoField label="BS Availability" value={variety.Bsavailability} />
-                    <InfoField label="Seed Availability" value={variety.Seedavailability} />
+                    <InfoField label="Potential Yield (tons/ha)" value={variety.PotentialYields} />
+                    <InfoField label="Breeder Seed Availability (kg)" value={variety.Bsavailability} />
+                    <InfoField label="Foundation Seed Availability (kg)" value={variety.Seedavailability} />
                     <InfoField
                         label="State Recommended"
                         value={variety.StatetRecommended || variety.StateitRecommended}
@@ -84,10 +84,10 @@ const InputField = ({ label, required = false, ...props }) => (
     </div>
 );
 
-const TextareaField = ({ label, ...props }) => (
+const TextareaField = ({ label, required = false, ...props }) => (
     <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-            {label}
+            {label} {required && <span className="text-red-500">*</span>}
         </label>
         <textarea
             {...props}
@@ -136,9 +136,25 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
             return;
         }
 
-        if (!newVariety.variety?.trim()) {
-            alert("Variety name is required");
-            return;
+        // Validate all mandatory fields (all except MarketSegment)
+        const mandatoryFields = [
+            { key: "variety", label: "Variety Name" },
+            { key: "Duration", label: "Duration (days after sowing)" },
+            { key: "Ecosystem", label: "Ecosystem" },
+            { key: "GrainShape", label: "Grain Shape" },
+            { key: "PotentialYields", label: "Potential Yield (tons/ha)" },
+            { key: "Bsavailability", label: "Breeder Seed Availability (kg)" },
+            { key: "Seedavailability", label: "Foundation Seed Availability (kg)" },
+            { key: "StatetRecommended", label: "State Recommended" },
+            { key: "SpecialTrait", label: "Special Trait" },
+        ];
+
+        for (const field of mandatoryFields) {
+            const val = newVariety[field.key];
+            if (val === null || val === undefined || String(val).trim() === "") {
+                alert(`${field.label} is required`);
+                return;
+            }
         }
 
         try {
@@ -158,7 +174,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                 Duration: normalizeNumber(item?.Duration),
                 Ecosystem: item?.Ecosystem || "",
                 MarketSegment: item?.MarketSegment || "",
-                GrainShape: normalizeNumber(item?.GrainShape),
+                GrainShape: item?.GrainShape || "",
                 PotentialYields: normalizeNumber(item?.PotentialYields),
                 Bsavailability: normalizeNumber(item?.Bsavailability),
                 Seedavailability: normalizeNumber(item?.Seedavailability),
@@ -171,7 +187,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                 Duration: normalizeNumber(newVariety.Duration),
                 Ecosystem: newVariety.Ecosystem?.trim() || "",
                 MarketSegment: newVariety.MarketSegment?.trim() || "",
-                GrainShape: normalizeNumber(newVariety.GrainShape),
+                GrainShape: newVariety.GrainShape?.trim() || "",
                 PotentialYields: normalizeNumber(newVariety.PotentialYields),
                 Bsavailability: normalizeNumber(newVariety.Bsavailability),
                 Seedavailability: normalizeNumber(newVariety.Seedavailability),
@@ -206,6 +222,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
             setSavingVarieties(false);
         }
     };
+
     return (
         <>
             <div className="bg-white p-6 rounded-2xl shadow">
@@ -293,7 +310,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                             Add New Variety
                         </h3>
                         <p className="text-sm text-gray-500 mb-6">
-                            Fill in the details below to add a new nominated variety
+                            Fill in the details below to add a new nominated variety. Fields marked <span className="text-red-500">*</span> are required.
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -309,9 +326,10 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                             />
 
                             <InputField
-                                label="Duration"
+                                label="Duration (days after sowing)"
+                                required
                                 type="number"
-                                placeholder="Enter duration"
+                                placeholder="Enter duration in days"
                                 value={newVariety.Duration}
                                 onChange={(e) =>
                                     handleNewVarietyChange("Duration", e.target.value)
@@ -320,6 +338,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
 
                             <InputField
                                 label="Ecosystem"
+                                required
                                 type="text"
                                 placeholder="Enter ecosystem"
                                 value={newVariety.Ecosystem}
@@ -328,6 +347,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                                 }
                             />
 
+                            {/* Market Segment — optional */}
                             <InputField
                                 label="Market Segment"
                                 type="text"
@@ -340,18 +360,24 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
 
                             <InputField
                                 label="Grain Shape"
-                                type="number"
+                                required
+                                type="text"
                                 placeholder="Enter grain shape"
                                 value={newVariety.GrainShape}
-                                onChange={(e) =>
-                                    handleNewVarietyChange("GrainShape", e.target.value)
-                                }
+                                onChange={(e) => {
+                                    // Allow alphabets and spaces only
+                                    const val = e.target.value;
+                                    if (/^[a-zA-Z\s]*$/.test(val)) {
+                                        handleNewVarietyChange("GrainShape", val);
+                                    }
+                                }}
                             />
 
                             <InputField
-                                label="Potential Yields"
+                                label="Potential Yield (tons/ha)"
+                                required
                                 type="number"
-                                placeholder="Enter potential yields"
+                                placeholder="Enter potential yield"
                                 value={newVariety.PotentialYields}
                                 onChange={(e) =>
                                     handleNewVarietyChange("PotentialYields", e.target.value)
@@ -359,9 +385,10 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                             />
 
                             <InputField
-                                label="BS Availability"
+                                label="Breeder Seed Availability (kg)"
+                                required
                                 type="number"
-                                placeholder="Enter BS availability"
+                                placeholder='Enter quantity in kg, or "0" if not available'
                                 value={newVariety.Bsavailability}
                                 onChange={(e) =>
                                     handleNewVarietyChange("Bsavailability", e.target.value)
@@ -369,9 +396,10 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                             />
 
                             <InputField
-                                label="Seed Availability"
+                                label="Foundation Seed Availability (kg)"
+                                required
                                 type="number"
-                                placeholder="Enter seed availability"
+                                placeholder='Enter quantity in kg, or "0" if not available'
                                 value={newVariety.Seedavailability}
                                 onChange={(e) =>
                                     handleNewVarietyChange("Seedavailability", e.target.value)
@@ -381,6 +409,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                             <div className="md:col-span-2">
                                 <InputField
                                     label="State Recommended"
+                                    required
                                     type="text"
                                     placeholder="Enter recommended state"
                                     value={newVariety.StatetRecommended}
@@ -393,6 +422,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                             <div className="md:col-span-2">
                                 <TextareaField
                                     label="Special Trait"
+                                    required
                                     placeholder="Enter special trait"
                                     rows={4}
                                     value={newVariety.SpecialTrait}

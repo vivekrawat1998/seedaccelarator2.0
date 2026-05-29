@@ -33,7 +33,7 @@ export default function MethodologySection() {
         </Typography>
       </div>
       <div className="bg-prime/10  border-l-4 border-yellow-400 text-black rounded-lg p-4 mb-4">
-        <Typography variant="h2" className="font-semibold mb-1 tracking-[2px] font-parkinsans">Transplanted Trials</Typography>
+        <Typography variant="h2" className="font-semibold mb-1 tracking-[2px] ">Transplanted Trials</Typography>
         <Typography variant="h3" >
           Transplanting is ensured at 18–20 days after sowing (DAS) for early maturity market segments,
           25–30 DAS for medium maturity, and 30–35 DAS for late maturity. Each variety is transplanted on 200 sqm area, with uniform nutrient management across replications and a seed rate of 40 kg/ha.

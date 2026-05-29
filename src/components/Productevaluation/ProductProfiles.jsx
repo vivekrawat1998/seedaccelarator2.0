@@ -4,23 +4,23 @@ import "aos/dist/aos.css";
 import Typography from "../../ui/Heading";
 
 const varietyProfiles = [
-    { name: "Bina - Dhan 17", pdf: "/Binadhan 17.pdf" },
-    { name: "CR Dhan - 102", pdf: "/CR dhan 102.pdf" },
-    { name: "CR Dhans - 203", pdf: "/CR dhan 203.pdf" },
-    { name: "CR Dhan - 800", pdf: "/CR Dhan 800.pdf" },
-    { name: "CR Dhan - 802", pdf: "/CR dhan 802.pdf" },
-    { name: "CR Dhan - 902", pdf: "/CR Dhan 902.pdf" },
-    { name: "CR Dhan - 50", pdf: "/DRR Dhan 50.pdf" },
-    { name: "Kalachampa", pdf: "/Kalachampa.pdf" },
+    { name: "BINADHAN 17", pdf: "/Binadhan 17.pdf" },
+    { name: "CR DHAN 102", pdf: "/CR dhan 102.pdf" },
+    { name: "CR DHAN 203", pdf: "/CR dhan 203.pdf" },
+    { name: "CR DHAN 800", pdf: "/CR Dhan 800.pdf" },
+    { name: "CR DHAN 802", pdf: "/CR dhan 802.pdf" },
+    { name: "CR DHAN 902", pdf: "/CR Dhan 902.pdf" },
+    { name: "CR DHAN 50", pdf: "/DRR Dhan 50.pdf" },
+    { name: "KALACHAMPA", pdf: "/Kalachampa.pdf" },
     { name: "MTU 1010", pdf: "/MTU 1010.pdf" },
     { name: "MTU 1075", pdf: "/MTU 1075.pdf" },
     { name: "MTU 1223", pdf: "/MTU 1223.pdf" },
-    { name: "Nua Chinikamini", pdf: "/Nua ChiniKamini.pdf" },
-    { name: "Nua Dhusra", pdf: "/Nua Dhusra.pdf" },
-    { name: "Nua Kalajeera", pdf: "/Nua kalajeera.pdf" },
-    { name: "Pooja", pdf: "/Pooja.pdf" },
-    { name: "Pratikshya", pdf: "/Pratikshya.pdf" },
-    { name: "Sahbhagi Dhan", pdf: "/Sahbhagi Dhan.pdf" },
+    { name: "NUA CHINIKAMINI", pdf: "/Nua ChiniKamini.pdf" },
+    { name: "NUA DHUSRA", pdf: "/Nua Dhusra.pdf" },
+    { name: "NUA KALAJEERA", pdf: "/Nua kalajeera.pdf" },
+    { name: "POOJA", pdf: "/Pooja.pdf" },
+    { name: "PRATIKSHYA", pdf: "/Pratikshya.pdf" },
+    { name: "SAHBHAGI DHAN", pdf: "/Sahbhagi Dhan.pdf" },
 ];
 
 export default function ProductProfiles() {
@@ -81,7 +81,7 @@ export default function ProductProfiles() {
                         data-aos-delay={idx * 80}
                     >
 
-                        {/* ⭐ PDF PREVIEW */}
+                        {/* PDF PREVIEW */}
                         <div className="h-56 bg-white overflow-hidden border-b">
                             <embed
                                 src={`${profile.pdf}#toolbar=0&navpanes=0&scrollbar=0`}

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import api from "../api/axios";
 import BreederVarietiesSection from "../components/breedervarietysection";
+import AcceleratorVarietiesSection from "../components/networkpage/AccelaratorvarietySection";
 
 const Field = ({ label, value }) => (
     <div>
@@ -33,10 +34,7 @@ const DownloadItem = ({ download }) => {
                 </p>
                 <p className="text-xs text-gray-500">
                     {createdAt
-                        ? createdAt.toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                        })
+                        ? createdAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
                         : ""}
                 </p>
             </div>
@@ -72,16 +70,12 @@ const Dashboard = () => {
 
     const fetchBreeders = async (profileData) => {
         let breeders = [];
-
         try {
             if (profileData?.email) {
                 const byEmail = await api.get(
-                    `/breeder-requests?filters[email][$eq]=${encodeURIComponent(
-                        profileData.email
-                    )}&populate[0]=nominatedvariety&populate[1]=nominatedvariety.variety`
+                    `/breeder-requests?filters[email][$eq]=${encodeURIComponent(profileData.email)}&populate[0]=nominatedvariety&populate[1]=nominatedvariety.variety`
                 );
                 breeders = byEmail?.data?.data || [];
-                console.log("Breeders fetched by email:", breeders);
             }
         } catch (error) {
             console.error("Breeder fetch by email failed:", error);
@@ -93,7 +87,6 @@ const Dashboard = () => {
                     `/breeder-requests?filters[users_permissions_user][id][$eq]=${profileData.id}&populate[0]=nominatedvariety&populate[1]=nominatedvariety.variety`
                 );
                 breeders = byUser?.data?.data || [];
-                console.log("Breeders fetched by user:", breeders);
             } catch (error) {
                 console.error("Breeder fetch by user failed:", error);
             }
@@ -108,18 +101,27 @@ const Dashboard = () => {
             const res = await api.get(
                 `/breeder-requests/${documentId}?populate[0]=nominatedvariety&populate[1]=nominatedvariety.variety`
             );
-
             const breeder = res?.data?.data;
             const breeders = breeder ? [breeder] : [];
-
-            console.log("Breeder refreshed =>", breeders[0]);
-            console.log("Refreshed id =>", breeders[0]?.id);
-            console.log("Refreshed documentId =>", breeders[0]?.documentId);
-
             setBreederData(breeders);
             return breeders;
         } catch (error) {
             console.error("Breeder refresh failed:", error);
+            return [];
+        }
+    };
+
+    const refreshAcceleratorByDocumentId = async (documentId) => {
+        try {
+            const res = await api.get(
+                `/accelartor-requests/${documentId}?populate[0]=nominatedvariety&populate[1]=nominatedvariety.accelaratorvariety`
+            );
+            const acc = res?.data?.data;
+            const accs = acc ? [acc] : [];
+            setAcceleratorData(accs);
+            return accs;
+        } catch (error) {
+            console.error("Accelerator refresh failed:", error);
             return [];
         }
     };
@@ -137,13 +139,12 @@ const Dashboard = () => {
 
                 await fetchBreeders(profileData);
 
+                // Fetch accelerators with nominatedvariety populated
                 let accelerators = [];
                 try {
                     if (profileData.email) {
                         const accByEmail = await api.get(
-                            `/accelartor-requests?populate=*&filters[email][$eq]=${encodeURIComponent(
-                                profileData.email
-                            )}`
+                            `/accelartor-requests?populate[0]=nominatedvariety&populate[1]=nominatedvariety.accelaratorvariety&filters[email][$eq]=${encodeURIComponent(profileData.email)}`
                         );
                         accelerators = accByEmail?.data?.data || [];
                     }
@@ -154,7 +155,7 @@ const Dashboard = () => {
                 if (!accelerators.length && profileData.id) {
                     try {
                         const accByUser = await api.get(
-                            `/accelartor-requests?populate=*&filters[users_permissions_user][id][$eq]=${profileData.id}`
+                            `/accelartor-requests?populate[0]=nominatedvariety&populate[1]=nominatedvariety.accelaratorvariety&filters[users_permissions_user][id][$eq]=${profileData.id}`
                         );
                         accelerators = accByUser?.data?.data || [];
                     } catch (e) {
@@ -167,9 +168,7 @@ const Dashboard = () => {
                 try {
                     if (profileData.email) {
                         const memberByEmail = await api.get(
-                            `/members?populate=*&filters[email][$eq]=${encodeURIComponent(
-                                profileData.email
-                            )}`
+                            `/members?populate=*&filters[email][$eq]=${encodeURIComponent(profileData.email)}`
                         );
                         members = memberByEmail?.data?.data || [];
                     }
@@ -190,9 +189,7 @@ const Dashboard = () => {
                 setMemberData(members);
 
                 try {
-                    const ordersRes = await api.get(
-                        `/orders?filters[user][id][$eq]=${profileData.id}`
-                    );
+                    const ordersRes = await api.get(`/orders?filters[user][id][$eq]=${profileData.id}`);
                     setOrders(ordersRes?.data?.data || []);
                 } catch (error) {
                     console.warn("Orders API not found or failed:", error);
@@ -240,16 +237,16 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br mt-24 from-green-50 to-blue-50 p-8">
             <div className="max-w-6xl mx-auto space-y-8">
+
+                {/* Header */}
                 <div className="bg-white p-6 rounded-2xl shadow flex justify-between items-center">
                     <h1 className="text-2xl font-bold">Welcome {profile?.username}</h1>
-                    <button
-                        onClick={handleLogout}
-                        className="bg-red-600 text-white px-5 py-2 rounded-xl"
-                    >
+                    <button onClick={handleLogout} className="bg-red-600 text-white px-5 py-2 rounded-xl">
                         Logout
                     </button>
                 </div>
 
+                {/* Profile */}
                 <div className="bg-white p-6 rounded-2xl shadow">
                     <h2 className="text-xl font-bold mb-4">👤 Profile</h2>
                     <p><strong>Name:</strong> {profile?.username}</p>
@@ -257,18 +254,14 @@ const Dashboard = () => {
                     <p><strong>Category:</strong> {category}</p>
                 </div>
 
+                {/* Breeder Membership */}
                 {breederData.length > 0 && (
                     <div className="bg-white p-6 rounded-2xl shadow">
                         <h2 className="text-xl font-bold mb-6">🌱 Breeder Membership</h2>
-
                         {breederData.map((item) => {
                             const status = item?.Approval === true ? "Accepted" : "Pending";
-
                             return (
-                                <div
-                                    key={item.documentId || item.id}
-                                    className="grid md:grid-cols-2 gap-4 mb-6"
-                                >
+                                <div key={item.documentId || item.id} className="grid md:grid-cols-2 gap-4 mb-6">
                                     <Field label="Name" value={item?.name} />
                                     <Field label="Email" value={item?.email} />
                                     <Field label="Organization" value={item?.Organization} />
@@ -276,10 +269,7 @@ const Dashboard = () => {
                                     <Field label="Designation" value={item?.Designation} />
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
-                                        <div
-                                            className={`p-3 rounded-lg font-bold text-white ${item?.Approval === true ? "bg-green-500" : "bg-yellow-500"
-                                                }`}
-                                        >
+                                        <div className={`p-3 rounded-lg font-bold text-white ${item?.Approval === true ? "bg-green-500" : "bg-yellow-500"}`}>
                                             {status}
                                         </div>
                                     </div>
@@ -289,6 +279,7 @@ const Dashboard = () => {
                     </div>
                 )}
 
+                {/* Breeder — Nominated Varieties */}
                 {category === "breeder" && breederData.length > 0 && (
                     <BreederVarietiesSection
                         breederData={breederData}
@@ -297,27 +288,21 @@ const Dashboard = () => {
                     />
                 )}
 
+                {/* Member Membership */}
                 {memberData.length > 0 && (
                     <div className="bg-white p-6 rounded-2xl shadow">
                         <h2 className="text-xl font-bold mb-6">👥 Member Membership</h2>
                         {memberData.map((item) => {
                             const row = item?.attributes || item;
                             const status = row?.Approval === true ? "Accepted" : "Pending";
-
                             return (
-                                <div
-                                    key={item.documentId || item.id}
-                                    className="grid md:grid-cols-2 gap-4 mb-6"
-                                >
+                                <div key={item.documentId || item.id} className="grid md:grid-cols-2 gap-4 mb-6">
                                     <Field label="Name" value={row?.name} />
                                     <Field label="Email" value={row?.email} />
                                     <Field label="Organization" value={row?.Organization} />
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
-                                        <div
-                                            className={`p-3 rounded-lg font-bold text-white ${row?.Approval === true ? "bg-green-500" : "bg-yellow-500"
-                                                }`}
-                                        >
+                                        <div className={`p-3 rounded-lg font-bold text-white ${row?.Approval === true ? "bg-green-500" : "bg-yellow-500"}`}>
                                             {status}
                                         </div>
                                     </div>
@@ -327,18 +312,15 @@ const Dashboard = () => {
                     </div>
                 )}
 
+                {/* Accelerator Membership */}
                 {acceleratorData.length > 0 && (
                     <div className="bg-white p-6 rounded-2xl shadow">
                         <h2 className="text-xl font-bold mb-6">🚀 Accelerator Membership</h2>
                         {acceleratorData.map((item) => {
                             const row = item?.attributes || item;
                             const status = row?.Approval === true ? "Accepted" : "Pending";
-
                             return (
-                                <div
-                                    key={item.documentId || item.id}
-                                    className="grid md:grid-cols-2 gap-4 mb-6"
-                                >
+                                <div key={item.documentId || item.id} className="grid md:grid-cols-2 gap-4 mb-6">
                                     <Field label="Name" value={row?.name} />
                                     <Field label="Email" value={row?.email} />
                                     <Field label="Designation" value={row?.Designation} />
@@ -350,10 +332,7 @@ const Dashboard = () => {
                                     <Field label="Purpose" value={row?.PurposeofParticipation} />
                                     <div>
                                         <p className="text-sm text-gray-500">Membership Status</p>
-                                        <div
-                                            className={`p-3 rounded-lg font-bold text-white ${row?.Approval === true ? "bg-green-500" : "bg-yellow-500"
-                                                }`}
-                                        >
+                                        <div className={`p-3 rounded-lg font-bold text-white ${row?.Approval === true ? "bg-green-500" : "bg-yellow-500"}`}>
                                             {status}
                                         </div>
                                     </div>
@@ -363,6 +342,16 @@ const Dashboard = () => {
                     </div>
                 )}
 
+                {/* Accelerator — Nominated Varieties */}
+                {category === "accelerator" && acceleratorData.length > 0 && (
+                    <AcceleratorVarietiesSection
+                        acceleratorData={acceleratorData}
+                        refreshAcceleratorByDocumentId={refreshAcceleratorByDocumentId}
+                        api={api}
+                    />
+                )}
+
+                {/* Download History */}
                 <div className="bg-white p-6 rounded-2xl shadow">
                     <h2 className="text-xl font-bold mb-6">
                         📥 Download History ({downloads.length})
@@ -380,6 +369,7 @@ const Dashboard = () => {
                         </div>
                     )}
                 </div>
+
             </div>
         </div>
     );

@@ -9,7 +9,7 @@ export default function SeedScalingDashboard() {
   const columns = [
     { key: "variety", label: "Rice Variety" },
     { key: "breederSeeds", label: "BS Linkage Facilitated (kg)" },
-    { key: "tlsSeeds", label: "TLS/CS Seeds Produced (kg)*" },
+    { key: "tlsSeeds", label: "TLS/CS Produced (kg)*" },
     { key: "area", label: "Area Covered (ha)*" },
   ];
 
