@@ -334,9 +334,9 @@ const AcceleratorVarietiesSection = ({ acceleratorData, refreshAcceleratorByDocu
                             {/* Purpose / Mode of Use */}
                             <div className="md:col-span-2">
                                 <TextareaField
-                                    label="Purpose / Mode of Use"
+                                    label="Purpose / Mode of Scaling"
                                     required
-                                    placeholder="Describe the purpose or mode of use for this variety"
+                                    placeholder="Describe the purpose or mode of scaling for this variety"
                                     rows={4}
                                     value={newVariety.PurposeMode}
                                     onChange={(e) => handleChange("PurposeMode", e.target.value)}
