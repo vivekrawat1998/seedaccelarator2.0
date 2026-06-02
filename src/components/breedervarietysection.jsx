@@ -229,7 +229,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-6">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">
-                            🌾 Nominated Varieties
+                            🌾 Requested Varieties
                         </h2>
                         <p className="text-sm text-gray-500 mt-1">
                             Click any variety to view full details
@@ -295,7 +295,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                     ) : (
                         <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
                             <p className="text-lg font-semibold text-gray-700">
-                                No nominated varieties yet
+                                No Requested varieties yet
                             </p>
                             <p className="text-sm text-gray-500 mt-2">
                                 Add your first variety using the form below
@@ -310,7 +310,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                             Add New Variety
                         </h3>
                         <p className="text-sm text-gray-500 mb-6">
-                            Fill in the details below to add a new nominated variety. Fields marked <span className="text-red-500">*</span> are required.
+                            Fill in the details below to add a new requested variety. Fields marked <span className="text-red-500">*</span> are required.
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -440,7 +440,7 @@ const BreederVarietiesSection = ({ breederData, refreshBreederByDocumentId, api 
                                 disabled={savingVarieties}
                                 className="rounded-xl bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
                             >
-                                {savingVarieties ? "Saving..." : "Add Variety"}
+                                {savingVarieties ? "Saving..." : "Request Variety"}
                             </button>
 
                             <button

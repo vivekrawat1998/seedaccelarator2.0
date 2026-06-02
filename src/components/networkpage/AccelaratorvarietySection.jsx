@@ -14,6 +14,14 @@ const seedTypeOptions = [
     { label: "Others", value: "others" },
 ];
 
+// Map stored enum values back to friendly labels for display
+const seedTypeLabelMap = seedTypeOptions.reduce((acc, opt) => {
+    acc[opt.value] = opt.label;
+    return acc;
+}, {});
+
+const getSeedTypeLabel = (value) => seedTypeLabelMap[value] || value || "N/A";
+
 const InfoField = ({ label, value }) => (
     <div>
         <p className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-1">
@@ -37,7 +45,7 @@ const VarietyDetailsModal = ({ open, onClose, variety }) => {
                             {variety.VarietyName || "Variety Details"}
                         </h3>
                         <p className="text-sm text-gray-500 mt-1">
-                            View complete nominated variety information
+                            View complete requested variety information
                         </p>
                     </div>
                     <button
@@ -52,7 +60,7 @@ const VarietyDetailsModal = ({ open, onClose, variety }) => {
 
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <InfoField label="Variety Name" value={variety.VarietyName} />
-                    <InfoField label="Type of Seed Required" value={variety.Typeofseedrequired} />
+                    <InfoField label="Type of Seed Required" value={getSeedTypeLabel(variety.Typeofseedrequired)} />
                     <InfoField label="Quantity (kg)" value={variety.quantityinkg} />
                     <div className="md:col-span-2">
                         <InfoField label="Purpose / Mode of Use" value={variety.PurposeMode} />
@@ -197,7 +205,7 @@ const AcceleratorVarietiesSection = ({ acceleratorData, refreshAcceleratorByDocu
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-6">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">
-                            🌱 Nominated Varieties
+                            🌱 Requested Varieties
                         </h2>
                         <p className="text-sm text-gray-500 mt-1">
                             Click any variety to view full details
@@ -237,7 +245,7 @@ const AcceleratorVarietiesSection = ({ acceleratorData, refreshAcceleratorByDocu
                                             <div>
                                                 <p className="text-xs text-gray-500 md:hidden">Seed Type</p>
                                                 <p className="text-gray-700 truncate">
-                                                    {item.Typeofseedrequired || "N/A"}
+                                                    {getSeedTypeLabel(item.Typeofseedrequired)}
                                                 </p>
                                             </div>
                                             <div>
@@ -246,6 +254,7 @@ const AcceleratorVarietiesSection = ({ acceleratorData, refreshAcceleratorByDocu
                                                     {item.quantityinkg ?? "N/A"}
                                                 </p>
                                             </div>
+
                                             <div>
                                                 <p className="text-xs text-gray-500 md:hidden">Purpose / Mode</p>
                                                 <p className="text-gray-700 truncate">
@@ -260,7 +269,7 @@ const AcceleratorVarietiesSection = ({ acceleratorData, refreshAcceleratorByDocu
                     ) : (
                         <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
                             <p className="text-lg font-semibold text-gray-700">
-                                No nominated varieties yet
+                                No requested varieties yet
                             </p>
                             <p className="text-sm text-gray-500 mt-2">
                                 Add your first variety using the form below
@@ -273,34 +282,26 @@ const AcceleratorVarietiesSection = ({ acceleratorData, refreshAcceleratorByDocu
                 <div className="border-t border-gray-200 pt-8">
                     <div className="max-w-4xl">
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                            Nominate a Variety
+                            Request a Variety
                         </h3>
                         <p className="text-sm text-gray-500 mb-6">
-                            Fill in the details below to nominate a variety. All fields marked{" "}
+                            Fill in the details below to request a variety. All fields marked{" "}
                             <span className="text-red-500">*</span> are required.
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                            {/* Variety Name */}
-                            <InputField
-                                label="Variety Name"
-                                required
-                                type="text"
-                                placeholder="Enter variety name"
-                                value={newVariety.VarietyName}
-                                onChange={(e) => handleChange("VarietyName", e.target.value)}
-                            />
-
-                            {/* Quantity */}
-                            <InputField
-                                label="Quantity (kg)"
-                                required
-                                type="number"
-                                placeholder="Enter quantity in kg"
-                                value={newVariety.quantityinkg}
-                                onChange={(e) => handleChange("quantityinkg", e.target.value)}
-                            />
+                            {/* Variety Name — full width */}
+                            <div className="md:col-span-2">
+                                <InputField
+                                    label="Variety Name"
+                                    required
+                                    type="text"
+                                    placeholder="Enter variety name"
+                                    value={newVariety.VarietyName}
+                                    onChange={(e) => handleChange("VarietyName", e.target.value)}
+                                />
+                            </div>
 
                             {/* Type of Seed Required — radio pills */}
                             <div className="md:col-span-2">
@@ -311,11 +312,10 @@ const AcceleratorVarietiesSection = ({ acceleratorData, refreshAcceleratorByDocu
                                     {seedTypeOptions.map((opt) => (
                                         <label
                                             key={opt.value}
-                                            className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all text-sm ${
-                                                newVariety.Typeofseedrequired === opt.value
-                                                    ? "bg-blue-50 border-blue-400 font-medium text-blue-800"
-                                                    : "border-gray-200 hover:bg-gray-50 text-gray-700"
-                                            }`}
+                                            className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all text-sm ${newVariety.Typeofseedrequired === opt.value
+                                                ? "bg-blue-50 border-blue-400 font-medium text-blue-800"
+                                                : "border-gray-200 hover:bg-gray-50 text-gray-700"
+                                                }`}
                                         >
                                             <input
                                                 type="radio"
@@ -330,6 +330,16 @@ const AcceleratorVarietiesSection = ({ acceleratorData, refreshAcceleratorByDocu
                                     ))}
                                 </div>
                             </div>
+
+                            {/* Quantity */}
+                            <InputField
+                                label="Quantity (kg)"
+                                required
+                                type="number"
+                                placeholder="Enter quantity in kg"
+                                value={newVariety.quantityinkg}
+                                onChange={(e) => handleChange("quantityinkg", e.target.value)}
+                            />
 
                             {/* Purpose / Mode of Use */}
                             <div className="md:col-span-2">
@@ -351,7 +361,7 @@ const AcceleratorVarietiesSection = ({ acceleratorData, refreshAcceleratorByDocu
                                 disabled={savingVarieties}
                                 className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
                             >
-                                {savingVarieties ? "Saving..." : "Nominate Variety"}
+                                {savingVarieties ? "Saving..." : "Request Variety"}
                             </button>
 
                             <button
